@@ -65,12 +65,11 @@ const FooterButton = ({
 
         {isStay(gotoLocation) ? (
           <Button
-            className="d-flex align-items-center justify-content-center border-0 shadow-sm"
+            className="d-flex bg-navy align-items-center justify-content-center border-0 shadow-sm"
             style={{
               width: "125px",
               height: "57px",
               color: "#ffffff",
-              background: "#002D73",
               borderRadius: "5px",
               padding: "10px",
               fontSize: "18px",
@@ -79,7 +78,7 @@ const FooterButton = ({
             onClick={onNextClick}
             disabled={disableNext}
           >
-            {labelNext} 
+            {labelNext}
             <i className="bi bi-chevron-right" />
           </Button>
         ) : (
@@ -87,12 +86,11 @@ const FooterButton = ({
             as={Link}
             to={`/${gotoLocation}`}
             state={nextState}
-            className="d-flex align-items-center justify-content-center border-0 shadow-sm"
+            className="d-flex bg-navy align-items-center justify-content-center border-0 shadow-sm"
             style={{
               width: "125px",
               height: "57px",
               color: "#ffffff",
-              background: "#002D73",
               borderRadius: "5px",
               padding: "10px",
               fontSize: "18px",

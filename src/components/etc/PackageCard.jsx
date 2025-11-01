@@ -1,6 +1,8 @@
 import React from "react";
 import { Card, Button, Carousel } from "react-bootstrap";
 import Sample320x240 from "../../assets/Sample250x250.png";
+import { FaCartArrowDown } from "react-icons/fa";
+
 const PackageCard = ({ packageData }) => {
   return (
     <>
@@ -38,7 +40,10 @@ const PackageCard = ({ packageData }) => {
               ...
             </Card.Text>
             <div className="justify-content-between d-flex">
-              <Button className="border-0 bg-white text-navy">ซื้อเลย</Button>
+              <Button className="border-0 bg-white text-navy d-flex align-items-center">
+                <FaCartArrowDown className="me-2" />
+                ซื้อเลย
+              </Button>
               <Button className=" border-0 bg-none text-white">
                 อ่านรายละเอียด
               </Button>

@@ -76,9 +76,12 @@ select:hover {
   border: 6px solid #eef0f5;
   background-color: #002d73;
 }
-
+.form-check-input:checked {
+  background-color: #000000;
+  border-color: #000000;
+}
 .radio-btn:has(input[type="radio"]:checked) {
-  background: linear-gradient(to bottom right, #749ee3, #30639d);
+  background: linear-gradient(90deg, #1f2054, #30639d) !important;
   color: #ffffff;
 }
 
