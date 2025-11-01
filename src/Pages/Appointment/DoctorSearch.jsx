@@ -21,20 +21,28 @@ const DoctorSearch = () => {
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 8;
 
-  ///Log
-  useEffect(() => {
-    let formattedDate = dayjs(selectedDate).format("DD/MM/YYYY");
-    console.log("Formatted Date:", formattedDate);
-  }, [selectedSpecialty, selectedHospital, selectedDate]);
 
   ///Map
   useEffect(() => {
     let filteredDoctors = (doctors || []).slice();
     console.log(selectedSpecialty, selectedHospital, selectedDate);
 
-
-
-
+    if (selectedHospital) {
+      filteredDoctors = filteredDoctors.filter(
+        (doctor) => doctor.hospital_name === selectedHospital
+      );
+    }
+    if (selectedSpecialty) {
+      filteredDoctors = filteredDoctors.filter(
+        (doctor) => doctor.specialty_name === selectedSpecialty
+      );
+    }
+    if (selectedDate) {
+      let formattedDate = dayjs(selectedDate).format("DD/MM/YYYY");
+      filteredDoctors = filteredDoctors.filter(
+        (doctor) => doctor.available_dates === formattedDate
+      );
+    }
 
     setFilteredDoctors(filteredDoctors);
     setCurrpage(1);
