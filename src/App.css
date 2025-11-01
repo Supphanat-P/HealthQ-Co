@@ -200,3 +200,17 @@ button:hover {
 .bg-gradient-navy {
   background: linear-gradient(135deg, #1f2054, #30639d) !important;
 }
+
+.btn.bg-navy:hover:active {
+  border: white 1px solid;
+}
+
+.bg-none {
+  background-color: transparent !important;
+}
+
+.card-hover:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transform: scale(1.03);
+  transition: all 0.3s ease;
+}

@@ -22,6 +22,8 @@ const DoctorFilter = ({
     setSelectedDate(null);
   };
 
+  ///Search Input
+
   ///Modal
   const modalShow = (dataName) => {
     if (dataName === "hospitals") {

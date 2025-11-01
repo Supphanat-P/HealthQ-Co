@@ -39,12 +39,14 @@ export const DataProvider = ({ children }) => {
         const doctorsScheduleData = await fetchDoctorsScheduleData();
 
         const formattedDoctorsData = doctorsData.map((doctor) => {
+        
           const specialty = specialtiesData.find(
             (spec) => spec.specialty_id === doctor.specialty_id
           );
           const hospital = hospitalsData.find(
             (hosp) => hosp.hospital_id === doctor.hospital_id
           );
+
           const scheduleInfo = doctorsScheduleData.find(
             (schedule) => schedule.doctor_id === doctor.doctor_id
           );

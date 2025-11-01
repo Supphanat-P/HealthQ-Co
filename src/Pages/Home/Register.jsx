@@ -19,14 +19,14 @@ const Login = () => {
             placeholder="รหัสผ่าน"
           />
         </div>
-        <div className="m-auto align-content-center text-center mb-5">
+        <div className="m-auto align-content-center text-center">
           <button
             className="btn bg-navy m-auto mb-2 d-flex justify-content-center align-items-center shadow"
             style={{ width: "100%" }}
           >
             <p className="text-white mb-0">เข้าสู่ระบบ</p>
           </button>
-          <button className="btn bg-white m-auto mb-3 d-flex justify-content-center align-items-center shadow">
+          <button className="btn bg-white m-auto mb-5 d-flex justify-content-center align-items-center shadow">
             <p className="text-navy mb-0">สมัครสมาชิก</p>
           </button>
           <a className="m-auto mt-5" href="">

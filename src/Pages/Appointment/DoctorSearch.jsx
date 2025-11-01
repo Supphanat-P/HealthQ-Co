@@ -21,7 +21,6 @@ const DoctorSearch = () => {
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 8;
 
-
   ///Map
   useEffect(() => {
     let filteredDoctors = (doctors || []).slice();
@@ -32,11 +31,13 @@ const DoctorSearch = () => {
         (doctor) => doctor.hospital_name === selectedHospital
       );
     }
+
     if (selectedSpecialty) {
       filteredDoctors = filteredDoctors.filter(
         (doctor) => doctor.specialty_name === selectedSpecialty
       );
     }
+
     if (selectedDate) {
       let formattedDate = dayjs(selectedDate).format("DD/MM/YYYY");
       filteredDoctors = filteredDoctors.filter(
@@ -50,6 +51,7 @@ const DoctorSearch = () => {
   }, [doctors, selectedSpecialty, selectedHospital, selectedDate]);
 
   ///Pagination
+
   useEffect(() => {
     const i = (currpage - 1) * itemsPerPage;
     const paginatedDoctors = (filteredDoctors || []).slice(i, i + itemsPerPage);
@@ -59,6 +61,7 @@ const DoctorSearch = () => {
       setCurrpage(totalPages);
     }
   }, [currpage, filteredDoctors, itemsPerPage]);
+
   return (
     <>
       <div className="container">
