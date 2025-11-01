@@ -39,9 +39,11 @@ const DoctorSearch = () => {
     }
 
     if (selectedDate) {
-      let formattedDate = dayjs(selectedDate).format("DD/MM/YYYY");
+      const formattedDate = dayjs(selectedDate).format("DD/MM/YYYY");
       filteredDoctors = filteredDoctors.filter(
-        (doctor) => doctor.available_dates === formattedDate
+        (doctor) =>
+          Array.isArray(doctor.available_dates) &&
+          doctor.available_dates.includes(formattedDate)
       );
     }
 

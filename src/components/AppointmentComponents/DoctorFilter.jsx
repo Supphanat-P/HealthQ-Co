@@ -4,6 +4,8 @@ import { MdOutlineClear } from "react-icons/md";
 import PopupModal from "./PopupModal";
 import { Button } from "react-bootstrap";
 import DataContext from "../../Context/DataContext";
+import dayjs from "dayjs";
+import { useMemo } from "react";
 const DoctorFilter = ({
   selectedHospital,
   setSelectedHospital,
@@ -12,7 +14,7 @@ const DoctorFilter = ({
   selectedDate,
   setSelectedDate,
 }) => {
-  const { specialties, hospitals } = useContext(DataContext);
+  const { specialties, hospitals, doctors } = useContext(DataContext);
   const [showSpecialtiesModal, setShowSpecialtiesModal] = useState(false);
   const [showHospitalsModal, setShowHospitalsModal] = useState(false);
 
@@ -22,7 +24,6 @@ const DoctorFilter = ({
     setSelectedDate(null);
   };
 
-  ///Search Input
 
   ///Modal
   const modalShow = (dataName) => {
@@ -32,7 +33,7 @@ const DoctorFilter = ({
       setShowSpecialtiesModal(true);
     }
   };
-  ///Date
+
   const DateButton = forwardRef(({ value, onClick, className }, ref) => (
     <button
       type="button"
@@ -98,6 +99,7 @@ const DoctorFilter = ({
           minDate={new Date()}
           selected={selectedDate}
           onChange={(date) => setSelectedDate(date)}
+          
         />
         <div
           role="separator"

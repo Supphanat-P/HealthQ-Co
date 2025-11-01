@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import SampleDoctor from "../../assets/Doctors/DoctorZ9.png";
 import { FaHospital } from "react-icons/fa6";
 import { FaStar } from "react-icons/fa";
+import { FaUserDoctor } from "react-icons/fa6";
 
 const DoctorCard = ({ doctor }) => {
   const navigate = useNavigate();
@@ -35,12 +36,24 @@ const DoctorCard = ({ doctor }) => {
         <div className="card-doctor-bottom rounded text-white p-3 align-items-center">
           <div className="text-center mb-3 align-items-center">
             <h5 className="mb-0">{doctor.doctor_name}</h5>
-            <FaStar />
+            <FaUserDoctor />
             <small>&nbsp;{doctor.specialty_name}</small>
             <br />
             <FaHospital />
-
             <small>&nbsp;{doctor.hospital_name}</small>
+            {doctor.recommended && (
+              <>
+                <br />
+                <FaStar className="text-warning" />
+                <small>&nbsp;แพทย์แนะนำ</small>
+              </>
+            )}{" "}
+            {!doctor.recommended && (
+              <>
+                <br />
+                <small>&nbsp;</small>
+              </>
+            )}
           </div>
 
           <div className="d-flex gap-2 justify-content-center">

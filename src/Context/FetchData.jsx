@@ -6,7 +6,7 @@ const DoctorsScheduleData = (() => {
       slots: [
         {
           schedule_text: "อาทิตย์ 11:00-12:00",
-          date: "29/10/2025",
+          date: "02/11/2025",
           start_time: "11:00",
           end_time: "12:00",
           duration: 60,
@@ -14,7 +14,7 @@ const DoctorsScheduleData = (() => {
         },
         {
           schedule_text: "จันทร์ 09:00-12:00",
-          date: "31/10/2025",
+          date: "05/12/2025",
           start_time: "09:00",
           end_time: "10:00",
           duration: 60,
