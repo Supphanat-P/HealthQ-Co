@@ -8,6 +8,8 @@ import { useLocation } from "react-router-dom";
 const AppointmentInfomation = () => {
   const location = useLocation();
   const { selectedDate, selectedTime } = location.state || {};
+  console.log("Selected Date:", selectedDate);
+  console.log("Selected Time:", selectedTime);
   return (
     <>
       <AppointmentHeader />
