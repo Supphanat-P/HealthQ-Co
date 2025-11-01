@@ -13,6 +13,7 @@ import AppointmentInfomation from "./Pages/Appointment/AppointmentInfomation";
 import Doctorinfo from "./Pages/Home/Doctorinfo";
 import Home from "./Pages/Home/Home";
 import ShowData from "./Pages/Adminstrator/ShowData";
+import Login from "./Pages/Adminstrator/Login";
 
 function AppContent() {
   const { loading, error } = useData();
@@ -33,6 +34,7 @@ function AppContent() {
         <Route path="/appointmentinfo" element={<AppointmentInfomation />} />
         <Route path="/doctorinfo" element={<Doctorinfo />} />
         <Route path="/showdata" element={<ShowData />} />
+        <Route path="/login" element={<Login />} />
         <Route path="*" element={<div>404 Not Found</div>} />
       </Routes>
     </>
