@@ -1,5 +1,9 @@
 import AppointmentHeader from "../../components/AppointmentComponents/AppointmentHeader";
 const Login = () => {
+  const Login = () => {
+    sessionStorage.setItem("login", "true");
+    window.location.href = "/";
+  };
   return (
     <>
       <div className="card h-fit w-fit m-auto shadow mt-5">
@@ -24,7 +28,9 @@ const Login = () => {
             className="btn bg-navy m-auto mb-2 d-flex justify-content-center align-items-center shadow"
             style={{ width: "100%" }}
           >
-            <p className="text-white mb-0">เข้าสู่ระบบ</p>
+            <p className="text-white mb-0" onClick={() => Login()}>
+              เข้าสู่ระบบ
+            </p>
           </button>
           <button className="btn bg-white m-auto mb-3 d-flex justify-content-center align-items-center shadow">
             <p className="text-navy mb-0">สมัครสมาชิก</p>

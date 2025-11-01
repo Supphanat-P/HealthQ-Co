@@ -3,8 +3,11 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { Link } from "react-router-dom";
+import { useContext } from "react";
+import Button from "react-bootstrap/Button";
 
 function NavigateBar() {
+  const login = sessionStorage.getItem("login");
   return (
     <Navbar expand="lg" className="bg-navy shadow-lg m-1 rounded h-25">
       <Container>
@@ -25,6 +28,7 @@ function NavigateBar() {
             <Nav.Link as={Link} to="/doctorsearch" className="text-white">
               ค้นหาเเพทย์
             </Nav.Link>
+
             <Nav.Link as={Link} to="/login" className="text-white">
               เข้าสู่ระบบ
             </Nav.Link>

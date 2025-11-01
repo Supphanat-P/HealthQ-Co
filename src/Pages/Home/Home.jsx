@@ -15,7 +15,6 @@ const Home = () => {
       setRecDoctors([]);
       return;
     }
-
     const topFour = doctors.slice(0, 4);
     const filtered = topFour.filter((doctor) => doctor.recommended === true);
     setRecDoctors(filtered);
@@ -23,39 +22,37 @@ const Home = () => {
 
   return (
     <>
-      <div
-        className="mt-5"
-        style={{ marginLeft: "10rem", marginRight: "10rem" }}
-      >
-        <div className="d-flex flex-row">
-          <div className="bg-softgray m-5 mt-5 mb-5 justify-content-center align-items-center rounded-1">
-            <ButtonLink label="ค้นหาแพทย์" to="/doctorSearch" />
-            <ButtonLink label="ทำนัดหมอ" to="/doctorSearch" />
-            <ButtonLink label="ประวัติการรักษา" to="/doctorSearch" />
-            <ButtonLink label="ติดต่อเรา" to="/doctorSearch" />
+      <div className="mt-5 container px-4">
+        <div className="row align-items-center hero-section">
+          <div className="col-lg-4 mb-4">
+            <div className="hero-links p-4 rounded-1">
+              <h3 className="mb-3 text-navy">บริการของเรา</h3>
+              <p className="text-muted small">
+                ค้นหาแพทย์ นัดหมาย และดูประวัติการรักษาได้อย่างรวดเร็ว
+              </p>
+              <div className="d-grid gap-2 mt-3">
+                <ButtonLink label="ค้นหาแพทย์" to="/doctorSearch" />
+                <ButtonLink label="ทำนัดหมอ" to="/appointment" />
+                <ButtonLink label="ประวัติการรักษา" to="/history" />
+                <ButtonLink label="ติดต่อเรา" to="/contact" />
+              </div>
+            </div>
           </div>
 
-          <div className="m-5 mt-5 mb-5 bg-black rounded shadow m-auto">
-            <div
-              style={{ width: "100%", maxWidth: "100%" }}
-              className="m-auto rounded"
-            >
-              <iframe
-                className="rounded"
-                src="https://www.youtube.com/embed/7vDYQEkJa3Y"
-                title="YouTube video player"
-                width="800px"
-                height="500"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-              ></iframe>
+          <div className="col-lg-8 mb-4">
+            <div className="hero-video-card rounded shadow-sm p-3">
+              <h5 className="text-navy mb-3">วีดีโอแนะนำ</h5>
+              <div className="ratio ratio-16x9 rounded overflow-hidden">
+                <iframe
+                  className="hero-iframe"
+                  src="https://www.youtube.com/embed/7vDYQEkJa3Y"
+                  title="YouTube video player"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              </div>
             </div>
-            {/* <img
-            src={Sample1500x500}
-            alt="1500x500"
-            style={{ width: "750px", height: "500px" }}
-          /> */}
           </div>
         </div>
         <hr className="border border-black m-auto" style={{ width: "100%" }} />
