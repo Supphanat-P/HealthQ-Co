@@ -196,3 +196,7 @@ button:hover {
     transform: translateY(0) scale(1);
   }
 }
+
+.bg-gradient-navy {
+  background: linear-gradient(135deg, #1f2054, #30639d) !important;
+}

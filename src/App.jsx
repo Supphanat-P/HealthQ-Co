@@ -13,7 +13,7 @@ import AppointmentInfomation from "./Pages/Appointment/AppointmentInfomation";
 import Doctorinfo from "./Pages/Home/Doctorinfo";
 import Home from "./Pages/Home/Home";
 import ShowData from "./Pages/Adminstrator/ShowData";
-import Login from "./Pages/Adminstrator/Login";
+import Login from "./Pages/Home/Login";
 
 function AppContent() {
   const { loading, error } = useData();
