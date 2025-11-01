@@ -1,0 +1,76 @@
+.btn-popupModal-color {
+  color: #002d73;
+  border: #002d73 solid 0.1px;
+  box-shadow: 0 5px 8px 0 #a5c7ff;
+}
+
+.modalBody {
+  display: grid;
+  grid-template-columns: auto auto auto auto;
+}
+
+.modal-content {
+  padding: 1.25rem;
+  max-width: 95vw !important;
+  width: auto !important;
+}
+
+.modal-dialog {
+  margin: 1.75rem auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100% - 3.5rem);
+}
+
+[role="dialog"] {
+  overflow: visible;
+}
+
+.modal-backdrop.show {
+  opacity: 0.4;
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Ensure the backdrop blocks pointer events and sits below the modal */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1040;
+  pointer-events: auto;
+}
+
+/* Modal should be above the backdrop */
+.modal {
+  z-index: 1050;
+}
+
+.modal.fade .modal-dialog {
+  transform: scale(0.8);
+  opacity: 0;
+  transition: all 0.3s ease-out;
+}
+
+.modal.show .modal-dialog {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.modal.fade:not(.show) .modal-dialog {
+  transform: scale(0.9);
+  opacity: 0;
+}
+
+.btn-popupModal-color:hover {
+  background-color: #b6d4fe;
+  color: rgb(0, 0, 0);
+  transform: scale(1.05);
+  box-shadow: 0 5px 8px 0 #dae8ff;
+}
+
+.text-navy {
+  color: #002b5c;
+}
