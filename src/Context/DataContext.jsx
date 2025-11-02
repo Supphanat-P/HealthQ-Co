@@ -4,6 +4,7 @@ import {
   fetchDoctors,
   fetchHospitals,
   fetchDoctorsScheduleData,
+  fetchPackages,
 } from "./FetchData";
 
 const DataContext = createContext(null);
@@ -13,6 +14,7 @@ export const DataProvider = ({ children }) => {
   const [doctors, setDoctors] = useState([]);
   const [hospitals, setHospitals] = useState([]);
   const [doctorsSchedule, setDoctorsSchedule] = useState([]);
+  const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -37,9 +39,9 @@ export const DataProvider = ({ children }) => {
         const doctorsData = await fetchDoctors();
         const hospitalsData = await fetchHospitals();
         const doctorsScheduleData = await fetchDoctorsScheduleData();
+        const packagesData = await fetchPackages();
 
         const formattedDoctorsData = doctorsData.map((doctor) => {
-        
           const specialty = specialtiesData.find(
             (spec) => spec.specialty_id === doctor.specialty_id
           );
@@ -70,6 +72,7 @@ export const DataProvider = ({ children }) => {
         setSpecialties(specialtiesData);
         setHospitals(hospitalsData);
         setDoctorsSchedule(doctorsScheduleData);
+        setPackages(packagesData);
         setError(null);
       } catch (err) {
         console.warn("Error fetching data:", err.message);
@@ -89,6 +92,7 @@ export const DataProvider = ({ children }) => {
         doctors,
         hospitals,
         doctorsSchedule,
+        packages,
         loading,
         error,
       }}

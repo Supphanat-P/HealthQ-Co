@@ -5,11 +5,11 @@ import { FaHospital } from "react-icons/fa6";
 import { FaStar } from "react-icons/fa";
 import { FaUserDoctor } from "react-icons/fa6";
 
-const DoctorCard = ({ doctor }) => {
+const DoctorCard = ({ doctor, selectedDate }) => {
   const navigate = useNavigate();
 
   const handleBook = () => {
-    navigate("/appointmenttime", { state: { doctor } });
+    navigate("/appointmenttime", { state: { doctor, selectedDate } });
   };
 
   const handleInfo = () => {

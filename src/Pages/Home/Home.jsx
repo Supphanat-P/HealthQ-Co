@@ -5,10 +5,13 @@ import { useEffect, useContext, useState } from "react";
 import DataContext from "../../Context/DataContext";
 import ButtonLink from "../../components/Shared/ButtonLink";
 import PackageCard from "../../components/etc/PackageCard";
+import PackageCarousel from "../../components/Shared/PackageCarousel";
 import DoctorCard from "../../components/AppointmentComponents/DoctorCard";
 const Home = () => {
-  const { doctors } = useContext(DataContext);
+  const { doctors , packages } = useContext(DataContext);
   const [recDoctors, setRecDoctors] = useState([]);
+  const [activeItemIndex, setActiveItemIndex] = useState(0);
+  const [cardsToShow, setCardsToShow] = useState(4);
 
   useEffect(() => {
     if (!doctors || doctors.length === 0) {
@@ -19,6 +22,20 @@ const Home = () => {
     const filtered = topFour.filter((doctor) => doctor.recommended === true);
     setRecDoctors(filtered);
   }, [doctors]);
+
+  // responsive number of cards for ItemsCarousel
+  useEffect(() => {
+    const update = () => {
+      const w = window.innerWidth;
+      if (w < 576) setCardsToShow(1);
+      else if (w < 768) setCardsToShow(2);
+      else if (w < 992) setCardsToShow(3);
+      else setCardsToShow(4);
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
 
   return (
     <>
@@ -57,11 +74,8 @@ const Home = () => {
         </div>
         <hr className="border border-black m-auto" style={{ width: "100%" }} />
         <h3 className="text-black m-4 mt-1 mb-3">แพ็กเกจ และ โปรโมชั่น</h3>
-        <div className="d-flex flex-row gap-3 flex-wrap">
-          <PackageCard />
-          <PackageCard />
-          <PackageCard />
-          <PackageCard />
+        <div className="mb-4">
+          <PackageCarousel packages={packages} />
         </div>
         <hr className="border border-black m-auto" style={{ width: "97%" }} />
         <h3 className="text-black m-4 mt-1 mb-3">แพทย์แนะนำ</h3>

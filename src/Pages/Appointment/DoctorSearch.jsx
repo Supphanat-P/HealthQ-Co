@@ -41,7 +41,9 @@ const DoctorSearch = () => {
     if (selectedDate) {
       let formattedDate = dayjs(selectedDate).format("DD/MM/YYYY");
       filteredDoctors = filteredDoctors.filter(
-        (doctor) => doctor.available_dates === formattedDate
+        (doctor) =>
+          Array.isArray(doctor.available_dates) &&
+          doctor.available_dates.includes(formattedDate)
       );
     }
 
@@ -83,7 +85,11 @@ const DoctorSearch = () => {
           )}
 
           {displayedDoctors.map((doctor) => (
-            <DoctorCard key={doctor.doctor_id} doctor={doctor} />
+            <DoctorCard
+              key={doctor.doctor_id}
+              doctor={doctor}
+              selectedDate={selectedDate}
+            />
           ))}
         </div>
         <div className="d-flex justify-content-center mt-5 mb-3 align-content-center">

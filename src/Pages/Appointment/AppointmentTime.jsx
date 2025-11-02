@@ -10,10 +10,16 @@ import Schedule from "../../components/AppointmentComponents/Scheudule";
 import { useData } from "../../Context/DataContext";
 
 const AppointmentTime = () => {
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedTime, setSelectedTime] = useState(null);
   const location = useLocation();
-  const { doctor } = location.state || {};
+  const {
+    doctor,
+    selectedDate: iSelectedDate,
+    selectedTime: iSelectedTime,
+  } = location.state || {};
+  const [selectedDate, setSelectedDate] = useState(
+    iSelectedDate ? new Date(iSelectedDate) : new Date()
+  );
+  const [selectedTime, setSelectedTime] = useState(iSelectedTime || null);
   const { doctorsSchedule } = useData();
 
   const doctorScheduleData = doctorsSchedule.find(
