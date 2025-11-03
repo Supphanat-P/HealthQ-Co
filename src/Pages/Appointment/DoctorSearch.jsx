@@ -10,11 +10,23 @@ const DoctorSearch = () => {
   const { doctors, specialties, hospitals, doctorsSchedule } =
     useContext(DataContext);
 
+  const location = useLocation();
+
   const [filteredDoctors, setFilteredDoctors] = useState(doctors || []);
   const [displayedDoctors, setDisplayedDoctors] = useState([]);
   const [selectedHospital, setSelectedHospital] = useState(null);
   const [selectedSpecialty, setSelectedSpecialty] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
+
+  // initialize filters from navigation state if provided
+  useEffect(() => {
+    if (location && location.state) {
+      const { selectedSpecialty: initSpec, selectedHospital: initHosp } =
+        location.state;
+      if (initSpec) setSelectedSpecialty(initSpec);
+      if (initHosp) setSelectedHospital(initHosp);
+    }
+  }, [location]);
 
   ///pageination
   const [currpage, setCurrpage] = useState(1);

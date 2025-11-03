@@ -133,7 +133,18 @@ const PatientInformation = () => {
                 <label style={{ paddingLeft: "15px" }}>
                   อาการและปัญหาสุขภาพ
                 </label>
-                <textarea className="form-control" rows="5"></textarea>
+                <textarea className="form-control" rows="2"></textarea>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-12 mb-3">
+                <label style={{ paddingLeft: "15px" }}>
+                  ผลตรวจเบื้องต้น (ถ้ามี)
+                </label>
+                <Form.Control type="file" />
+                <Form.Text className="text-muted">
+                  กรุณาแนบไฟล์ผลตรวจเบื้องต้น (ถ้ามี)
+                </Form.Text>
               </div>
             </div>
           </div>

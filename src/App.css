@@ -37,10 +37,13 @@ a:hover {
   transition: transform 0.25s ease-in-out, background-color 0.25s ease-in-out;
 }
 
+.sc-htpNat.grBOFc {
+  overflow-y: clip;
+}
 input:hover,
 textarea:hover,
 select:hover {
-  transform: scale(1.05);
+  transform: scale(1.01);
   transition: transform 0.25s ease-in-out;
 }
 

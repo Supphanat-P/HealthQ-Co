@@ -8,7 +8,7 @@ import PackageCard from "../../components/etc/PackageCard";
 import PackageCarousel from "../../components/Shared/PackageCarousel";
 import DoctorCard from "../../components/AppointmentComponents/DoctorCard";
 const Home = () => {
-  const { doctors , packages } = useContext(DataContext);
+  const { doctors, packages } = useContext(DataContext);
   const [recDoctors, setRecDoctors] = useState([]);
   const [activeItemIndex, setActiveItemIndex] = useState(0);
   const [cardsToShow, setCardsToShow] = useState(4);
@@ -23,7 +23,6 @@ const Home = () => {
     setRecDoctors(filtered);
   }, [doctors]);
 
-  // responsive number of cards for ItemsCarousel
   useEffect(() => {
     const update = () => {
       const w = window.innerWidth;
@@ -55,15 +54,17 @@ const Home = () => {
               </div>
             </div>
           </div>
-
-          <div className="col-lg-8 mb-4">
-            <div className="hero-video-card rounded shadow-sm p-3">
-              <h5 className="text-navy mb-3">วีดีโอแนะนำ</h5>
-              <div className="ratio ratio-16x9 rounded overflow-hidden">
-                <iframe
-                  className="hero-iframe"
-                  src="https://www.youtube.com/embed/7vDYQEkJa3Y"
-                  title="YouTube video player"
+          <div className="col-lg-8 mb-4" style={{ overflow: "hidden" }}>
+            <div
+              className="hero-video-card rounded shadow-sm p-3"
+              style={{ overflow: "hidden" }}
+            >
+              <h5 className="text-navy mb-3">ประกาศ</h5>
+              <div className="ratio ratio-16x9 rounded">
+                <img
+                  className="hero-iframe rounded"
+                  style={{ overflow: "hidden" }}
+                  src={Sample1500x500}
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
@@ -74,9 +75,7 @@ const Home = () => {
         </div>
         <hr className="border border-black m-auto" style={{ width: "100%" }} />
         <h3 className="text-black m-4 mt-1 mb-3">แพ็กเกจ และ โปรโมชั่น</h3>
-        <div className="mb-4">
-          <PackageCarousel packages={packages} />
-        </div>
+        <PackageCarousel packages={packages} />
         <hr className="border border-black m-auto" style={{ width: "97%" }} />
         <h3 className="text-black m-4 mt-1 mb-3">แพทย์แนะนำ</h3>
         <div className="d-flex flex-row gap-3 flex-wrap">

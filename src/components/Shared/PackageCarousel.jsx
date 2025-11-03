@@ -46,6 +46,7 @@ const PackageCarousel = () => {
   return (
     <div style={{ padding: "0 8px" }}>
       <ItemsCarousel
+        className="overflow-hidden"
         gutter={16}
         numberOfCards={numberOfCards}
         showSlither={false}

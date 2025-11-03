@@ -1,13 +1,12 @@
 import React from "react";
 import { Card, Button } from "react-bootstrap";
-import Sample320x240 from "../../assets/Sample250x250.png";
 import { FaCartArrowDown } from "react-icons/fa";
 
 const PackageCard = ({ packageData }) => {
   const name = packageData?.package_name || "แพ็กเกจ";
   const price = packageData?.price ? `${packageData.price} ฿` : null;
   const desc =
-    packageData?.Description ||
+    packageData?.description ||
     "รายละเอียด : Lorem Ipsum is simply dummy text...";
 
   return (
@@ -16,17 +15,25 @@ const PackageCard = ({ packageData }) => {
       style={{
         width: "fit-content",
         height: "fit-content",
-        minHeight: "445px",
       }}
     >
       <Card.Img
         className="top rounded-0"
-        src={Sample320x240}
-        style={{ width: "100%", height: "100%" }}
+        src={packageData?.image || Sample320x240}
+        alt={packageData?.package_name || "package"}
+        loading="lazy"
+        style={{ width: "100%", height: "100%", objectFit: "cover" }}
       />
       <Card.Body
         className="bg-gradient-navy rounded-bottom"
-        style={{ width: "100%", padding: "10px", marginBottom: "0px" }}
+        style={{
+          width: "100%",
+          padding: "10px",
+          marginBottom: "0px",
+          minHeight: "200px",
+          minHeight: "200px",
+          overflow: "hidden",
+        }}
       >
         <Card.Title
           className="text-white"
@@ -45,9 +52,7 @@ const PackageCard = ({ packageData }) => {
             fontSize: "15px",
           }}
         >
-          <p className="text-white truncate-text">
-            รายละเอียด : <br /> {desc}
-          </p>
+          <p className="text-white truncate-text">รายละเอียด : {desc}</p>
 
           {price && <p className="text-end">ราคา ({price})</p>}
         </Card.Text>

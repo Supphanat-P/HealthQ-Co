@@ -18,7 +18,8 @@ const Appointment = () => {
   const [selectedHospital, setSelectedHospital] = useState(null);
 
   const nextPageClick = () => {
-    navigate("/doctorsearch", {
+    // navigate to doctor search and pass selected specialty and hospital as state
+    navigate("/doctorSearch", {
       state: {
         selectedSpecialty,
         selectedHospital,

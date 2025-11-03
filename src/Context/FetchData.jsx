@@ -1,4 +1,8 @@
 import { MdDescription } from "react-icons/md";
+import ImgChild from "../assets/childPackage.png";
+import ImgHeart from "../assets/heartPackage.png";
+import ImgLiver from "../assets/liverPackage.png";
+import ImgOld from "../assets/oldPackage.png";
 
 const DoctorsScheduleData = (() => {
   const DoctorsScheduleData = [
@@ -349,43 +353,57 @@ const DoctorsScheduleData = (() => {
       package_id: "P001",
       package_name: "ตรวจสุขภาพทั่วไป",
       price: 1500,
-      Description: "ตรวจสุขภาพทั่วไป",
+      description: "ตรวจสุขภาพร่างกายครบวงจร",
+      headline: "สุขภาพดี เริ่มต้นที่นี่",
+      image: ImgChild,
     },
     {
       package_id: "P002",
       package_name: "ตรวจสุขภาพสตรี",
       price: 2500,
-      Description: "ตรวจสุขภาพสำหรับผู้หญิง",
+      description: "ตรวจสุขภาพสำหรับผู้หญิงโดยเฉพาะ",
+      headline: "เพราะคุณผู้หญิงคือคนสำคัญ",
+      image: ImgHeart,
     },
     {
       package_id: "P003",
       package_name: "ตรวจสุขภาพหัวใจ",
       price: 3000,
-      Description: "ตรวจสุขภาพหัวใจโดยเฉพาะ",
+      description: "ตรวจสุขภาพหัวใจโดยละเอียด",
+      headline: "หัวใจแข็งแรง ชีวิตยืนยาว",
+      image: ImgHeart,
     },
     {
       package_id: "P004",
       package_name: "ตรวจสุขภาพเบาหวาน",
       price: 2000,
-      Description: "ตรวจสุขภาพสำหรับผู้ป่วยเบาหวาน",
+      description: "ติดตามและป้องกันโรคเบาหวาน",
+      headline: "ควบคุมเบาหวาน ปลอดภัยทุกวัน",
+      image: ImgLiver,
     },
     {
       package_id: "P005",
       package_name: "ตรวจสุขภาพเด็ก",
       price: 1800,
-      Description: "ตรวจสุขภาพสำหรับเด็ก",
+      description: "ตรวจสุขภาพสำหรับเด็ก",
+      headline: "สุขภาพดี เริ่มต้นตั้งแต่เด็ก",
+      image: ImgChild,
     },
     {
       package_id: "P006",
       package_name: "ตรวจสุขภาพผู้สูงอายุ",
       price: 2200,
-      Description: "ตรวจสุขภาพสำหรับผู้สูงอายุ",
+      description: "ดูแลสุขภาพผู้สูงวัยอย่างครบถ้วน",
+      headline: "สุขภาพดี ไม่มีวันหยุดสำหรับผู้สูงวัย",
+      image: ImgOld,
     },
     {
       package_id: "P007",
       package_name: "ตรวจสุขภาพตับ",
       price: 2800,
-      Description: "ตรวจสุขภาพตับโดยเฉพาะ",
+      description: "ตรวจสุขภาพตับโดยเฉพาะ",
+      headline: "ตับแข็งแรง ชีวิตกระปรี้กระเปร่า",
+      image: ImgLiver,
     },
   ];
 
