@@ -1,7 +1,9 @@
 import { Button } from "react-bootstrap";
 import { ClipboardPlus } from "lucide-react";
-import { Calendar } from 'lucide-react';
-import { Clock } from 'lucide-react';
+import { Calendar } from "lucide-react";
+import { Clock } from "lucide-react";
+import { Hospital } from "lucide-react";
+
 const AppointmentSummary = () => {
   return (
     <>
@@ -15,24 +17,35 @@ const AppointmentSummary = () => {
           <div className="mb-3">
             <p className="text-gray mb-1">
               <ClipboardPlus />
-              &nbsp;
-              แพทย์
+              &nbsp; แพทย์
             </p>
             <p className="text-black mb-1">นพ. หงสาวดี แซ่ลี่</p>
           </div>
           <div className="mb-3">
             <p className="text-gray mb-1">
+              <Hospital />
+              &nbsp; โรงพยาบาล
+              <p className="text-black mb-1">โรงพยาบาลหงสาวดี</p>
+            </p>
+          </div>
+          <div className="mb-3">
+            <p className="text-gray mb-1">
+              <Hospital />
+              &nbsp; ความชำนาญ/สาขาเฉพาะทาง
+              <p className="text-black mb-1">รักษาอาการทางใจ</p>
+            </p>
+          </div>
+          <div className="mb-3">
+            <p className="text-gray mb-1">
               <Calendar />
-              &nbsp;
-              วันที่
+              &nbsp; วันที่
             </p>
             <p className="text-black mb-1">ศุกร์ที่ 10 มีนาคม 2566</p>
           </div>
           <div className="mb-3">
             <p className="text-gray mb-1">
               <Clock />
-              &nbsp;
-              เวลา
+              &nbsp; เวลา
             </p>
             <p className="text-black mb-1">10:00 - 11:00 น.</p>
           </div>
