@@ -1,0 +1,86 @@
+import React, { useEffect, useMemo, useState } from "react";
+import { Button } from "react-bootstrap";
+import { useData } from "../../Context/DataContext";
+import dayjs from "dayjs";
+import buddhistEra from "dayjs/plugin/buddhistEra";
+dayjs.extend(buddhistEra);
+dayjs.locale("th");
+const SelectTime = ({
+  selectedTime: propSelectedTime,
+  onTimeChange,
+  selectedDoctorId,
+  selectedDate,
+}) => {
+  const { doctorsSchedule } = useData();
+
+  const doctorSchedule = (doctorsSchedule || []).find(
+    (ds) => ds.doctor_id === selectedDoctorId
+  );
+
+  const [selectedTime, setSelectedTime] = useState(propSelectedTime || null);
+
+  useEffect(() => {
+    setSelectedTime(propSelectedTime || null);
+  }, [propSelectedTime]);
+
+  const slotsForDate = useMemo(() => {
+    if (!doctorSchedule || !selectedDate) return [];
+
+    const slots = doctorSchedule.slots || [];
+
+    return slots.filter((slot) => {
+      const parsed = dayjs(slot.date, "DD/MM/YYYY", true);
+      const slotKey = parsed.isValid()
+        ? parsed.format("YYYY-DD-MM")
+        : dayjs(slot.date).format("YYYY-MM-DD");
+
+      return slotKey === selectedDate;
+    });
+  }, [doctorSchedule, selectedDate]);
+
+  const handleSelect = (slot) => {
+    if (slot.status !== "available") return;
+    const label = `${slot.start_time} - ${slot.end_time}`;
+    setSelectedTime(label);
+    if (typeof onTimeChange === "function") onTimeChange(slot);
+  };
+
+  return (
+    <>
+      <h5 className="text-navy">เลือกเวลา</h5>
+      <div className="d-flex flex-wrap gap-2 mb-4 ">
+        {slotsForDate.length === 0 && <div>กรุณาเลือกวัน</div>}
+        {slotsForDate.map((slot, idx) => {
+          const isBooked = slot.status !== "available";
+          const isPending = slot.status === "pending";
+          const label = `${slot.start_time} - ${slot.end_time}`;
+          return (
+            <Button
+              key={`${idx}-${slot.status}`}
+              variant={isPending ? "warning" : isBooked ? "danger" : ""}
+              disabled={isBooked}
+              className={`time-button shadow-sm ${
+                selectedTime === label ? "bg-navy text-white" : ""
+              } ${isPending ? "text-black" : ""}`}
+              onClick={() => handleSelect(slot)}
+            >
+              {label} 
+            </Button>
+          );
+        })}
+      </div>
+      <hr />
+      <h5 className="text-navy">วัน-เวลานัด</h5>
+      <div className="mb-3">
+        <strong>วันที่</strong>: &nbsp;
+        {selectedDate
+          ? dayjs(selectedDate).format("DD MMMM BBBB")
+          : "กรุณาเลือกวัน"}
+        &nbsp; <strong>เวลา</strong>: &nbsp;
+        {selectedTime || "กรุณาเลือกเวลา"}
+      </div>
+    </>
+  );
+};
+
+export default SelectTime;

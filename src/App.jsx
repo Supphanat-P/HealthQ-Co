@@ -16,6 +16,7 @@ import ShowData from "./Pages/Adminstrator/ShowData";
 import Login from "./Pages/Home/Login";
 import NotFound from "./Pages/404";
 import Logout from "./Pages/Home/Logout";
+import Blank from "./Pages/Home/Blank";
 function AppContent() {
   const { loading, error } = useData();
 
@@ -30,13 +31,14 @@ function AppContent() {
         <Route path="/" element={<Home />} />
         <Route path="/appointmenttime" element={<AppointmentTime />} />
         <Route path="/appointment" element={<Appointment />} />
-        <Route path="/doctorSearch" element={<DoctorSearch />} />
+        <Route path="/doctorsearch" element={<DoctorSearch />} />
         <Route path="/patientinfo" element={<PatientInformation />} />
         <Route path="/appointmentinfo" element={<AppointmentInfomation />} />
         <Route path="/doctorinfo" element={<Doctorinfo />} />
         <Route path="/showdata" element={<ShowData />} />
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout />} />
+        <Route path="/blank" element={<Blank />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

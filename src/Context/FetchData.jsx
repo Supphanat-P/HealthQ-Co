@@ -35,6 +35,22 @@ const DoctorsScheduleData = (() => {
           duration: 60,
           status: "booked",
         },
+        {
+          schedule_text: "วันที่ 03/11/2025 15:00-16:00",
+          date: "03/11/2025",
+          start_time: "15:00",
+          end_time: "16:00",
+          duration: 60,
+          status: "booked",
+        },
+        {
+          schedule_text: "วันที่ 03/11/2025 17:00-18:00",
+          date: "03/11/2025",
+          start_time: "17:00",
+          end_time: "18:00",
+          duration: 60,
+          status: "booked",
+        },
 
         {
           schedule_text: "วันที่ 04/11/2025 09:00-10:00",
@@ -103,7 +119,30 @@ const DoctorsScheduleData = (() => {
           duration: 60,
           status: "available",
         },
-
+        {
+          schedule_text: "วันที่ 07/11/2025 17:00-18:00",
+          date: "07/11/2025",
+          start_time: "17:00",
+          end_time: "18:00",
+          duration: 60,
+          status: "available",
+        },
+        {
+          schedule_text: "วันที่ 07/11/2025 19:00-20:00",
+          date: "07/11/2025",
+          start_time: "19:00",
+          end_time: "20:00",
+          duration: 60,
+          status: "available",
+        },
+        {
+          schedule_text: "วันที่ 07/11/2025 21:00-22:00",
+          date: "07/11/2025",
+          start_time: "21:00",
+          end_time: "22:00",
+          duration: 60,
+          status: "pending",
+        },
         {
           schedule_text: "วันที่ 08/11/2025 13:00-14:00",
           date: "08/11/2025",
