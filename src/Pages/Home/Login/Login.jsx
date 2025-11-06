@@ -1,4 +1,4 @@
-import AppointmentHeader from "../../../components/AppointmentComponents/AppointmentHeader";
+import AppointmentHeader from "../../../components/Shared/AppointmentHeader";
 const Login = () => {
   const Login = () => {
     sessionStorage.setItem("login", "true");

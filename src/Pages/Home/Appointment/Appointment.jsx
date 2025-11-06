@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Calendar } from "../../../components/Shared/Calendar";
+import Calendar from "../../../components/Shared/Calendar";
 import SelectTime from "../../../components/Shared/SelectTime";
 import BackToNavigate from "../../../components/Shared/backToNavigate";
 import AppointmentSummary from "../../../components/Shared/AppointmentSummary";
 import { useLocation } from "react-router-dom";
 import dayjs from "dayjs";
 import AppointmentDoctor from "../../../components/Shared/AppointmentDoctor";
-
+import AppointmentHeader from "../../../components/Shared/AppointmentHeader";
 export default function Appointment() {
   const location = useLocation();
   const { selectedDate: initDate } = location.state || {};
@@ -31,20 +31,16 @@ export default function Appointment() {
   return (
     <>
       <BackToNavigate label="กลับไปหน้าค้นหาแพทย์" linkTo="doctorsearch" />
+      <AppointmentHeader />
       <div className="main d-flex justify-content-center">
-        <div className="d-flex flex-row">
+        <div className="d-flex flex-row" width="100%">
           <div className="d-flex flex-column">
             {/* Doctor info */}
-            <div className="card shadow p-3 m-2" style={{ width: "600px" }}>
-             <AppointmentDoctor
-              selectedDoctor={doctor}
-             
-             />
-              
-
+            <div className="card shadow p-3 m-2" style={{ width: "500px" }}>
+              <AppointmentDoctor selectedDoctor={doctor} />
             </div>
             {/* P */}
-            <div className="card m-2" style={{ width: "600px" }}>
+            <div className="card m-2 shadow-sm" style={{ width: "500px" }}>
               <div className="p-3">
                 <Calendar
                   mode="single"
@@ -64,10 +60,10 @@ export default function Appointment() {
               </div>
             </div>
             {/* Patient Info */}
-            <div className="card shadow p-3 m-2" style={{ width: "600px" }}>
+            <div className="card shadow p-3 m-2" style={{ width: "500px" }}>
               คนไข้กรอกข้อมูลตรงนี้
             </div>
-            <div className="card shadow p-3 m-2" style={{ width: "600px" }}>
+            <div className="card shadow p-3 m-2" style={{ width: "500px" }}>
               แนบไฟล์ตรงนี้
             </div>
           </div>

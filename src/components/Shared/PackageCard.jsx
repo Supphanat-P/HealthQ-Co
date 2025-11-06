@@ -31,7 +31,6 @@ const PackageCard = ({ packageData }) => {
           padding: "10px",
           marginBottom: "0px",
           minHeight: "200px",
-          minHeight: "200px",
           overflow: "hidden",
         }}
       >

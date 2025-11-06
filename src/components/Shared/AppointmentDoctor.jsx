@@ -8,8 +8,6 @@ import { useData } from "../../Context/DataContext";
 import dayjs from "dayjs";
 
 const AppointmentDoctor = ({ selectedDoctor }) => {
-  console.log(selectedDoctor);
-
   return (
     <div className="d-flex ps-4 ">
       <img
@@ -21,15 +19,17 @@ const AppointmentDoctor = ({ selectedDoctor }) => {
       <div className="">
         <p className="fs-5 text-navy ps-4 fw-bold  ">
           <Stethoscope /> &nbsp;
-          {selectedDoctor.doctor_name || "ชื่อหมอ"}
+          {selectedDoctor?.doctor_name || "กรุณาเลือกแพทย์"}
         </p>
         <p className="text-secondary ps-4">
-          <Star />&nbsp;
-          {selectedDoctor.specialty_name || "ชำนาญ"}
+          <Star />
+          &nbsp;
+          {selectedDoctor?.specialty_name || "กรุณาเลือกแพทย์"}
         </p>
         <p className="text-secondary ps-4">
-          <MapPin />&nbsp;
-          {selectedDoctor.hospital_name || "โรงพยาบาล"}
+          <MapPin />
+          &nbsp;
+          {selectedDoctor?.hospital_name || "กรุณาเลือกแพทย์"}
         </p>
       </div>
     </div>

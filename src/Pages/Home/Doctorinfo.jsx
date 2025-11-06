@@ -7,7 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { registerLocale } from "react-datepicker";
 import th from "date-fns/locale/th";
 import FooterButton from "../../components/AppointmentComponents/FooterButton";
-import AppointmentHeader from "../../components/AppointmentComponents/AppointmentHeader";
+import AppointmentHeader from "../../components/Shared/AppointmentHeader";
 import Schedule from "../../components/AppointmentComponents/Scheudule";
 import DoctorZ9 from "../../assets/Doctors/DoctorZ9.png";
 import { useLocation } from "react-router-dom";
