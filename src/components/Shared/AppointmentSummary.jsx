@@ -11,7 +11,7 @@ const AppointmentSummary = ({
   selectedDate,
   selectedTime,
   doctorName,
-  hospitalName,
+  doctorHospital,
   doctorSpecialty,
 }) => {
   return (
@@ -36,7 +36,7 @@ const AppointmentSummary = ({
               &nbsp; โรงพยาบาล
             </p>
             <p className="text-black mb-1">
-              {hospitalName || "กรุณาเลือกโรงพยาบาล"}
+              {doctorHospital || "กรุณาเลือกโรงพยาบาล"}
             </p>
           </div>
           <div className="mb-3">
