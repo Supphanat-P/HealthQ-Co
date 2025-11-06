@@ -5,6 +5,7 @@ import BackToNavigate from "../../../components/Shared/backToNavigate";
 import AppointmentSummary from "../../../components/Shared/AppointmentSummary";
 import { useLocation } from "react-router-dom";
 import dayjs from "dayjs";
+import AppointmentDoctor from "../../../components/Shared/AppointmentDoctor";
 
 export default function Appointment() {
   const location = useLocation();
@@ -20,12 +21,12 @@ export default function Appointment() {
   const [selectedTime, setSelectedTime] = useState(null);
 
   useEffect(() => {
-    console.log("----------------------------");
-    console.log("Selected Date:", selectedDate);
-    console.log("Selected Time:", selectedTime);
-    console.log("Doctor:", selectedDoctorId);
-    console.log("Doctor info", doctor);
-    console.log("----------------------------");
+    // console.log("----------------------------");
+    // console.log("Selected Date:", selectedDate);
+    // console.log("Selected Time:", selectedTime);
+    // console.log("Doctor:", selectedDoctorId);
+    // console.log("Doctor info", doctor);
+    // console.log("----------------------------");
   }, [selectedTime, selectedDate, selectedDoctorId]);
   return (
     <>
@@ -35,7 +36,12 @@ export default function Appointment() {
           <div className="d-flex flex-column">
             {/* Doctor info */}
             <div className="card shadow p-3 m-2" style={{ width: "600px" }}>
-              หมออยู่ตรงนี้
+             <AppointmentDoctor
+              selectedDoctor={doctor}
+             
+             />
+              
+
             </div>
             {/* P */}
             <div className="card m-2" style={{ width: "600px" }}>
