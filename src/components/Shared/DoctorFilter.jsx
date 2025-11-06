@@ -1,11 +1,10 @@
 import React, { useEffect, useState, forwardRef, useContext } from "react";
-import DatePicker from "../Shared/DatePickerTh";
+import DatePicker from "./DatePickerTh";
 import { MdOutlineClear } from "react-icons/md";
-import PopupModal from "./PopupModal";
+import PopupModal from "../AppointmentComponents/PopupModal";
 import { Button } from "react-bootstrap";
 import DataContext from "../../Context/DataContext";
 import dayjs from "dayjs";
-import { useMemo } from "react";
 const DoctorFilter = ({
   selectedHospital,
   setSelectedHospital,
@@ -23,7 +22,6 @@ const DoctorFilter = ({
     setSelectedHospital(null);
     setSelectedDate(null);
   };
-
 
   ///Modal
   const modalShow = (dataName) => {
@@ -99,7 +97,15 @@ const DoctorFilter = ({
           minDate={new Date()}
           selected={selectedDate}
           onChange={(date) => setSelectedDate(date)}
-          
+          filterDate={(date) => {
+            const formattedDate = dayjs(date).format("DD/MM/YYYY");
+            const isAvailable = doctors.some(
+              (doctor) =>
+                Array.isArray(doctor.available_dates) &&
+                doctor.available_dates.includes(formattedDate)
+            );
+            return isAvailable;
+          }}
         />
         <div
           role="separator"

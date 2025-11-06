@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
 import th from "date-fns/locale/th";
@@ -8,16 +8,14 @@ import { useData } from "../../Context/DataContext";
 
 function Calendar({
   className,
-  classNames,
   showOutsideDays = true,
-  minDate = null,
   locale = th,
   weekStartsOn = 1,
   selectedDoctorId,
   onDateSelect,
+  selectedDate,
 }) {
   const { doctors } = useData();
-  const [selectedDate, setSelectedDate] = useState(null);
   const [availableDates, setAvailableDates] = useState([]);
 
   const doctor = (doctors || []).find(
@@ -62,8 +60,7 @@ function Calendar({
           selected={selectedDate ? new Date(selectedDate) : undefined}
           onSelect={(date) => {
             const formatted = dayjs(date).format("YYYY-MM-DD");
-            setSelectedDate(formatted);
-            if (typeof onDateSelect === "function") onDateSelect(formatted);
+            onDateSelect?.(formatted);
           }}
           disabled={[{ before: today }, isDisabled]}
           required

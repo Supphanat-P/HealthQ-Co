@@ -9,7 +9,9 @@ const DoctorCard = ({ doctor, selectedDate }) => {
   const navigate = useNavigate();
 
   const handleBook = () => {
-    navigate("/appointmenttime", { state: { doctor, selectedDate } });
+    navigate("/appointment", {
+      state: { doctor, selectedDate },
+    });
   };
 
   const handleInfo = () => {
@@ -47,7 +49,7 @@ const DoctorCard = ({ doctor, selectedDate }) => {
                 <FaStar className="text-warning" />
                 <small>&nbsp;แพทย์แนะนำ</small>
               </>
-            )}{" "}
+            )}
             {!doctor.recommended && (
               <>
                 <br />

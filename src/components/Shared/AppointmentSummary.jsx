@@ -1,10 +1,19 @@
 import { Button } from "react-bootstrap";
-import { ClipboardPlus } from "lucide-react";
 import { Calendar } from "lucide-react";
 import { Clock } from "lucide-react";
-import { Hospital } from "lucide-react";
+import { MapPin } from "lucide-react";
+import { Star } from "lucide-react";
+import { Stethoscope } from "lucide-react";
+import { useData } from "../../Context/DataContext";
+import dayjs from "dayjs";
 
-const AppointmentSummary = () => {
+const AppointmentSummary = ({
+  selectedDate,
+  selectedTime,
+  doctorName,
+  hospitalName,
+  doctorSpecialty,
+}) => {
   return (
     <>
       <div
@@ -16,23 +25,27 @@ const AppointmentSummary = () => {
 
           <div className="mb-3">
             <p className="text-gray mb-1">
-              <ClipboardPlus />
+              <Stethoscope />
               &nbsp; แพทย์
             </p>
-            <p className="text-black mb-1">นพ. หงสาวดี แซ่ลี่</p>
+            <p className="text-black mb-1">{doctorName || "กรุณาเลือกแพทย์"}</p>
           </div>
           <div className="mb-3">
             <p className="text-gray mb-1">
-              <Hospital />
+              <MapPin />
               &nbsp; โรงพยาบาล
-              <p className="text-black mb-1">โรงพยาบาลหงสาวดี</p>
+            </p>
+            <p className="text-black mb-1">
+              {hospitalName || "กรุณาเลือกโรงพยาบาล"}
             </p>
           </div>
           <div className="mb-3">
             <p className="text-gray mb-1">
-              <Hospital />
+              <Star />
               &nbsp; ความชำนาญ/สาขาเฉพาะทาง
-              <p className="text-black mb-1">รักษาอาการทางใจ</p>
+            </p>
+            <p className="text-black mb-1">
+              {doctorSpecialty || "กรุณาเลือกสาขาเฉพาะทาง"}
             </p>
           </div>
           <div className="mb-3">
@@ -40,14 +53,20 @@ const AppointmentSummary = () => {
               <Calendar />
               &nbsp; วันที่
             </p>
-            <p className="text-black mb-1">ศุกร์ที่ 10 มีนาคม 2566</p>
+            <p className="text-black mb-1">
+              {selectedDate
+                ? dayjs(selectedDate).format("D MMMM YYYY")
+                : "กรุณาเลือกวันที่"}
+            </p>
           </div>
           <div className="mb-3">
             <p className="text-gray mb-1">
               <Clock />
               &nbsp; เวลา
             </p>
-            <p className="text-black mb-1">10:00 - 11:00 น.</p>
+            <p className="text-black mb-1">
+              {selectedTime || "กรุณาเลือกเวลา"}
+            </p>
           </div>
           <div className="footer">
             <Button className="btn-navy w-100 mt-4">ยืนยันการจอง</Button>

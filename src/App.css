@@ -19,20 +19,20 @@ body {
 
 a:hover {
   text-decoration: none;
-  transform: scale(1.05);
+  transform: scale(1.01);
   transition: transform 0.25s ease-in-out;
 }
 
 .hover-primary:hover,
 .hover-primary:focus {
-  transform: scale(1.15);
+  transform: scale(1.01);
   background-color: #001e4e !important;
   transition: transform 0.25s ease-in-out, background-color 0.25s ease-in-out;
 }
 
 .hover-secondary:hover,
 .hover-secondary:focus {
-  transform: scale(1.15);
+  transform: scale(1.01);
   background-color: #dadada !important;
   transition: transform 0.25s ease-in-out, background-color 0.25s ease-in-out;
 }
@@ -40,6 +40,7 @@ a:hover {
 .sc-htpNat.grBOFc {
   overflow-y: clip;
 }
+
 input:hover,
 textarea:hover,
 select:hover {
@@ -132,13 +133,13 @@ button:focus {
 a[role="button"]:hover {
   text-decoration: none;
   cursor: pointer;
-  transform: scale(1.05);
+  transform: scale(1.01);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.2s ease;
 }
 button:hover {
   cursor: pointer;
-  transform: scale(1.05);
+  transform: scale(1.01);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.2s ease;
 }
@@ -161,7 +162,7 @@ button:hover {
 }
 .doctor-filter-input:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transform: scale(1);
+  transform: scale(1.01);
   transition: all 0.2s ease;
 }
 
@@ -171,7 +172,7 @@ button:hover {
 
 .time-button:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transform: scale(1.05);
+  transform: scale(1.01);
   transition: all 0.2s ease;
 }
 
@@ -189,7 +190,7 @@ button:hover {
 
 .card-doctor:hover,
 .card-schedule:hover {
-  transform: scale(1.02);
+  transform: scale(1.01);
   transition: all 0.2s ease;
 }
 .react-datepicker {
@@ -225,7 +226,7 @@ button:hover {
 
 .card-hover:hover {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  transform: scale(1.03);
+  transform: scale(1.01);
   transition: all 0.3s ease;
 }
 

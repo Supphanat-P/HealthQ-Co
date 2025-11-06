@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import ItemsCarousel from "react-items-carousel";
-import PackageCard from "../etc/PackageCard";
+import PackageCard from "./PackageCard";
 import DataContext from "../../Context/DataContext";
 
 const PackageCarousel = () => {

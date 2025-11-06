@@ -11,7 +11,7 @@ const PackageCard = ({ packageData }) => {
 
   return (
     <Card
-      className="m-2 shadow card-hover"
+      className="m-2 mb-4 shadow card-hover"
       style={{
         width: "fit-content",
         height: "fit-content",

@@ -4,9 +4,9 @@ import Sample1500x500 from "../../assets/Sample1500x500.png";
 import { useEffect, useContext, useState } from "react";
 import DataContext from "../../Context/DataContext";
 import ButtonLink from "../../components/Shared/ButtonLink";
-import PackageCard from "../../components/etc/PackageCard";
+import PackageCard from "../../components/Shared/PackageCard";
 import PackageCarousel from "../../components/Shared/PackageCarousel";
-import DoctorCard from "../../components/AppointmentComponents/DoctorCard";
+import DoctorCard from "../../components/Shared/DoctorCard";
 const Home = () => {
   const { doctors, packages } = useContext(DataContext);
   const [recDoctors, setRecDoctors] = useState([]);
@@ -23,24 +23,11 @@ const Home = () => {
     setRecDoctors(filtered);
   }, [doctors]);
 
-  useEffect(() => {
-    const update = () => {
-      const w = window.innerWidth;
-      if (w < 576) setCardsToShow(1);
-      else if (w < 768) setCardsToShow(2);
-      else if (w < 992) setCardsToShow(3);
-      else setCardsToShow(4);
-    };
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
-  }, []);
-
   return (
     <>
       <div className="mt-5 container px-4">
-        <div className="row align-items-center hero-section">
-          <div className="col-lg-4 mb-4">
+        <div className="row align-items-center hero-section mb-4">
+          <div className="col-lg-4">
             <div className="hero-links p-4 rounded-1">
               <h3 className="mb-3 text-navy">บริการของเรา</h3>
               <p className="text-muted small">
@@ -54,11 +41,8 @@ const Home = () => {
               </div>
             </div>
           </div>
-          <div className="col-lg-8 mb-4" style={{ overflow: "hidden" }}>
-            <div
-              className="hero-video-card rounded shadow-sm p-3"
-              style={{ overflow: "hidden" }}
-            >
+          <div className="col-lg-8" style={{ overflow: "hidden" }}>
+            <div className="rounded p-3" style={{ overflow: "hidden" }}>
               <h5 className="text-navy mb-3">ประกาศ</h5>
               <div className="ratio ratio-16x9 rounded">
                 <img
@@ -73,9 +57,12 @@ const Home = () => {
             </div>
           </div>
         </div>
+        {/* Package */}
         <hr className="border border-black m-auto" style={{ width: "100%" }} />
         <h3 className="text-black m-4 mt-1 mb-3">แพ็กเกจ และ โปรโมชั่น</h3>
         <PackageCarousel packages={packages} />
+
+        {/* Recommended */}
         <hr className="border border-black m-auto" style={{ width: "97%" }} />
         <h3 className="text-black m-4 mt-1 mb-3">แพทย์แนะนำ</h3>
         <div className="d-flex flex-row gap-3 flex-wrap">

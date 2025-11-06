@@ -7,25 +7,19 @@ dayjs.extend(buddhistEra);
 dayjs.locale("th");
 const SelectTime = ({
   selectedTime: propSelectedTime,
-  onTimeChange,
   selectedDoctorId,
+  onTimeChange,
   selectedDate,
 }) => {
   const { doctorsSchedule } = useData();
-
   const doctorSchedule = (doctorsSchedule || []).find(
     (ds) => ds.doctor_id === selectedDoctorId
   );
 
   const [selectedTime, setSelectedTime] = useState(propSelectedTime || null);
 
-  useEffect(() => {
-    setSelectedTime(propSelectedTime || null);
-  }, [propSelectedTime]);
-
   const slotsForDate = useMemo(() => {
     if (!doctorSchedule || !selectedDate) return [];
-
     const slots = doctorSchedule.slots || [];
 
     return slots.filter((slot) => {
@@ -33,17 +27,14 @@ const SelectTime = ({
       const slotKey = parsed.isValid()
         ? parsed.format("YYYY-DD-MM")
         : dayjs(slot.date).format("YYYY-MM-DD");
-
-      return slotKey === selectedDate;
+      const formattedSelectedDate = dayjs(selectedDate).format("YYYY-MM-DD");
+      return slotKey === formattedSelectedDate;
     });
   }, [doctorSchedule, selectedDate]);
 
-  const handleSelect = (slot) => {
-    if (slot.status !== "available") return;
-    const label = `${slot.start_time} - ${slot.end_time}`;
-    setSelectedTime(label);
-    if (typeof onTimeChange === "function") onTimeChange(slot);
-  };
+  useEffect(() => {
+    setSelectedTime(null);
+  }, [selectedDate]);
 
   return (
     <>
@@ -62,9 +53,12 @@ const SelectTime = ({
               className={`time-button shadow-sm ${
                 selectedTime === label ? "bg-navy text-white" : ""
               } ${isPending ? "text-black" : ""}`}
-              onClick={() => handleSelect(slot)}
+              onClick={() => {
+                setSelectedTime(label);
+                onTimeChange?.(slot);
+              }}
             >
-              {label} 
+              {label}
             </Button>
           );
         })}

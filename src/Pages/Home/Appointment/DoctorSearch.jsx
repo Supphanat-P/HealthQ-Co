@@ -1,8 +1,8 @@
 import React, { use, useContext, useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
-import { DataContext } from "../../Context/DataContext";
-import DoctorCard from "../../components/AppointmentComponents/DoctorCard";
-import DoctorFilter from "../../components/AppointmentComponents/DoctorFilter";
+import { DataContext } from "../../../Context/DataContext";
+import DoctorCard from "../../../components/Shared/DoctorCard";
+import DoctorFilter from "../../../components/Shared/DoctorFilter";
 import { Button } from "react-bootstrap";
 import dayjs from "dayjs";
 
@@ -18,7 +18,6 @@ const DoctorSearch = () => {
   const [selectedSpecialty, setSelectedSpecialty] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
 
-  // initialize filters from navigation state if provided
   useEffect(() => {
     if (location && location.state) {
       const { selectedSpecialty: initSpec, selectedHospital: initHosp } =

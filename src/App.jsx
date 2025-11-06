@@ -5,18 +5,14 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { DataProvider, useData, DataContext } from "./Context/DataContext";
 import NavigateBar from "./components/Shared/NavigateBar";
 import Loading from "./components/Shared/Loading";
-import AppointmentTime from "./Pages/Appointment/AppointmentTime";
-import Blank from "./Pages/Appointment/Appointment2";
-import DoctorSearch from "./Pages/Appointment/DoctorSearch";
-import PatientInformation from "./Pages/Appointment/PatientInformation";
-import AppointmentInfomation from "./Pages/Appointment/AppointmentInfomation";
+import DoctorSearch from "./Pages/Home/Appointment/DoctorSearch";
 import Doctorinfo from "./Pages/Home/Doctorinfo";
 import Home from "./Pages/Home/Home";
 import ShowData from "./Pages/Adminstrator/ShowData";
-import Login from "./Pages/Home/Login";
+import Login from "./Pages/Home/Login/Login";
 import NotFound from "./Pages/404";
-import Logout from "./Pages/Home/Logout";
-import Appointment from "./Pages/Home/Appointment";
+import Logout from "./Pages/Home/Login/Logout";
+import Appointment from "./Pages/Home/Appointment/Appointment";
 function AppContent() {
   const { loading, error } = useData();
 
@@ -29,16 +25,12 @@ function AppContent() {
       <NavigateBar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/appointmenttime" element={<AppointmentTime />} />
         <Route path="/appointment" element={<Appointment />} />
         <Route path="/doctorsearch" element={<DoctorSearch />} />
-        <Route path="/patientinfo" element={<PatientInformation />} />
-        <Route path="/appointmentinfo" element={<AppointmentInfomation />} />
         <Route path="/doctorinfo" element={<Doctorinfo />} />
         <Route path="/showdata" element={<ShowData />} />
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout />} />
-        <Route path="/blank" element={<Blank />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
