@@ -8,6 +8,7 @@ import { useData } from "../../../Context/DataContext";
 import dayjs from "dayjs";
 import AppointmentDoctor from "../../../components/Shared/AppointmentDoctor";
 import AppointmentHeader from "../../../components/Shared/AppointmentHeader";
+import PatientInfo from "../../../components/Shared/PatientInfo";
 export default function Appointment() {
   const { doctorsSchedule } = useData();
 
@@ -50,11 +51,17 @@ export default function Appointment() {
         <div className="d-flex flex-row" width="100%">
           <div className="d-flex flex-column">
             {/* Doctor info */}
-            <div className="card shadow p-3 m-2" style={{ width: "851px" }}>
+            <div
+              className="card shadow p-3 m-2"
+              style={{ width: "900px", borderRadius: "20px" }}
+            >
               <AppointmentDoctor selectedDoctor={doctor} />
             </div>
             {/* P */}
-            <div className="card shadow p-3 m-2" style={{ width: "851px" }}>
+            <div
+              className="card shadow p-3 m-2"
+              style={{ width: "900px", borderRadius: "20px" }}
+            >
               <div className="d-flex flex-row p-3">
                 <Calendar
                   mode="single"
@@ -72,13 +79,8 @@ export default function Appointment() {
                 />
               </div>
             </div>
-            {/* Patient Info */}
-            <div className="card shadow p-3 m-2" style={{ width: "500px" }}>
-              คนไข้กรอกข้อมูลตรงนี้
-            </div>
-            <div className="card shadow p-3 m-2" style={{ width: "500px" }}>
-              แนบไฟล์ตรงนี้
-            </div>
+              {/* Patient Info */}
+              <PatientInfo />
           </div>
           <AppointmentSummary
             selectedDate={selectedDate}
