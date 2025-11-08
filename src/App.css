@@ -41,7 +41,6 @@ a:hover {
   overflow-y: clip;
 }
 
-input:hover,
 textarea:hover,
 select:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -159,10 +158,6 @@ button:hover {
   position: relative;
   width: 850px !important;
   height: fit-content;
-}
-.doctor-filter-input:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
 }
 
 .card-doctor-bottom {
@@ -288,4 +283,11 @@ button:hover {
 .sticky {
   position: sticky;
   top: 0;
+}
+
+.item-search:hover {
+  cursor: pointer;
+  background-color: lightgray;
+  border-radius: 5px;
+  transition: all 0.2s ease;
 }

@@ -15,6 +15,7 @@ export const DataProvider = ({ children }) => {
   const [hospitals, setHospitals] = useState([]);
   const [doctorsSchedule, setDoctorsSchedule] = useState([]);
   const [packages, setPackages] = useState([]);
+  const [searchData, setSearchData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -75,11 +76,33 @@ export const DataProvider = ({ children }) => {
           };
         });
 
+        const searchData = doctorsData
+          .map((doctor) => ({
+            id: doctor.doctor_id,
+            name: doctor.doctor_name,
+            category: "Doctor",
+          }))
+          .concat(
+            hospitalsData.map((hospital) => ({
+              id: hospital.hospital_id,
+              name: hospital.hospital_name,
+              category: "Hospital",
+            }))
+          )
+          .concat(
+            specialtiesData.map((specialty) => ({
+              id: specialty.specialty_id,
+              name: specialty.specialty_name,
+              category: "Specialty",
+            }))
+          );
+
         setDoctors(formattedDoctorsData);
         setSpecialties(specialtiesData);
         setHospitals(hospitalsData);
         setDoctorsSchedule(doctorsScheduleData);
         setPackages(packagesData);
+        setSearchData(searchData);
         setError(null);
       } catch (err) {
         console.warn("Error fetching data:", err.message);
@@ -101,6 +124,7 @@ export const DataProvider = ({ children }) => {
         doctorsSchedule,
         setDoctorsSchedule,
         packages,
+        searchData,
         loading,
         error,
       }}

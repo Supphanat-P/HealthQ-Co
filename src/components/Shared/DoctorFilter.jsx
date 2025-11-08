@@ -1,11 +1,15 @@
 import React, { useEffect, useState, forwardRef, useContext } from "react";
 import DatePicker from "./DatePickerTh";
 import { MdOutlineClear } from "react-icons/md";
-import PopupModal from "../AppointmentComponents/PopupModal";
+import PopupModal from "./PopupModal";
 import { Button } from "react-bootstrap";
-import DataContext from "../../Context/DataContext";
 import dayjs from "dayjs";
+import { useData } from "../../Context/DataContext";
+import { Autocomplete, TextField } from "@mui/material";
+
 const DoctorFilter = ({
+  selectedDoctor,
+  setSelectedDoctor,
   selectedHospital,
   setSelectedHospital,
   selectedSpecialty,
@@ -13,23 +17,37 @@ const DoctorFilter = ({
   selectedDate,
   setSelectedDate,
 }) => {
-  const { specialties, hospitals, doctors } = useContext(DataContext);
+  const { specialties, hospitals, doctors, searchData } = useData();
   const [showSpecialtiesModal, setShowSpecialtiesModal] = useState(false);
   const [showHospitalsModal, setShowHospitalsModal] = useState(false);
+  const [selectedSearch, setSelectedSearch] = useState(null);
 
   const clearFilters = () => {
     setSelectedSpecialty(null);
     setSelectedHospital(null);
     setSelectedDate(null);
+    setSelectedSearch(null);
+    setSelectedDoctor(null);
   };
 
-  ///Modal
+  const options = (searchData || []).map((option) => ({
+    id: option.id,
+    title: option.name,
+    category: option.category,
+  }));
+
+  useEffect(() => {
+    if (!selectedSearch) return;
+
+    const cat = selectedSearch.category;
+    if (cat === "Doctor") setSelectedDoctor(selectedSearch.id);
+    else if (cat === "Hospital") setSelectedHospital(selectedSearch.title);
+    else if (cat === "Specialty") setSelectedSpecialty(selectedSearch.title);
+  }, [selectedSearch]);
+
   const modalShow = (dataName) => {
-    if (dataName === "hospitals") {
-      setShowHospitalsModal(true);
-    } else {
-      setShowSpecialtiesModal(true);
-    }
+    if (dataName === "hospitals") setShowHospitalsModal(true);
+    else setShowSpecialtiesModal(true);
   };
 
   const DateButton = forwardRef(({ value, onClick, className }, ref) => (
@@ -47,7 +65,6 @@ const DoctorFilter = ({
     </button>
   ));
 
-  ///Hide div
   const filterDiv = () => {
     const filterDiv = document.getElementById("filter-div");
     if (filterDiv.classList.contains("d-none")) {
@@ -58,14 +75,20 @@ const DoctorFilter = ({
       filterDiv.classList.add("d-none");
     }
   };
+
   return (
     <>
       <h1 className="text-navy mt-3">ค้นหาเเพทย์</h1>
       <div className="input-group shadow">
-        <input
-          type="text"
-          className="form-control doctor-filter-input"
-          placeholder="ชื่อ, ความชำนาญ, โรงพาบาล"
+        <Autocomplete
+          options={options}
+          className="doctor-filter-input flex-grow-1"
+          groupBy={(option) => option.category}
+          getOptionLabel={(option) => option.title}
+          sx={{ width: 300 }}
+          value={selectedSearch}
+          onChange={(event, newValue) => setSelectedSearch(newValue)}
+          renderInput={(params) => <TextField {...params} label="ค้นหาแพทย์" />}
         />
         <button
           className="btn bg-navy text-white doctor-filter-input"
@@ -74,6 +97,7 @@ const DoctorFilter = ({
           ตัวกรอง
         </button>
       </div>
+
       <div className="d-flex gap-4 align-items-center" id="filter-div">
         <Button
           className="bg-navy border-0 text-white rounded fs-6 mt-2 p-2 align-items-center"

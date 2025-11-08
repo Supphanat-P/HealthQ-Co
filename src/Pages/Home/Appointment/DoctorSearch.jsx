@@ -16,6 +16,7 @@ const DoctorSearch = () => {
   const [displayedDoctors, setDisplayedDoctors] = useState([]);
   const [selectedHospital, setSelectedHospital] = useState(null);
   const [selectedSpecialty, setSelectedSpecialty] = useState(null);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
 
   useEffect(() => {
@@ -37,6 +38,12 @@ const DoctorSearch = () => {
     let filteredDoctors = (doctors || []).slice();
     console.log(selectedSpecialty, selectedHospital, selectedDate);
 
+    if (selectedDoctor) {
+      console.log("Filtering by doctor:", selectedDoctor);
+      filteredDoctors = filteredDoctors.filter(
+        (doctor) => doctor.doctor_id === selectedDoctor
+      );
+    }
     if (selectedHospital) {
       filteredDoctors = filteredDoctors.filter(
         (doctor) => doctor.hospital_name === selectedHospital
@@ -58,10 +65,23 @@ const DoctorSearch = () => {
       );
     }
 
+    filteredDoctors = filteredDoctors.sort((a, b) => {
+      const aRec = !!a.recommended;
+      const bRec = !!b.recommended;
+      if (aRec !== bRec) return aRec ? -1 : 1;
+      return 0;
+    });
+
     setFilteredDoctors(filteredDoctors);
     setCurrpage(1);
     console.log("Filtered Doctors:", filteredDoctors);
-  }, [doctors, selectedSpecialty, selectedHospital, selectedDate]);
+  }, [
+    doctors,
+    selectedSpecialty,
+    selectedHospital,
+    selectedDate,
+    selectedDoctor,
+  ]);
 
   ///Pagination
 
@@ -79,6 +99,8 @@ const DoctorSearch = () => {
     <>
       <div className="container">
         <DoctorFilter
+          selectedDoctor={selectedDoctor}
+          setSelectedDoctor={setSelectedDoctor}
           selectedHospital={selectedHospital}
           setSelectedHospital={setSelectedHospital}
           selectedSpecialty={selectedSpecialty}

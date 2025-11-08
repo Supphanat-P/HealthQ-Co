@@ -20,13 +20,10 @@ const PopupModal = ({
     setSelectedSpecialty(itemOption);
     setSelectedHospital(itemOption);
   }, [itemOption]);
-  const handleshow = () => {
-    show = true;
-  };
 
   return (
     <>
-      <Modal show={show} onHide={onClose} backdrop="static" centered>
+      <Modal show={show} onHide={onClose} centered>
         <Modal.Header>
           <Modal.Title className="fs-1 text-navy fw-bold mt-0">
             {label}
