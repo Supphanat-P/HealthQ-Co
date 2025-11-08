@@ -18,9 +18,18 @@ const AppointmentSummary = ({
     <>
       <div
         className="sticky-side"
-        style={{ position: "sticky", top: 20, zIndex: 100 }}
+        style={{
+          position: "sticky",
+          top: 20,
+          zIndex: 100,
+        }}
       >
-        <div className="card w-75 shadow m-2 p-3">
+        <div
+          className="card w-75 shadow m-3 p-4"
+          style={{
+            borderRadius: "20px",
+          }}
+        >
           <h5 className="mb-4 text-navy">สรุปรายละเอียดการจอง</h5>
 
           <div className="mb-3">
@@ -69,7 +78,7 @@ const AppointmentSummary = ({
             </p>
           </div>
           <div className="footer">
-            <Button className="btn-navy w-100 mt-4">ยืนยันการจอง</Button>
+            <Button style={{height: "60px"}} className="btn-navy w-100 mt-4">ยืนยันการจอง</Button>
 
             <p
               className="text-gray mt-3 text-center"

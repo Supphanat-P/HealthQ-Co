@@ -72,7 +72,7 @@ const SelectTime = ({
             );
           })}
         </div>
-        <hr />
+        <hr style={{ width: "490px" }} />
         <h5 className="text-navy">วัน-เวลานัด</h5>
         <div className="mb-3">
           <strong>วันที่</strong>: &nbsp;
