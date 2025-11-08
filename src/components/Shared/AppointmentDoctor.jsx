@@ -13,7 +13,7 @@ const AppointmentDoctor = ({ selectedDoctor }) => {
       <img
         src="./src/assets/Doctors/doctormint.jpg"
         alt="docmint"
-        style={{ borderRadius: "50%", width: "150px", height: "150px" }}
+        style={{ borderRadius: "50%", width: "125px", height: "125px" }}
       />
 
       <div className="">

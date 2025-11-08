@@ -52,17 +52,24 @@ export const DataProvider = ({ children }) => {
           const scheduleInfo = doctorsScheduleData.find(
             (schedule) => schedule.doctor_id === doctor.doctor_id
           );
-          const available_dates = (scheduleInfo?.slots || [])
+
+          const all_dates = (scheduleInfo?.slots || [])
             .filter((slot) => slot && slot.date)
             .map((slot) => slot.date);
+
+          const available_dates = (scheduleInfo?.slots || [])
+            .filter((slot) => slot && slot.date && slot.status === "available")
+            .map((slot) => slot.date);
+
           const booked_dates = (scheduleInfo?.booked_slots || [])
-            .filter((slot) => slot && slot.date)
+            .filter((slot) => slot && slot.date && slot.status === "booked")
             .map((slot) => slot.date);
 
           return {
             ...doctor,
             specialty_name: specialty ? specialty.specialty_name : "",
             hospital_name: hospital ? hospital.hospital_name : "",
+            all_dates,
             available_dates,
             booked_dates,
           };
@@ -92,6 +99,7 @@ export const DataProvider = ({ children }) => {
         doctors,
         hospitals,
         doctorsSchedule,
+        setDoctorsSchedule,
         packages,
         loading,
         error,

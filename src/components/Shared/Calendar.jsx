@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
 import th from "date-fns/locale/th";
@@ -36,7 +36,7 @@ function Calendar({
   }, [doctor]);
 
   const isDisabled = (date) => {
-    const formatted = dayjs(date).format("YYYY-DD-MM");
+    const formatted = dayjs(date).format("YYYY-MM-DD");
     return !availableDates.includes(formatted);
   };
 
@@ -44,35 +44,40 @@ function Calendar({
 
   return (
     <>
-      <h5 className="text-navy">เลือกวันที่</h5>
-      <div className="card border-navy p-2 w-fit justify-self-center">
-        <DayPicker
-          navLayout="around"
-          className={className}
-          components={{
-            IconLeft: () => <ChevronLeft />,
-            IconRight: () => <ChevronRight />,
-          }}
-          locale={locale}
-          showOutsideDays={showOutsideDays}
-          weekStartsOn={weekStartsOn}
-          mode="single"
-          selected={selectedDate ? new Date(selectedDate) : undefined}
-          onSelect={(date) => {
-            const formatted = dayjs(date).format("YYYY-MM-DD");
-            onDateSelect?.(formatted);
-          }}
-          disabled={[{ before: today }, isDisabled]}
-          required
-        />
-        <div className="text-center mt-2">
-          {selectedDate ? (
-            <span className="text-navy fw-medium">
-              วันที่เลือก: {dayjs(selectedDate).format("D MMMM YYYY")}
-            </span>
-          ) : (
-            <span className="text-muted">กรุณาเลือกวันที่</span>
-          )}
+      <div className="d-flex flex-column">
+        <h5 className="text-navy">เลือกวันที่</h5>
+        <div
+          className="card border-navy p-2 w-fit justify-self-center"
+          style={{ width: "325px" }}
+        >
+          <DayPicker
+            navLayout="around"
+            className={className}
+            components={{
+              IconLeft: () => <ChevronLeft />,
+              IconRight: () => <ChevronRight />,
+            }}
+            locale={locale}
+            showOutsideDays={showOutsideDays}
+            weekStartsOn={weekStartsOn}
+            mode="single"
+            selected={selectedDate ? new Date(selectedDate) : undefined}
+            onSelect={(date) => {
+              const formatted = dayjs(date).format("YYYY-MM-DD");
+              onDateSelect?.(formatted);
+            }}
+            disabled={[{ before: today }, isDisabled]}
+            required
+          />
+          <div className="text-center mt-2">
+            {selectedDate ? (
+              <span className="text-navy fw-medium">
+                วันที่เลือก: {dayjs(selectedDate).format("D MMMM YYYY")}
+              </span>
+            ) : (
+              <span className="text-muted">กรุณาเลือกวันที่</span>
+            )}
+          </div>
         </div>
       </div>
     </>

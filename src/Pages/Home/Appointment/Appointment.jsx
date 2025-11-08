@@ -4,10 +4,13 @@ import SelectTime from "../../../components/Shared/SelectTime";
 import BackToNavigate from "../../../components/Shared/backToNavigate";
 import AppointmentSummary from "../../../components/Shared/AppointmentSummary";
 import { useLocation } from "react-router-dom";
+import { useData } from "../../../Context/DataContext";
 import dayjs from "dayjs";
 import AppointmentDoctor from "../../../components/Shared/AppointmentDoctor";
 import AppointmentHeader from "../../../components/Shared/AppointmentHeader";
 export default function Appointment() {
+  const { doctorsSchedule } = useData();
+
   const location = useLocation();
   const { selectedDate: initDate } = location.state || {};
   const { doctor } = location.state || {};
@@ -25,30 +28,40 @@ export default function Appointment() {
     // console.log("Selected Date:", selectedDate);
     // console.log("Selected Time:", selectedTime);
     // console.log("Doctor:", selectedDoctorId);
-    // console.log("Doctor info", doctor);
+    console.log("Doctor info", doctor);
     // console.log("----------------------------");
+    // console.log(
+    //   "Doctor Schedule:",
+    //   doctorsSchedule.find(
+    //     (schedule) => schedule.doctor_id === selectedDoctorId
+    //   )
+    // );
   }, [selectedTime, selectedDate, selectedDoctorId]);
   return (
     <>
+      {!selectedDoctorId && (
+        <div className="alert alert-warning">
+          กรุณาเลือกแพทย์ก่อนทำการนัดหมาย
+        </div>
+      )}
       <BackToNavigate label="กลับไปหน้าค้นหาแพทย์" linkTo="doctorsearch" />
       <AppointmentHeader />
       <div className="main d-flex justify-content-center">
         <div className="d-flex flex-row" width="100%">
           <div className="d-flex flex-column">
             {/* Doctor info */}
-            <div className="card shadow p-3 m-2" style={{ width: "500px" }}>
+            <div className="card shadow p-3 m-2" style={{ width: "851px" }}>
               <AppointmentDoctor selectedDoctor={doctor} />
             </div>
             {/* P */}
-            <div className="card m-2 shadow-sm" style={{ width: "500px" }}>
-              <div className="p-3">
+            <div className="card shadow p-3 m-2" style={{ width: "851px" }}>
+              <div className="d-flex flex-row p-3">
                 <Calendar
                   mode="single"
                   selectedDoctorId={selectedDoctorId}
                   onDateSelect={(d) => setSelectedDate(d)}
                   selectedDate={selectedDate}
                 />
-                <hr />
                 <SelectTime
                   selectedDoctorId={selectedDoctorId}
                   selectedDate={selectedDate}

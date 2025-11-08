@@ -13,6 +13,7 @@ import Login from "./Pages/Home/Login/Login";
 import NotFound from "./Pages/404";
 import Logout from "./Pages/Home/Login/Logout";
 import Appointment from "./Pages/Home/Appointment/Appointment";
+import AdminDoctorSchedule from "./Pages/Adminstrator/AdminDoctorSchedule";
 function AppContent() {
   const { loading, error } = useData();
 
@@ -29,6 +30,7 @@ function AppContent() {
         <Route path="/doctorsearch" element={<DoctorSearch />} />
         <Route path="/doctorinfo" element={<Doctorinfo />} />
         <Route path="/showdata" element={<ShowData />} />
+        <Route path="/admindoctorschedule" element={<AdminDoctorSchedule />} />
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="*" element={<NotFound />} />

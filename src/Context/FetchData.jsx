@@ -4,289 +4,103 @@ import ImgHeart from "../assets/heartPackage.png";
 import ImgLiver from "../assets/liverPackage.png";
 import ImgOld from "../assets/oldPackage.png";
 
-const DoctorsScheduleData = (() => {
-  const DoctorsScheduleData = [
-    {
-      schedule_id: "SCH001",
-      doctor_id: "D001",
-      slots: [
-        {
-          schedule_text: "วันที่ 02/11/2025 11:00-12:00",
-          date: "02/11/2025",
-          start_time: "11:00",
-          end_time: "12:00",
-          duration: 60,
-          status: "available",
-        },
-        {
-          schedule_text: "วันที่ 03/11/2025 08:00-09:00",
-          date: "03/11/2025",
-          start_time: "08:00",
-          end_time: "09:00",
-          duration: 60,
-          status: "available",
-        },
+const Data = (() => {
+  let slots = [];
+  const genSlots = () => {
+    const doctorIds = Array.from(
+      { length: 10 },
+      (_, i) => `D${String(i + 1).padStart(3, "0")}`
+    );
+    const year = 2025;
+    const monthIndex = 10;
+    const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
 
-        {
-          schedule_text: "วันที่ 03/11/2025 13:00-14:00",
-          date: "03/11/2025",
-          start_time: "13:00",
-          end_time: "14:00",
-          duration: 60,
-          status: "booked",
-        },
-        {
-          schedule_text: "วันที่ 03/11/2025 15:00-16:00",
-          date: "03/11/2025",
-          start_time: "15:00",
-          end_time: "16:00",
-          duration: 60,
-          status: "booked",
-        },
-        {
-          schedule_text: "วันที่ 03/11/2025 17:00-18:00",
-          date: "03/11/2025",
-          start_time: "17:00",
-          end_time: "18:00",
-          duration: 60,
-          status: "booked",
-        },
+    const startHour = 9;
+    const endHour = 16;
+    const allTimes = [];
+    for (let h = startHour; h <= endHour; h += 2) {
+      const sh = String(h).padStart(2, "0") + ":00";
+      const eh = String(h + 1).padStart(2, "0") + ":00";
+      allTimes.push({ start: sh, end: eh });
+    }
 
-        {
-          schedule_text: "วันที่ 04/11/2025 09:00-10:00",
-          date: "04/11/2025",
-          start_time: "09:00",
-          end_time: "10:00",
-          duration: 60,
-          status: "booked",
-        },
-        {
-          schedule_text: "วันที่ 04/11/2025 13:30-14:30",
-          date: "04/11/2025",
-          start_time: "13:30",
-          end_time: "14:30",
-          duration: 60,
-          status: "available",
-        },
+    let nextSlotNum = slots.length + 1;
 
-        {
-          schedule_text: "วันที่ 05/11/2025 10:00-11:00",
-          date: "05/11/2025",
-          start_time: "10:00",
-          end_time: "11:00",
-          duration: 60,
-          status: "available",
-        },
-        {
-          schedule_text: "วันที่ 05/11/2025 16:00-17:00",
-          date: "05/11/2025",
-          start_time: "16:00",
-          end_time: "17:00",
-          duration: 60,
-          status: "available",
-        },
+    const randInt = (min, max) =>
+      Math.floor(Math.random() * (max - min + 1)) + min;
+    const shuffle = (arr) => arr.sort(() => Math.random() - 0.5);
 
-        {
-          schedule_text: "วันที่ 06/11/2025 11:00-12:00",
-          date: "06/11/2025",
-          start_time: "11:00",
-          end_time: "12:00",
-          duration: 60,
-          status: "booked",
-        },
+    for (const doctorId of doctorIds) {
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dateObj = new Date(year, monthIndex, d);
+        const dd = String(dateObj.getDate()).padStart(2, "0");
+        const mm = String(dateObj.getMonth() + 1).padStart(2, "0");
+        const yyyy = dateObj.getFullYear();
+        const dateStr = `${dd}/${mm}/${yyyy}`;
 
-        {
-          schedule_text: "วันที่ 07/11/2025 09:00-10:00",
-          date: "07/11/2025",
-          start_time: "09:00",
-          end_time: "10:00",
-          duration: 60,
-          status: "available",
-        },
-        {
-          schedule_text: "วันที่ 07/11/2025 12:00-13:00",
-          date: "07/11/2025",
-          start_time: "12:00",
-          end_time: "13:00",
-          duration: 60,
-          status: "booked",
-        },
-        {
-          schedule_text: "วันที่ 07/11/2025 15:00-16:00",
-          date: "07/11/2025",
-          start_time: "15:00",
-          end_time: "16:00",
-          duration: 60,
-          status: "available",
-        },
-        {
-          schedule_text: "วันที่ 07/11/2025 17:00-18:00",
-          date: "07/11/2025",
-          start_time: "17:00",
-          end_time: "18:00",
-          duration: 60,
-          status: "available",
-        },
-        {
-          schedule_text: "วันที่ 07/11/2025 19:00-20:00",
-          date: "07/11/2025",
-          start_time: "19:00",
-          end_time: "20:00",
-          duration: 60,
-          status: "available",
-        },
-        {
-          schedule_text: "วันที่ 07/11/2025 21:00-22:00",
-          date: "07/11/2025",
-          start_time: "21:00",
-          end_time: "22:00",
-          duration: 60,
-          status: "pending",
-        },
-        {
-          schedule_text: "วันที่ 08/11/2025 13:00-14:00",
-          date: "08/11/2025",
-          start_time: "13:00",
-          end_time: "14:00",
-          duration: 60,
-          status: "booked",
-        },
+        const maxSlotsToday = allTimes.length;
+        const numSlots = randInt(0, Math.min(6, maxSlotsToday));
 
-        {
-          schedule_text: "วันที่ 28/11/2025 09:00-10:00",
-          date: "28/11/2025",
-          start_time: "09:00",
-          end_time: "10:00",
-          duration: 60,
-          status: "available",
-        },
-        {
-          schedule_text: "วันที่ 28/11/2025 14:00-15:00",
-          date: "28/11/2025",
-          start_time: "14:00",
-          end_time: "15:00",
-          duration: 60,
-          status: "booked",
-        },
+        const existingStartTimes = new Set(
+          slots
+            .filter((s) => s.doctor_id === doctorId && s.date === dateStr)
+            .map((s) => s.start_time)
+        );
 
-        {
-          schedule_text: "วันที่ 29/11/2025 10:00-11:00",
-          date: "29/11/2025",
-          start_time: "10:00",
-          end_time: "11:00",
-          duration: 60,
-          status: "available",
-        },
-        {
-          schedule_text: "วันที่ 29/11/2025 13:00-14:00",
-          date: "29/11/2025",
-          start_time: "13:00",
-          end_time: "14:00",
-          duration: 60,
-          status: "available",
-        },
+        const choices = allTimes
+          .map((t) => ({ start: t.start, end: t.end }))
+          .filter((t) => !existingStartTimes.has(t.start));
 
-        {
-          schedule_text: "วันที่ 30/11/2025 08:00-09:00",
-          date: "30/11/2025",
-          start_time: "08:00",
-          end_time: "09:00",
-          duration: 60,
-          status: "booked",
-        },
-        {
-          schedule_text: "วันที่ 30/11/2025 10:00-11:00",
-          date: "30/11/2025",
-          start_time: "10:00",
-          end_time: "11:00",
-          duration: 60,
-          status: "available",
-        },
-      ],
-    },
-    {
-      schedule_id: "SCH002",
-      doctor_id: "D002",
-      slots: [
-        {
-          schedule_text: "วันที่ 01/11/2025 10:00-12:00",
-          date: "01/11/2025",
-          start_time: "10:00",
-          end_time: "12:00",
-          duration: 120,
-          status: "available",
-        },
+        shuffle(choices);
+        const picks = choices.slice(0, numSlots);
 
-        {
-          schedule_text: "วันที่ 02/11/2025 09:00-10:00",
-          date: "02/11/2025",
-          start_time: "09:00",
-          end_time: "10:00",
-          duration: 60,
-          status: "booked",
-        },
-        {
-          schedule_text: "วันที่ 02/11/2025 13:00-14:30",
-          date: "02/11/2025",
-          start_time: "13:00",
-          end_time: "14:30",
-          duration: 90,
-          status: "available",
-        },
+        for (const pick of picks) {
+          const isBooked = Math.random() < 0.35;
+          const isPending = !isBooked && Math.random() < 0.2;
+          const patientId = isBooked
+            ? `PT${String(randInt(1, 9999)).padStart(4, "0")}`
+            : null;
 
-        {
-          schedule_text: "วันที่ 03/11/2025 15:00-16:00",
-          date: "03/11/2025",
-          start_time: "15:00",
-          end_time: "16:00",
-          duration: 60,
-          status: "available",
-        },
-      ],
-    },
-  ];
+          const slot = {
+            slot_id: `SL${String(nextSlotNum).padStart(3, "0")}`,
+            doctor_id: doctorId,
+            schedule_text: `วันที่ ${dateStr} ${pick.start}-${pick.end}`,
+            date: dateStr,
+            start_time: pick.start,
+            end_time: pick.end,
+            duration: 60,
+            status: isBooked ? "booked" : isPending ? "pending" : "available",
+            patient_id: patientId,
+          };
+
+          slots.push(slot);
+          nextSlotNum += 1;
+        }
+      }
+    }
+  };
+  genSlots();
+
+  const doctorIdsSet = new Set(slots.map((s) => s.doctor_id));
+  const doctorIds = Array.from(doctorIdsSet).sort();
+
+  const DoctorsScheduleData = doctorIds.map((doctorId, idx) => ({
+    schedule_id: `SCH${String(idx + 1).padStart(3, "0")}`,
+    doctor_id: doctorId,
+    slots: slots.filter((s) => s.doctor_id === doctorId),
+  }));
 
   const hospitalsData = [
-    {
-      hospital_name: "โรงพยาบาลบำรุงราษฎร์",
-      hospital_id: "H001",
-      city: "กรุงเทพมหานคร",
-      map_location: "13.7460712,100.5478211,17z",
-      lat: 13.7460712,
-      lng: 100.5478211,
-    },
-    {
-      hospital_name: "โรงพยาบาลสมิติเวช",
-      hospital_id: "H002",
-      city: "กรุงเทพมหานคร",
-      map_location: "13.8577808,100.5422968,12z",
-      lat: 13.8577808,
-      lng: 100.5422968,
-    },
-    {
-      hospital_name: "โรงพยาบาลกรุงเทพ",
-      hospital_id: "H003",
-      city: "กรุงเทพมหานคร",
-      map_location: "13.7495071,100.5810116,17z",
-      lat: 13.7495071,
-      lng: 100.5810116,
-    },
-    {
-      hospital_name: "โรงพยาบาลมหาราชนครเชียงใหม่",
-      hospital_id: "H004",
-      city: "เชียงใหม่",
-      map_location: "18.7961432,98.9792633,15z",
-      lat: 18.7961432,
-      lng: 98.9792633,
-    },
-    {
-      hospital_name: "โรงพยาบาลวชิระภูเก็ต",
-      hospital_id: "H005",
-      city: "ภูเก็ต",
-      map_location: "7.8804475,98.3923186,15z",
-      lat: 7.8804475,
-      lng: 98.3923186,
-    },
+    { hospital_id: "H001", hospital_name: "รพ.กรุงเทพ" },
+    { hospital_id: "H002", hospital_name: "รพ.สมิติเวช" },
+    { hospital_id: "H003", hospital_name: "รพ.บำรุงราษฎร์" },
+    { hospital_id: "H004", hospital_name: "รพ.พญาไท" },
+    { hospital_id: "H005", hospital_name: "รพ.วิชัยยุทธ" },
+    { hospital_id: "H006", hospital_name: "รพ.เวชธานี" },
+    { hospital_id: "H007", hospital_name: "รพ.ศิริราช" },
+    { hospital_id: "H008", hospital_name: "รพ.รามาธิบดี" },
+    { hospital_id: "H009", hospital_name: "รพ.พระรามเก้า" },
+    { hospital_id: "H010", hospital_name: "รพ.ทหารผ่านศึก" },
   ];
 
   const doctorsData = [
@@ -387,6 +201,30 @@ const DoctorsScheduleData = (() => {
     { specialty_name: "เวชศาสตร์ฟื้นฟู และกายภาพบำบัด", specialty_id: "S021" },
   ];
 
+  const symptomToSpecialty = [
+    { symptom: "ปวดหู คัดจมูก ไอ เจ็บคอ", specialty_id: "S001" },
+    { symptom: "ตามัว ตาแดง มองไม่ชัด", specialty_id: "S002" },
+    { symptom: "ฟันผุ ปวดฟัน เหงือกบวม", specialty_id: "S003" },
+    { symptom: "ประจำเดือนผิดปกติ ปวดท้องน้อย", specialty_id: "S004" },
+    { symptom: "ท้องอืด ท้องเสีย ปวดท้อง", specialty_id: "S005" },
+    { symptom: "ตรวจสุขภาพประจำปี", specialty_id: "S006" },
+    { symptom: "น้ำตาลในเลือดสูง กระหายน้ำบ่อย", specialty_id: "S007" },
+    { symptom: "ปัสสาวะบ่อย ปัสสาวะเจ็บ", specialty_id: "S008" },
+    { symptom: "ผื่น แพ้คัน แดง", specialty_id: "S009" },
+    { symptom: "ไอ หอบ หายใจลำบาก", specialty_id: "S010" },
+    { symptom: "ปวดกระดูก ข้ออักเสบ", specialty_id: "S011" },
+    { symptom: "X-Ray / วินิจฉัยทางรังสี", specialty_id: "S012" },
+    { symptom: "ผ่าตัดทั่วไป / บาดแผล", specialty_id: "S013" },
+    { symptom: "เจ็บป่วยทั่วไป", specialty_id: "S014" },
+    { symptom: "ตรวจสุขภาพอาชีวเวช", specialty_id: "S015" },
+    { symptom: "เจ็บหน้าอก หัวใจเต้นผิดปกติ", specialty_id: "S016" },
+    { symptom: "ผ่าตัด รักษาเฉพาะวิสัญญี", specialty_id: "S017" },
+    { symptom: "ตรวจทั่วไป ตรวจโรค", specialty_id: "S018" },
+    { symptom: "ปัญหาสุขภาพเพศชาย", specialty_id: "S019" },
+    { symptom: "ปวดหัว ชา อ่อนแรง กล้ามเนื้ออ่อนแรง", specialty_id: "S020" },
+    { symptom: "ฟื้นฟูกายภาพหลังอาการ/ผ่าตัด", specialty_id: "S021" },
+  ];
+
   const PackageData = [
     {
       package_id: "P001",
@@ -459,26 +297,26 @@ const delay = (ms = 150) => new Promise((res) => setTimeout(res, ms));
 
 export const fetchDoctorsScheduleData = async () => {
   await delay();
-  return DoctorsScheduleData.schedules;
+  return Data.schedules;
 };
 
 export const fetchDoctors = async () => {
   await delay();
-  return DoctorsScheduleData.doctors;
+  return Data.doctors;
 };
 
 export const fetchHospitals = async () => {
   await delay();
-  return DoctorsScheduleData.hospitals;
+  return Data.hospitals;
 };
 
 export const fetchSpecialties = async () => {
   await delay();
-  return DoctorsScheduleData.specialties;
+  return Data.specialties;
 };
 
 export const fetchPackages = async () => {
   await delay();
-  return DoctorsScheduleData.packages;
+  return Data.packages;
 };
-export default DoctorsScheduleData;
+export default Data;
