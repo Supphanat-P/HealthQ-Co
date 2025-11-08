@@ -1,56 +1,56 @@
 import React, { useState } from "react";
+import { X } from "lucide-react";
+import { red } from "@mui/material/colors";
 
 const PatientInfo = () => {
   const [files, setFiles] = useState([]);
 
   const handleFileChange = (e) => {
-    setFiles(Array.from(e.target.files));
+    if (e.target.files.length + files.length > 5) {
+      alert("คุณสามารถอัปโหลดไฟล์ได้สูงสุด 5 ไฟล์");
+      return;
+    }
+    setFiles([...files, ...Array.from(e.target.files)]);
   };
-
+  const clearFiles = () => {
+    setFiles([]);
+  };
   return (
-    <div
-      className="card shadow-lg p-4 m-3"
-      style={{
-        borderRadius: "20px",
-        width: "100%",
-        maxWidth: "900px",
-      }}
-    >
+    <>
       <h4 className="mb-4 fw-semibold fs-3 text-center">ข้อมูลผู้ป่วย</h4>
-
       <div className="row">
         <div className="col-md-7">
           <div className="mb-3">
-            <label className="form-label fw-ligh fs-5">ชื่อ-นามสกุล</label>
+            <label className="form-label fw-ligh ">ชื่อ-นามสกุล</label>
             <input
               type="text"
-              className="form-control form-control-lg shadow-sm"
+              className="form-control  shadow-sm"
               placeholder="กรอกชื่อ-นามสกุล"
             />
           </div>
 
           <div className="mb-3">
-            <label className="form-label fw-ligh fs-5">เบอร์โทร</label>
+            <label className="form-label fw-ligh ">เบอร์โทร</label>
             <input
               type="text"
-              className="form-control form-control-lg shadow-sm"
+              className="form-control  shadow-sm"
               placeholder="กรอกเบอร์โทรติดต่อ"
             />
           </div>
 
           <div className="mb-3">
-            <label className="form-label fw-ligh fs-5">E-mail</label>
+            <label className="form-label fw-ligh ">E-mail</label>
             <input
               type="email"
-              className="form-control form-control-lg shadow-sm"
+              className="form-control  shadow-sm"
               placeholder="กรอกอีเมล"
             />
           </div>
 
           <div className="mb-3">
-            <label className="form-label fw-ligh fs-5">อาการเบื้องต้น</label>
+            <label className="form-label fw-ligh ">อาการเบื้องต้น</label>
             <textarea
-              className="form-control form-control-lg shadow-sm"
+              className="form-control  shadow-sm"
               rows="4"
               placeholder="อธิบายอาการเบื้องต้น"
             ></textarea>
@@ -94,13 +94,25 @@ const PatientInfo = () => {
                 accept=".pdf, .jpg, .jpeg, .png"
                 multiple
               />
+              <button
+                type="button"
+                className="btn btn-sm btn-outline-danger mt-3"
+                onClick={() => {
+                  clearFiles();
+                }}
+              >
+                ล้างไฟล์ที่เลือกทั้งหมด
+              </button>
             </label>
 
             {files.length > 0 && (
               <div className="mt-3 text-start">
                 <p className="text-success fw-semibold mb-2">อัปโหลดแล้ว:</p>
                 {files.map((file, index) => (
-                  <div key={index} className="mb-1">
+                  <div
+                    key={index}
+                    className="mb-1 d-flex align-items-center gap-2 align-middle"
+                  >
                     <a
                       href={URL.createObjectURL(file)}
                       target="_blank"
@@ -109,6 +121,21 @@ const PatientInfo = () => {
                     >
                       {file.name}
                     </a>
+                    <div
+                      className="bg-transparent border-0 mt-1"
+                      style={{
+                        fontSize: "12px",
+                        cursor: "pointer",
+                        color: red[500],
+                      }}
+                      onClick={() => {
+                        setFiles((prevFiles) =>
+                          prevFiles.filter((_, i) => i !== index)
+                        );
+                      }}
+                    >
+                      <X />
+                    </div>
                   </div>
                 ))}
               </div>
@@ -116,7 +143,7 @@ const PatientInfo = () => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

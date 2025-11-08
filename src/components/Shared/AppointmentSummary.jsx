@@ -17,7 +17,7 @@ const AppointmentSummary = ({
   return (
     <>
       <div
-        className="sticky-side"
+        className="sticky-side sticky-top"
         style={{
           position: "sticky",
           top: 20,
@@ -78,7 +78,9 @@ const AppointmentSummary = ({
             </p>
           </div>
           <div className="footer">
-            <Button style={{height: "60px"}} className="btn-navy w-100 mt-4">ยืนยันการจอง</Button>
+            <Button style={{ height: "60px" }} className="btn-navy w-100 mt-4">
+              ยืนยันการจอง
+            </Button>
 
             <p
               className="text-gray mt-3 text-center"

@@ -52,16 +52,32 @@ export default function Appointment() {
           <div className="d-flex flex-column">
             {/* Doctor info */}
             <div
-              className="card shadow p-3 m-2"
-              style={{ width: "900px", borderRadius: "20px" }}
+              className="card shadow-lg p-4 m-2"
+              style={{
+                borderRadius: "20px",
+                width: "900px",
+                maxWidth: "900px",
+              }}
             >
+              <h4 className="mb-4 fw-semibold fs-3 text-center">
+                ข้อมูลผู้แพทย์
+              </h4>
+
               <AppointmentDoctor selectedDoctor={doctor} />
             </div>
             {/* P */}
             <div
-              className="card shadow p-3 m-2"
-              style={{ width: "900px", borderRadius: "20px" }}
+              className="card shadow-lg p-4 m-2"
+              style={{
+                borderRadius: "20px",
+                width: "900px",
+                maxWidth: "900px",
+              }}
             >
+              <h4 className="mb-4 fw-semibold fs-3 text-center">
+                เลือกวันและเวลานัดหมาย
+              </h4>
+
               <div className="d-flex flex-row p-3">
                 <Calendar
                   mode="single"
@@ -79,8 +95,17 @@ export default function Appointment() {
                 />
               </div>
             </div>
-              {/* Patient Info */}
+            {/* Patient Info */}
+            <div
+              className="card shadow-lg p-4 m-2"
+              style={{
+                borderRadius: "20px",
+                width: "900px",
+                maxWidth: "900px",
+              }}
+            >
               <PatientInfo />
+            </div>
           </div>
           <AppointmentSummary
             selectedDate={selectedDate}

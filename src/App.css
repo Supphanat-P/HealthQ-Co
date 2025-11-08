@@ -169,7 +169,21 @@ button:hover {
   transform: scale(1.01);
   transition: all 0.2s ease;
 }
+.time-button {
+  animation: pulse 0.2s 1;
+}
 
+@keyframes pulse {
+  0% {
+    transform: scale(1); /* Starting state */
+  }
+  50% {
+    transform: scale(1.05); /* A slightly larger state in the middle */
+  }
+  100% {
+    transform: scale(1); /* Ending state, back to original size */
+  }
+}
 .border-navy {
   border-color: #1f2054 !important;
 }
@@ -180,6 +194,13 @@ button:hover {
 
 .w-fit {
   width: fit-content;
+}
+
+.hover:hover {
+  transform: scale(1.01);
+  transition: all 0.2s ease;
+  background-color: red;
+  color: white;
 }
 
 .card-doctor:hover,
