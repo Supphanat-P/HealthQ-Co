@@ -47,7 +47,8 @@ export default function Appointment() {
       )}
       <BackToNavigate label="กลับไปหน้าค้นหาแพทย์" linkTo="doctorsearch" />
       <AppointmentHeader />
-      <div className="main d-flex justify-content-center">
+      <div className="main d-flex justify-content-center"
+        style={{ marginLeft: "7.5rem" }}>
         <div className="d-flex flex-row" width="100%">
           <div className="d-flex flex-column">
             {/* Doctor info */}

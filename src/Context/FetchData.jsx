@@ -91,16 +91,54 @@ const Data = (() => {
   }));
 
   const hospitalsData = [
-    { hospital_id: "H001", hospital_name: "รพ.กรุงเทพ" },
-    { hospital_id: "H002", hospital_name: "รพ.สมิติเวช" },
-    { hospital_id: "H003", hospital_name: "รพ.บำรุงราษฎร์" },
-    { hospital_id: "H004", hospital_name: "รพ.พญาไท" },
-    { hospital_id: "H005", hospital_name: "รพ.วิชัยยุทธ" },
-    { hospital_id: "H006", hospital_name: "รพ.เวชธานี" },
-    { hospital_id: "H007", hospital_name: "รพ.ศิริราช" },
-    { hospital_id: "H008", hospital_name: "รพ.รามาธิบดี" },
-    { hospital_id: "H009", hospital_name: "รพ.พระรามเก้า" },
-    { hospital_id: "H010", hospital_name: "รพ.ทหารผ่านศึก" },
+    {
+      hospital_id: "H001",
+      hospital_name: "โรงพยาบาล กรุงเทพ",
+      lat: 13.7495071,
+      lng: 100.5810116,
+    },
+    {
+      hospital_id: "H002",
+      hospital_name: "โรงพยาบาล สมิติเวช สุขุมวิท",
+      lat: 13.7489617,
+      lng: 100.5426656,
+    },
+    {
+      hospital_id: "H003",
+      hospital_name: "โรงพยาบาล บำรุงราษฎร์",
+      lat: 13.7460712,
+      lng: 100.5501064,
+    },
+    {
+      hospital_id: "H004",
+      hospital_name: "โรงพยาบาล พญาไท พหลโยธิน",
+      lat: 13.8191002,
+      lng: 100.5602871,
+    },
+    {
+      hospital_id: "H005",
+      hospital_name: "โรงพยาบาล วิชัยยุทธ",
+      lat: 13.7832026,
+      lng: 100.5288346,
+    },
+    {
+      hospital_id: "H006",
+      hospital_name: "โรงพยาบาล เวชธานี",
+      lat: 13.918137,
+      lng: 100.604613,
+    },
+    {
+      hospital_id: "H007",
+      hospital_name: "โรงพยาบาล ศิริราช",
+      lat: 13.756331,
+      lng: 100.488882,
+    },
+    {
+      hospital_id: "H008",
+      hospital_name: "โรงพยาบาล รามาธิบดี",
+      lat: 13.756303,
+      lng: 100.501765,
+    },
   ];
 
   const doctorsData = [

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, forwardRef, useContext } from "react";
+import React, { useEffect, useState, forwardRef, useContext, use } from "react";
 import DatePicker from "./DatePickerTh";
 import { MdOutlineClear } from "react-icons/md";
 import PopupModal from "./PopupModal";
@@ -6,7 +6,7 @@ import { Button } from "react-bootstrap";
 import dayjs from "dayjs";
 import { useData } from "../../Context/DataContext";
 import { Autocomplete, TextField } from "@mui/material";
-
+import LocationCompare from "./locationCompare";
 const DoctorFilter = ({
   selectedDoctor,
   setSelectedDoctor,
@@ -16,6 +16,7 @@ const DoctorFilter = ({
   setSelectedSpecialty,
   selectedDate,
   setSelectedDate,
+  closestHospital,
 }) => {
   const { specialties, hospitals, doctors, searchData } = useData();
   const [showSpecialtiesModal, setShowSpecialtiesModal] = useState(false);
@@ -38,7 +39,6 @@ const DoctorFilter = ({
 
   useEffect(() => {
     if (!selectedSearch) return;
-
     const cat = selectedSearch.category;
     if (cat === "Doctor") setSelectedDoctor(selectedSearch.id);
     else if (cat === "Hospital") setSelectedHospital(selectedSearch.title);

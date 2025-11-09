@@ -44,11 +44,11 @@ function Calendar({
 
   return (
     <>
-      <div className="d-flex flex-column">
+      <div className="ms-4 d-flex flex-column">
         <h5 className="text-navy">เลือกวันที่</h5>
         <div
           className="card border-navy p-2 w-fit justify-self-center"
-          style={{ width: "325px" }}
+          style={{ width: "312px" }}
         >
           <DayPicker
             navLayout="around"

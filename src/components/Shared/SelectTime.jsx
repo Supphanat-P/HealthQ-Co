@@ -72,7 +72,7 @@ const SelectTime = ({
             );
           })}
         </div>
-        <hr style={{ width: "490px" }} />
+        <hr style={{ width: "100%" }} />
         <h5 className="text-navy">วัน-เวลานัด</h5>
         <div className="mb-3">
           <strong>วันที่</strong>: &nbsp;
@@ -81,6 +81,15 @@ const SelectTime = ({
             : "กรุณาเลือกวัน"}
           &nbsp; <strong>เวลา</strong>: &nbsp;
           {selectedTime || "กรุณาเลือกเวลา"} น.
+          <div className="mt-5 alert alert-warning">
+            <strong>หมายเหตุ:</strong>
+            <br />
+            สีขาว = ว่างสามารถจองได้
+            <br />
+            สีแดง = จองแล้ว
+            <br />
+            สีเหลือง = รอดำเนินการ
+          </div>
         </div>
       </div>
     </>

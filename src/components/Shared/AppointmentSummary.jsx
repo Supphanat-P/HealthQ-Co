@@ -83,7 +83,7 @@ const AppointmentSummary = ({
             </Button>
 
             <p
-              className="text-gray mt-3 text-center"
+              className="text-gray mt-3 text-center alert alert-warning"
               style={{ fontSize: "12px" }}
             >
               คุณสามารถยกเลิกหรือเปลี่ยนแปลงนัดหมายได้ภายใน 24

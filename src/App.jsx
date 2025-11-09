@@ -14,6 +14,7 @@ import NotFound from "./Pages/404";
 import Logout from "./Pages/Home/Login/Logout";
 import Appointment from "./Pages/Home/Appointment/Appointment";
 import AdminDoctorSchedule from "./Pages/Adminstrator/AdminDoctorSchedule";
+import LocationCompare from "./components/Shared/LocationCompare";
 function AppContent() {
   const { loading, error } = useData();
 
@@ -23,6 +24,7 @@ function AppContent() {
 
   return (
     <>
+      <LocationCompare />
       <NavigateBar />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -33,6 +35,7 @@ function AppContent() {
         <Route path="/admindoctorschedule" element={<AdminDoctorSchedule />} />
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout />} />
+        <Route path="/locationcompare" element={<LocationCompare />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
