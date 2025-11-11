@@ -11,7 +11,7 @@ const Doctorinfo = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const { doctorsSchedule } = useData();
-
+  
   const findSchedule = (doctorId) => {
     return doctorsSchedule.find((schedule) => schedule.doctor_id === doctorId);
   };

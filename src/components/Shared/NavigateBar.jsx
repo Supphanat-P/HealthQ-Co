@@ -2,13 +2,11 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 
-import NavDropdown from "react-bootstrap/NavDropdown";
 import { Link } from "react-router-dom";
-import { useContext } from "react";
-import Button from "react-bootstrap/Button";
+import { useData } from "../../Context/DataContext";
 
 function NavigateBar() {
-  const login = sessionStorage.getItem("login");
+  const { token } = useData();
   return (
     <Navbar expand="lg" className="bg-navy shadow-lg m-1 rounded h-25">
       <Container>
@@ -29,10 +27,20 @@ function NavigateBar() {
             <Nav.Link as={Link} to="/doctorsearch" className="text-white">
               ค้นหาเเพทย์
             </Nav.Link>
-
-            <Nav.Link as={Link} to="/login" className="text-white">
-              เข้าสู่ระบบ
-            </Nav.Link>
+            {!token ? (
+              <Nav.Link as={Link} to="/login" className="text-white">
+                เข้าสู่ระบบ
+              </Nav.Link>
+            ) : (
+              <>
+                <Nav.Link as={Link} to="/profile" className="text-white">
+                  โปรไฟล์
+                </Nav.Link>
+                <Nav.Link as={Link} to="/logout" className="text-white">
+                  ออกจากระบบ
+                </Nav.Link>
+              </>
+            )}
           </Nav>
         </Navbar.Collapse>
       </Container>

@@ -1,12 +1,13 @@
 import React, { useEffect, useState, forwardRef, useContext, use } from "react";
 import DatePicker from "./DatePickerTh";
+import "./DoctorFilter.css";
 import { MdOutlineClear } from "react-icons/md";
 import PopupModal from "./PopupModal";
 import { Button } from "react-bootstrap";
 import dayjs from "dayjs";
 import { useData } from "../../Context/DataContext";
 import { Autocomplete, TextField } from "@mui/material";
-import LocationCompare from "./locationCompare";
+import LocationCompare from "./LocationCompare";
 const DoctorFilter = ({
   selectedDoctor,
   setSelectedDoctor,
@@ -97,8 +98,7 @@ const DoctorFilter = ({
           ตัวกรอง
         </button>
       </div>
-
-      <div className="d-flex gap-4 align-items-center" id="filter-div">
+      <div className="d-flex gap-4 mt-0 align-items-center" id="filter-div">
         <Button
           className="bg-navy border-0 text-white rounded fs-6 mt-2 p-2 align-items-center"
           aria-label="เลือกโรงพยาบาล"

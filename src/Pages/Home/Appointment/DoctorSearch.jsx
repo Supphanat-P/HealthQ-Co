@@ -31,7 +31,7 @@ const DoctorSearch = () => {
   ///pageination
   const [currpage, setCurrpage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const itemsPerPage = 8;
+  const itemsPerPage = 6;
 
   ///Map
   useEffect(() => {

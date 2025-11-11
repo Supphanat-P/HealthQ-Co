@@ -1,11 +1,8 @@
-import { Button } from "react-bootstrap";
 import { Calendar } from "lucide-react";
 import { Clock } from "lucide-react";
 import { MapPin } from "lucide-react";
 import { Star } from "lucide-react";
 import { Stethoscope } from "lucide-react";
-import { useData } from "../../Context/DataContext";
-import dayjs from "dayjs";
 
 const AppointmentDoctor = ({ selectedDoctor }) => {
   return (

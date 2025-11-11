@@ -1,6 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 /* @import url("https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"); */
-
+:root {
+  --hq-navy: #1f2054;
+  --hq-soft: #f8fafc;
+  --hq-muted: #6c757d;
+}
 * {
   /* font-family: "Chakra Petch", sans-serif; */
   font-family: "kanit", sans-serif;
@@ -42,12 +46,12 @@ select:hover {
 }
 
 .bg-navy {
-  background-color: #1f2054 !important;
+  background-color: var(--hq-navy) !important;
 }
 
 .btn-navy {
-  background-color: #1f2054 !important;
-  border: 1px solid #1f2054 !important;
+  background-color: var(--hq-navy) !important;
+  border: 1px solid var(--hq-navy) !important;
 }
 .text-gray {
   color: #4b4949 !important;
@@ -56,7 +60,7 @@ select:hover {
   background-color: #eeeeee;
 }
 .text-navy {
-  color: #1f2054 !important;
+  color: var(--hq-navy) !important;
 }
 .btn-white-1 {
   background-color: white;
@@ -86,7 +90,7 @@ select:hover {
   border-color: #000000;
 }
 .radio-btn:has(input[type="radio"]:checked) {
-  background: linear-gradient(90deg, #1f2054, #30639d) !important;
+  background: linear-gradient(90deg, var(--hq-navy), #30639d) !important;
   color: #ffffff;
 }
 
@@ -155,7 +159,7 @@ button:hover {
 }
 
 .card-doctor-bottom {
-  background: linear-gradient(to bottom right, #1f2054, #30639d);
+  background: linear-gradient(to bottom right, var(--hq-navy), #30639d);
 }
 
 .time-button:hover {
@@ -179,7 +183,7 @@ button:hover {
   }
 }
 .border-navy {
-  border-color: #1f2054 !important;
+  border-color: var(--hq-navy) !important;
 }
 
 .h-fit {
@@ -222,7 +226,7 @@ button:hover {
 }
 
 .bg-gradient-navy {
-  background: linear-gradient(135deg, #1f2054, #30639d) !important;
+  background: linear-gradient(135deg, var(--hq-navy), #30639d) !important;
 }
 
 .btn.bg-navy:hover:active {
@@ -247,7 +251,7 @@ button:hover {
 
 .rdp-day_selected,
 .rdp-day_button[aria-selected="true"] {
-  background-color: #1f2054 !important;
+  background-color: var(--hq-navy) !important;
   color: #ffffff !important;
   border-radius: 8px;
   box-shadow: 0 0 0 3px rgba(31, 32, 84, 0.15);
@@ -327,7 +331,7 @@ button:hover {
   min-width: 48px;
   height: 48px;
   border-radius: 8px;
-  background: #1f2054;
+  background: var(--hq-navy);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -339,7 +343,7 @@ button:hover {
   min-width: 48px;
   height: 48px;
   border-radius: 8px;
-  background: #1f2054;
+  background: var(--hq-navy);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -350,4 +354,8 @@ button:hover {
 .modal-content {
   overflow: visible !important;
   scrollbar-width: thin;
+}
+
+.w-max {
+  width: max-content;
 }

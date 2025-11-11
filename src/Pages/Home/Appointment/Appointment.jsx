@@ -3,14 +3,16 @@ import Calendar from "../../../components/Shared/Calendar";
 import SelectTime from "../../../components/Shared/SelectTime";
 import BackToNavigate from "../../../components/Shared/backToNavigate";
 import AppointmentSummary from "../../../components/Shared/AppointmentSummary";
-import { useLocation } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useData } from "../../../Context/DataContext";
 import dayjs from "dayjs";
 import AppointmentDoctor from "../../../components/Shared/AppointmentDoctor";
 import AppointmentHeader from "../../../components/Shared/AppointmentHeader";
 import PatientInfo from "../../../components/Shared/PatientInfo";
+import toast, { Toaster } from "react-hot-toast";
 export default function Appointment() {
-  const { doctorsSchedule } = useData();
+  const { doctorsSchedule, isAuthenticated, usersInfo, currentUser } =
+    useData();
 
   const location = useLocation();
   const { selectedDate: initDate } = location.state || {};
@@ -23,23 +25,20 @@ export default function Appointment() {
   );
 
   const [selectedTime, setSelectedTime] = useState(null);
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [patientInfo, setPatientInfo] = useState({});
 
-  useEffect(() => {
-    // console.log("----------------------------");
-    // console.log("Selected Date:", selectedDate);
-    // console.log("Selected Time:", selectedTime);
-    // console.log("Doctor:", selectedDoctorId);
-    console.log("Doctor info", doctor);
-    // console.log("----------------------------");
-    // console.log(
-    //   "Doctor Schedule:",
-    //   doctorsSchedule.find(
-    //     (schedule) => schedule.doctor_id === selectedDoctorId
-    //   )
-    // );
-  }, [selectedTime, selectedDate, selectedDoctorId]);
+  if (!doctor) {
+    return <Navigate to="/doctorsearch" />;
+  }
+
+  if (!isAuthenticated) {
+    toast.error("กรุณาเข้าสู่ระบบก่อนทำการนัดหมาย", { duration: 2000 });
+    return <Navigate to="/login" />;
+  }
   return (
     <>
+      <Toaster />
       {!selectedDoctorId && (
         <div className="alert alert-warning">
           กรุณาเลือกแพทย์ก่อนทำการนัดหมาย
@@ -47,8 +46,10 @@ export default function Appointment() {
       )}
       <BackToNavigate label="กลับไปหน้าค้นหาแพทย์" linkTo="doctorsearch" />
       <AppointmentHeader />
-      <div className="main d-flex justify-content-center"
-        style={{ marginLeft: "7.5rem" }}>
+      <div
+        className="main d-flex justify-content-center"
+        style={{ marginLeft: "7.5rem" }}
+      >
         <div className="d-flex flex-row" width="100%">
           <div className="d-flex flex-column">
             {/* Doctor info */}
@@ -90,9 +91,10 @@ export default function Appointment() {
                   selectedDoctorId={selectedDoctorId}
                   selectedDate={selectedDate}
                   selectedTime={selectedTime}
-                  onTimeChange={(slot) =>
-                    setSelectedTime(`${slot.start_time} - ${slot.end_time}`)
-                  }
+                  onTimeChange={(slot) => {
+                    setSelectedSlot(slot);
+                    setSelectedTime(`${slot.start_time} - ${slot.end_time}`);
+                  }}
                 />
               </div>
             </div>
@@ -105,12 +107,15 @@ export default function Appointment() {
                 maxWidth: "900px",
               }}
             >
-              <PatientInfo />
+              <PatientInfo onChange={(data) => setPatientInfo(data)} />
             </div>
           </div>
           <AppointmentSummary
             selectedDate={selectedDate}
             selectedTime={selectedTime}
+            selectedSlot={selectedSlot}
+            patientInfo={patientInfo}
+            doctorId={doctor?.doctor_id}
             doctorName={doctor?.doctor_name || "กรุณาเลือกแพทย์"}
             doctorHospital={doctor?.hospital_name || "กรุณาเลือกโรงพยาบาล"}
             doctorSpecialty={doctor?.specialty_name || "กรุณาเลือกสาขาเฉพาะทาง"}

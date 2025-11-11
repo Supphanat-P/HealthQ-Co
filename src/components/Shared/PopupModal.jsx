@@ -1,7 +1,7 @@
 import { Modal, Badge } from "react-bootstrap";
 import Fade from "react-bootstrap/Fade";
 import React, { useState, useEffect, useContext } from "react";
-import LocationCompare from "./locationCompare";
+import LocationCompare from "./LocationCompare";
 import "./PopupModal.css";
 
 import { DataContext } from "../../Context/DataContext";
