@@ -1,5 +1,5 @@
-import { ChatbotIcon } from "../ChatbotIcon";
-import ChatForm from "../ChatForm";
+import { ChatbotIcon } from "./ChatbotIcon";
+import ChatForm from "./ChatForm";
 import "./Chatbot.css";
 import { useEffect, useState } from "react";
 import ChatMessage from "./ChatMessage";
@@ -23,7 +23,7 @@ const Chatbot = () => {
         const updated = [...prev];
         if (
           updated.length &&
-          updated[updated.length - 1].text === "Thinking..."
+          updated[updated.length - 1].text === "กำลังคิด..."
         ) {
           updated.pop();
         }
@@ -100,7 +100,7 @@ const Chatbot = () => {
             <div className="message bot-message">
               <ChatbotIcon />
               <p className="message-text">
-                Hey there <br /> How can I help you?
+                สวัสดีครับ <br /> มีอะไรให้ช่วยไหมครับ?
               </p>
             </div>
             {chatHistory.map((chat, index) => (

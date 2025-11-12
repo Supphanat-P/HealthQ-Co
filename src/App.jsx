@@ -23,7 +23,7 @@ import AdminDoctorSchedule from "./Pages/Adminstrator/AdminDoctorSchedule";
 import LocationCompare from "./components/Shared/LocationCompare";
 import Profile from "./Pages/Profile";
 import { Toaster } from "react-hot-toast";
-import Chatbot from "./components/Shared/Chatbot";
+import Chatbot from "./components/Chatbot/Chatbot";
 
 function AppContent() {
   const { loading, error } = useData();

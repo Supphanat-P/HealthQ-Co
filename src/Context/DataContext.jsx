@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import dayjs from "dayjs";
 import {
   fetchSpecialties,
   fetchDoctors,
@@ -86,15 +87,15 @@ export const DataProvider = ({ children }) => {
 
           const all_dates = (scheduleInfo?.slots || [])
             .filter((slot) => slot && slot.date)
-            .map((slot) => slot.date);
+            .map((slot) => dayjs(slot.date).format("YYYY-MM-DD"));
 
           const available_dates = (scheduleInfo?.slots || [])
             .filter((slot) => slot && slot.date && slot.status === "available")
-            .map((slot) => slot.date);
+            .map((slot) => dayjs(slot.date).format("YYYY-MM-DD"));
 
           const booked_dates = (scheduleInfo?.booked_slots || [])
             .filter((slot) => slot && slot.date && slot.status === "booked")
-            .map((slot) => slot.date);
+            .map((slot) => dayjs(slot.date).format("YYYY-MM-DD"));
 
           return {
             ...doctor,

@@ -28,13 +28,14 @@
   transform: rotate(90deg);
 }
 #chatbot-toggler span:last-child,
-.chatbot-container.show-chatbot #chatbot-toggler span:first-child{
+.chatbot-container.show-chatbot #chatbot-toggler span:first-child {
   opacity: 0;
 }
-.chatbot-container.show-chatbot #chatbot-toggler span:last-child{
+.chatbot-container.show-chatbot #chatbot-toggler span:last-child {
   opacity: 1;
 }
 .chatbot-popup {
+  z-index: 999999;
   margin-bottom: 10px;
   position: fixed;
   opacity: 0;
@@ -114,7 +115,7 @@
   gap: 11px;
   align-items: center;
 }
-.chat-body .message.error .message-text{
+.chat-body .message.error .message-text {
   color: #ff0000;
 }
 .chat-body .bot-message svg {

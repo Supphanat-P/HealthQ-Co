@@ -1,4 +1,4 @@
-import React, { useEffect, useState, forwardRef, useContext, use } from "react";
+import React, { useEffect, useState, forwardRef } from "react";
 import DatePicker from "./DatePickerTh";
 import "./DoctorFilter.css";
 import { MdOutlineClear } from "react-icons/md";
@@ -7,7 +7,7 @@ import { Button } from "react-bootstrap";
 import dayjs from "dayjs";
 import { useData } from "../../Context/DataContext";
 import { Autocomplete, TextField } from "@mui/material";
-import LocationCompare from "./LocationCompare";
+
 const DoctorFilter = ({
   selectedDoctor,
   setSelectedDoctor,
@@ -23,6 +23,7 @@ const DoctorFilter = ({
   const [showSpecialtiesModal, setShowSpecialtiesModal] = useState(false);
   const [showHospitalsModal, setShowHospitalsModal] = useState(false);
   const [selectedSearch, setSelectedSearch] = useState(null);
+  const [filtersOpen, setFiltersOpen] = useState(true);
 
   const clearFilters = () => {
     setSelectedSpecialty(null);
@@ -51,31 +52,47 @@ const DoctorFilter = ({
     else setShowSpecialtiesModal(true);
   };
 
-  const DateButton = forwardRef(({ value, onClick, className }, ref) => (
-    <button
-      type="button"
-      className={
-        (className || "") +
-        " btn border-1 border-navy text-navy rounded fs-6 mt-2 p-2 d-flex align-items-center justify-content-center"
-      }
-      onClick={onClick}
-      ref={ref}
-      style={{ minWidth: "160px" }}
-    >
-      {value || "เลือกวันที่"}
-    </button>
-  ));
+  const DateButton = forwardRef(({ value, onClick, className }, ref) => {
+    // value may be a Date or an ISO string; display as DD/MM/YYYY
+    const displayValue = (() => {
+      if (!value) return "เลือกวันที่";
+      if (value instanceof Date && !isNaN(value))
+        return dayjs(value).format("DD/MM/YYYY");
+      try {
+        const parsed = dayjs(
+          value,
+          ["YYYY-MM-DD", "DD/MM/YYYY", "D/M/YYYY", "d MMM yyyy", "d MMMM yyyy"],
+          true
+        );
+        if (parsed.isValid()) return parsed.format("DD/MM/YYYY");
+      } catch (e) {}
+      const m = String(value).match(/(\d{1,2}\/\d{1,2}\/\d{2,4})/);
+      if (m) return m[1];
+      return String(value);
+    })();
 
-  const filterDiv = () => {
-    const filterDiv = document.getElementById("filter-div");
-    if (filterDiv.classList.contains("d-none")) {
-      filterDiv.classList.remove("d-none");
-      filterDiv.classList.add("d-flex");
-    } else {
-      filterDiv.classList.remove("d-flex");
-      filterDiv.classList.add("d-none");
-    }
-  };
+    return (
+      <button
+        type="button"
+        className={
+          (className || "") +
+          " btn border-1 border-navy text-navy rounded fs-6 mt-2 p-2 d-flex align-items-center justify-content-center"
+        }
+        onClick={onClick}
+        ref={ref}
+        style={{ minWidth: "160px" }}
+      >
+        {displayValue}
+      </button>
+    );
+  });
+
+  const toggleFilters = () => setFiltersOpen((state) => !state);
+
+  const clearHospital = () => setSelectedHospital(null);
+  const clearSpecialty = () => setSelectedSpecialty(null);
+  const clearDateOnly = () => setSelectedDate(null);
+  const clearDoctor = () => setSelectedDoctor(null);
 
   return (
     <>
@@ -89,16 +106,29 @@ const DoctorFilter = ({
           sx={{ width: 300 }}
           value={selectedSearch}
           onChange={(event, newValue) => setSelectedSearch(newValue)}
-          renderInput={(params) => <TextField {...params} label="ค้นหาแพทย์" />}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="ค้นหา (แพทย์ / โรงพยาบาล / ความเชี่ยวชาญ)"
+              placeholder="พิมพ์ชื่อหรือเลือกจากรายการ"
+            />
+          )}
         />
         <button
           className="btn bg-navy text-white doctor-filter-input"
-          onClick={() => filterDiv()}
+          onClick={toggleFilters}
+          aria-expanded={filtersOpen}
+          aria-controls="filter-div"
         >
           ตัวกรอง
         </button>
       </div>
-      <div className="d-flex gap-4 mt-0 align-items-center" id="filter-div">
+      <div
+        className={`${
+          filtersOpen ? "d-flex" : "d-none"
+        } gap-4 mt-0 align-items-center`}
+        id="filter-div"
+      >
         <Button
           className="bg-navy border-0 text-white rounded fs-6 mt-2 p-2 align-items-center"
           aria-label="เลือกโรงพยาบาล"
@@ -119,15 +149,18 @@ const DoctorFilter = ({
           dateFormat="dd/MM/yyyy"
           customInput={<DateButton className="example-custom-input" />}
           minDate={new Date()}
-          selected={selectedDate}
-          onChange={(date) => setSelectedDate(date)}
+          selected={
+            selectedDate ? dayjs(selectedDate, "YYYY-MM-DD").toDate() : null
+          }
+          onChange={(date) => setSelectedDate(dayjs(date).format("YYYY-MM-DD"))}
           filterDate={(date) => {
-            const formattedDate = dayjs(date).format("DD/MM/YYYY");
+            const isoDate = dayjs(date).format("YYYY-MM-DD");
             const isAvailable = doctors.some(
               (doctor) =>
                 Array.isArray(doctor.available_dates) &&
-                doctor.available_dates.includes(formattedDate)
+                doctor.available_dates.includes(isoDate)
             );
+
             return isAvailable;
           }}
         />
@@ -145,13 +178,70 @@ const DoctorFilter = ({
         <button
           type="button"
           className="btn btn-danger h-fit fw-bold rounded mt-2 align-items-center"
-          aria-label="ล้างวันที่"
-          tooltip="ล้างวันที่"
+          aria-label="ล้างตัวกรองทั้งหมด"
+          title="ล้างตัวกรองทั้งหมด"
           onClick={clearFilters}
         >
           <MdOutlineClear />
         </button>
       </div>
+      <div className="mt-2 d-flex gap-2 align-items-center flex-wrap">
+        {selectedHospital && (
+          <div className="badge bg-light border d-inline-flex align-items-center">
+            <span className="text-navy me-2">{selectedHospital}</span>
+            <button
+              className="btn btn-sm btn-outline-secondary"
+              onClick={clearHospital}
+              aria-label="ล้างโรงพยาบาล"
+            >
+              ×
+            </button>
+          </div>
+        )}
+
+        {selectedSpecialty && (
+          <div className="badge bg-light border d-inline-flex align-items-center">
+            <span className="text-navy me-2">{selectedSpecialty}</span>
+            <button
+              className="btn btn-sm btn-outline-secondary"
+              onClick={clearSpecialty}
+              aria-label="ล้างความชำนาญ"
+            >
+              ×
+            </button>
+          </div>
+        )}
+        {selectedDate && (
+          <div className="badge bg-light border d-inline-flex align-items-center">
+            <span className="text-navy me-2">
+              {dayjs(selectedDate).locale("th").format("DD/MM/YYYY")}
+            </span>
+            <button
+              className="btn btn-sm btn-outline-secondary"
+              onClick={clearDateOnly}
+              aria-label="ล้างวันที่"
+            >
+              ×
+            </button>
+          </div>
+        )}
+        {selectedDoctor && (
+          <div className="badge bg-light border d-inline-flex align-items-center">
+            <span className="text-navy me-2">
+              {doctors.find((d) => d.id === selectedDoctor)?.name ||
+                selectedDoctor}
+            </span>
+            <button
+              className="btn btn-sm btn-outline-secondary"
+              onClick={clearDoctor}
+              aria-label="ล้างแพทย์"
+            >
+              ×
+            </button>
+          </div>
+        )}
+      </div>
+
       <PopupModal
         label={"เลือกโรงพยาบาล"}
         name={"hospitals"}
