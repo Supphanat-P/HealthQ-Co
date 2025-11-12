@@ -23,6 +23,7 @@ import AdminDoctorSchedule from "./Pages/Adminstrator/AdminDoctorSchedule";
 import LocationCompare from "./components/Shared/LocationCompare";
 import Profile from "./Pages/Profile";
 import { Toaster } from "react-hot-toast";
+import Chatbot from "./components/Shared/Chatbot";
 
 function AppContent() {
   const { loading, error } = useData();
@@ -36,6 +37,7 @@ function AppContent() {
       <Toaster />
       <LocationCompare />
       <NavigateBar />
+      <Chatbot />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/appointment" element={<Appointment />} />
