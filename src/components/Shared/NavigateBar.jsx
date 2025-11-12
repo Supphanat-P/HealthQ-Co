@@ -14,7 +14,7 @@ const NavigateBar = () => {
   const token = localStorage.getItem("token");
 
   return (
-    <Navbar expand="lg" className="bg-navy shadow-sm m-2 rounded" sticky="top">
+    <Navbar expand="lg" className="bg-navy shadow-sm m-2 rounded">
       <Container>
         <Navbar.Brand
           as={Link}
