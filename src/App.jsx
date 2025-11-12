@@ -16,6 +16,8 @@ import Appointment from "./Pages/Home/Appointment/Appointment";
 import AdminDoctorSchedule from "./Pages/Adminstrator/AdminDoctorSchedule";
 import LocationCompare from "./components/Shared/LocationCompare";
 import Profile from "./Pages/Profile";
+import Chatbot from "./components/Shared/Chatbot";
+
 function AppContent() {
   const { loading, error } = useData();
 
@@ -27,6 +29,7 @@ function AppContent() {
     <>
       <LocationCompare />
       <NavigateBar />
+      <Chatbot />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/appointment" element={<Appointment />} />
