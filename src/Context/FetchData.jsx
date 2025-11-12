@@ -266,6 +266,13 @@ const Data = (() => {
       role: "patient",
     },
     {
+      user_id: "PT00003",
+      email: "theeradon@gmail.com",
+      password: "1",
+      phone: "0991991991",
+      role: "patient",
+    },
+    {
       user_id: "ADMIN01",
       email: "admin@healthq.test",
       password: "adminpass",
