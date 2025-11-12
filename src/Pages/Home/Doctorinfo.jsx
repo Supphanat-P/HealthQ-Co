@@ -1,33 +1,37 @@
 import React, { useState } from "react";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Button } from "react-bootstrap";
 import AppointmentHeader from "../../components/Shared/AppointmentHeader";
 import Calendar from "../../components/Shared/Calendar";
 import SelectTime from "../../components/Shared/SelectTime";
 import BackToNavigate from "../../components/Shared/backToNavigate";
-import { useData } from "../../Context/DataContext";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import dayjs from "dayjs";
 const Doctorinfo = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
-  const { doctorsSchedule } = useData();
-  
-  const findSchedule = (doctorId) => {
-    return doctorsSchedule.find((schedule) => schedule.doctor_id === doctorId);
-  };
+  const [selectedSlot, setSelectedSlot] = useState(null);
 
   const location = useLocation();
   const { doctor } = location.state || {};
 
   const selectedDoctorId = doctor?.doctor_id || null;
 
-  console.log(
-    "Doctor info page :",
-    doctor,
-    selectedDoctorId,
-    selectedDate,
-    selectedTime
-  );
+  const navigate = useNavigate();
+
+  const handleSubmit = () => {
+    if (!selectedDate || !selectedTime) {
+      alert("กรุณาเลือกวันที่และเวลา");
+      return;
+    }
+    navigate("/appointment", {
+      state: {
+        selectedDate: dayjs(selectedDate).format("YYYY-MM-DD"),
+        selectedTime: selectedTime,
+        selectedSlot: selectedSlot,
+        doctor: doctor,
+      },
+    });
+  };
   return (
     <>
       {!doctor && (
@@ -109,7 +113,7 @@ const Doctorinfo = () => {
           </Row>
         </div>
         <div
-          className="card shadow p-4"
+          className="card shadow p-4 mb-5"
           style={{
             width: "515px",
             height: "fit-content",
@@ -128,10 +132,14 @@ const Doctorinfo = () => {
             selectedDoctorId={selectedDoctorId}
             selectedDate={selectedDate}
             selectedTime={selectedTime}
-            onTimeChange={(slot) =>
-              setSelectedTime(`${slot.start_time} - ${slot.end_time}`)
-            }
+            onTimeChange={(slot) => {
+              setSelectedSlot(slot);
+              setSelectedTime(`${slot.start_time} - ${slot.end_time}`);
+            }}
           />
+          <Button className="text-navy text-white" onClick={handleSubmit}>
+            ยืนยันนัดหมายวันที่ {selectedDate ? dayjs(selectedDate).format("DD/MM/YYYY") : "-"} เวลา {selectedTime || "-"}
+          </Button>
         </div>
       </div>
     </>

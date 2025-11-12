@@ -1,10 +1,7 @@
 import { Modal, Badge } from "react-bootstrap";
-import Fade from "react-bootstrap/Fade";
 import React, { useState, useEffect, useContext } from "react";
-import LocationCompare from "./LocationCompare";
 import "./PopupModal.css";
-
-import { DataContext } from "../../Context/DataContext";
+import { useData } from "../../Context/DataContext";
 
 const PopupModal = ({
   label,
@@ -15,7 +12,7 @@ const PopupModal = ({
   onSelect,
   closestHospital: propClosestHospital,
 }) => {
-  const { specialties, hospitals } = useContext(DataContext);
+  const { specialties, hospitals } = useData();
   const [selectedSpecialty, setSelectedSpecialty] = useState(null);
   const [selectedHospital, setSelectedHospital] = useState(null);
   const [closestHospital, setClosestHospital] = useState(null);
@@ -25,7 +22,6 @@ const PopupModal = ({
   }, [itemOption]);
 
   useEffect(() => {
-    // prefer prop if provided, otherwise read last computed closest hospital from localStorage
     if (propClosestHospital) {
       setClosestHospital(propClosestHospital);
       return;
@@ -34,13 +30,13 @@ const PopupModal = ({
       const raw = localStorage.getItem("hq_closest_hospital");
       if (raw) setClosestHospital(JSON.parse(raw));
     } catch (err) {
-      // ignore JSON errors
+      setClosestHospital(null);
     }
   }, [propClosestHospital]);
 
   return (
     <>
-      <Modal show={show} onHide={onClose} centered scrollable>
+      <Modal show={show} onHide={onClose} centered scrollable animation={false}>
         <Modal.Header>
           <Modal.Title
             className="fs-1 text-navy fw-bold mt-0"

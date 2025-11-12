@@ -32,7 +32,6 @@
   transition: opacity 0.3s ease-in-out;
 }
 
-/* Ensure the backdrop blocks pointer events and sits below the modal */
 .modal-backdrop {
   position: fixed;
   top: 0;
@@ -43,7 +42,6 @@
   pointer-events: auto;
 }
 
-/* Modal should be above the backdrop */
 .modal {
   z-index: 1050;
 }

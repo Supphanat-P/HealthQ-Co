@@ -1,5 +1,3 @@
-import { Button, Card, Carousel, Modal } from "react-bootstrap";
-import Sample320x240 from "../../assets/Sample320x240.png";
 import Sample1500x500 from "../../assets/Sample1500x500.png";
 import { useEffect, useContext, useState } from "react";
 import DataContext from "../../Context/DataContext";

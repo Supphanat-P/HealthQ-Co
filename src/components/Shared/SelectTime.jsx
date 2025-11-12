@@ -33,8 +33,18 @@ const SelectTime = ({
   }, [doctorSchedule, selectedDate]);
 
   useEffect(() => {
+    if (propSelectedTime && slotsForDate.length > 0) {
+      const match = slotsForDate.find(
+        (s) => `${s.start_time} - ${s.end_time}` === propSelectedTime
+      );
+      if (match) {
+        setSelectedTime(propSelectedTime);
+        onTimeChange?.(match);
+        return;
+      }
+    }
     setSelectedTime(null);
-  }, [selectedDate]);
+  }, [selectedDate, propSelectedTime, slotsForDate]);
 
   return (
     <>

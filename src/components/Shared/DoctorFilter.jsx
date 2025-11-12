@@ -7,7 +7,6 @@ import { Button } from "react-bootstrap";
 import dayjs from "dayjs";
 import { useData } from "../../Context/DataContext";
 import { Autocomplete, TextField } from "@mui/material";
-
 const DoctorFilter = ({
   selectedDoctor,
   setSelectedDoctor,
@@ -24,7 +23,6 @@ const DoctorFilter = ({
   const [showHospitalsModal, setShowHospitalsModal] = useState(false);
   const [selectedSearch, setSelectedSearch] = useState(null);
   const [filtersOpen, setFiltersOpen] = useState(true);
-
   const clearFilters = () => {
     setSelectedSpecialty(null);
     setSelectedHospital(null);
@@ -32,13 +30,11 @@ const DoctorFilter = ({
     setSelectedSearch(null);
     setSelectedDoctor(null);
   };
-
   const options = (searchData || []).map((option) => ({
     id: option.id,
     title: option.name,
     category: option.category,
   }));
-
   useEffect(() => {
     if (!selectedSearch) return;
     const cat = selectedSearch.category;
@@ -46,54 +42,30 @@ const DoctorFilter = ({
     else if (cat === "Hospital") setSelectedHospital(selectedSearch.title);
     else if (cat === "Specialty") setSelectedSpecialty(selectedSearch.title);
   }, [selectedSearch]);
-
   const modalShow = (dataName) => {
     if (dataName === "hospitals") setShowHospitalsModal(true);
     else setShowSpecialtiesModal(true);
   };
-
-  const DateButton = forwardRef(({ value, onClick, className }, ref) => {
-    // value may be a Date or an ISO string; display as DD/MM/YYYY
-    const displayValue = (() => {
-      if (!value) return "เลือกวันที่";
-      if (value instanceof Date && !isNaN(value))
-        return dayjs(value).format("DD/MM/YYYY");
-      try {
-        const parsed = dayjs(
-          value,
-          ["YYYY-MM-DD", "DD/MM/YYYY", "D/M/YYYY", "d MMM yyyy", "d MMMM yyyy"],
-          true
-        );
-        if (parsed.isValid()) return parsed.format("DD/MM/YYYY");
-      } catch (e) {}
-      const m = String(value).match(/(\d{1,2}\/\d{1,2}\/\d{2,4})/);
-      if (m) return m[1];
-      return String(value);
-    })();
-
-    return (
-      <button
-        type="button"
-        className={
-          (className || "") +
-          " btn border-1 border-navy text-navy rounded fs-6 mt-2 p-2 d-flex align-items-center justify-content-center"
-        }
-        onClick={onClick}
-        ref={ref}
-        style={{ minWidth: "160px" }}
-      >
-        {displayValue}
-      </button>
-    );
-  });
+  const DateButton = forwardRef(({ value, onClick, className }, ref) => (
+    <button
+      type="button"
+      className={
+        (className || "") +
+        " btn border-1 border-navy text-navy rounded fs-6 mt-2 p-2 d-flex align-items-center justify-content-center"
+      }
+      onClick={onClick}
+      ref={ref}
+      style={{ minWidth: "160px" }}
+    >
+      {value || "เลือกวันที่"}
+    </button>
+  ));
 
   const toggleFilters = () => setFiltersOpen((state) => !state);
-
   const clearHospital = () => setSelectedHospital(null);
   const clearSpecialty = () => setSelectedSpecialty(null);
   const clearDateOnly = () => setSelectedDate(null);
   const clearDoctor = () => setSelectedDoctor(null);
-
   return (
     <>
       <h1 className="text-navy mt-3">ค้นหาเเพทย์</h1>
@@ -160,7 +132,6 @@ const DoctorFilter = ({
                 Array.isArray(doctor.available_dates) &&
                 doctor.available_dates.includes(isoDate)
             );
-
             return isAvailable;
           }}
         />
@@ -198,7 +169,6 @@ const DoctorFilter = ({
             </button>
           </div>
         )}
-
         {selectedSpecialty && (
           <div className="badge bg-light border d-inline-flex align-items-center">
             <span className="text-navy me-2">{selectedSpecialty}</span>
@@ -228,8 +198,7 @@ const DoctorFilter = ({
         {selectedDoctor && (
           <div className="badge bg-light border d-inline-flex align-items-center">
             <span className="text-navy me-2">
-              {doctors.find((d) => d.id === selectedDoctor)?.name ||
-                selectedDoctor}
+              {doctors.find((d) => d.doctor_id === selectedDoctor)?.doctor_name}
             </span>
             <button
               className="btn btn-sm btn-outline-secondary"
@@ -241,7 +210,6 @@ const DoctorFilter = ({
           </div>
         )}
       </div>
-
       <PopupModal
         label={"เลือกโรงพยาบาล"}
         name={"hospitals"}

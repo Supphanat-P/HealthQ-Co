@@ -5,7 +5,6 @@ import BackToNavigate from "../../../components/Shared/backToNavigate";
 import AppointmentSummary from "../../../components/Shared/AppointmentSummary";
 import { Navigate, useLocation } from "react-router-dom";
 import { useData } from "../../../Context/DataContext";
-import dayjs from "dayjs";
 import AppointmentDoctor from "../../../components/Shared/AppointmentDoctor";
 import AppointmentHeader from "../../../components/Shared/AppointmentHeader";
 import PatientInfo from "../../../components/Shared/PatientInfo";
@@ -15,7 +14,8 @@ export default function Appointment() {
     useData();
 
   const location = useLocation();
-  const { selectedDate: initDate } = location.state || {};
+  const { selectedDate: initDate, selectedTime: initTime, selectedSlot: initSlot } =
+    location.state || {};
   const { doctor } = location.state || {};
 
   const [selectedDate, setSelectedDate] = useState(initDate || null);
@@ -24,8 +24,8 @@ export default function Appointment() {
     doctor?.doctor_id || null
   );
 
-  const [selectedTime, setSelectedTime] = useState(null);
-  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [selectedTime, setSelectedTime] = useState(initTime || null);
+  const [selectedSlot, setSelectedSlot] = useState(initSlot || null);
   const [patientInfo, setPatientInfo] = useState({});
 
   if (!doctor) {
