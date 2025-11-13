@@ -108,7 +108,15 @@ const PopupModal = ({
                           onClose();
                         }}
                       >
-                        <div className="Hospital-Icon">H</div>
+                        <div className="Hospital-Icon shadow">
+                          <img
+                            src={`/Hospitals/${closestHospital.hospital.imgPath}`}
+                            width={"30px"}
+                            height={"30px"}
+                            style={{ objectFit: "contain" }}
+                            alt=""
+                          />
+                        </div>
                         <div style={{ flex: 1 }}>
                           <div className="w-fit fw-bold fs-6">
                             {closestHospital.hospital.hospital_name}
@@ -160,7 +168,15 @@ const PopupModal = ({
                           onClose();
                         }}
                       >
-                        <div className="Hospital-Icon">H</div>
+                        <div className="Hospital-Icon shadow">
+                          <img
+                            src={`/Hospitals/${hospital.imgPath}`}
+                            width={"30px"}
+                            height={"30px"}
+                            style={{ objectFit: "contain" }}
+                            alt=""
+                          />
+                        </div>
                         <div style={{ flex: 1 }}>
                           <div className="w-fit fw-bold fs-6">
                             {hospital.hospital_name}

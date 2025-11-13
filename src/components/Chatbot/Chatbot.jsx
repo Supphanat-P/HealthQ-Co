@@ -4,14 +4,18 @@ import "./Chatbot.css";
 import { useEffect, useState } from "react";
 import ChatMessage from "./ChatMessage";
 import { useRef } from "react";
-import { symptomsList } from "../../symptomsList";
+import buildSymptomsIntro from "../../symptomsList";
+import { useData } from "../../Context/DataContext";
 
 const Chatbot = () => {
+  const { specialties, hospitals, doctors, doctorsSchedule, symptomsListData } =
+    useData();
+
   const [chatHistory, setChatHistory] = useState([
     {
       hideInChat: true,
       role: "model",
-      text: symptomsList,
+      text: "กำลังเตรียมข้อมูล...",
     },
   ]);
   const [showChatbot, setShowChatbot] = useState(false);
@@ -69,6 +73,35 @@ const Chatbot = () => {
       behavior: "smooth",
     });
   }, [chatHistory]);
+
+  useEffect(() => {
+    const haveData =
+      (specialties && specialties.length) ||
+      (hospitals && hospitals.length) ||
+      (doctors && doctors.length) ||
+      (doctorsSchedule && doctorsSchedule.length) ||
+      (symptomsListData && symptomsListData.length);
+
+    if (haveData) {
+      const intro = buildSymptomsIntro({
+        specialties,
+        hospitals,
+        doctors,
+        doctorsSchedule,
+        symptomsListData,
+      });
+
+      setChatHistory((prev) => {
+        const updated = [...prev];
+        if (updated.length && updated[0]?.hideInChat) {
+          updated[0] = { hideInChat: true, role: "model", text: intro };
+        } else if (!updated.length) {
+          updated.unshift({ hideInChat: true, role: "model", text: intro });
+        }
+        return updated;
+      });
+    }
+  }, [specialties, hospitals, doctors, doctorsSchedule, symptomsListData]);
 
   return (
     <div className="chatbot-all">

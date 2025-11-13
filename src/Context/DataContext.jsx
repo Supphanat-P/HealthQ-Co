@@ -8,6 +8,7 @@ import {
   fetchAppointments,
   fetchUsersInfo,
   fetchUsersCredentials,
+  fetchSymptomsList,
 } from "./FetchData";
 
 const DataContext = createContext(null);
@@ -20,6 +21,7 @@ export const DataProvider = ({ children }) => {
   const [packages, setPackages] = useState([]);
   const [appointments, setAppointments] = useState([]);
   const [searchData, setSearchData] = useState([]);
+  const [symptomsListData, setSymptomsListData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [usersInfo, setUsersInfo] = useState([]);
@@ -70,6 +72,7 @@ export const DataProvider = ({ children }) => {
         const appointmentsData = await fetchAppointments();
         const usersInfoData = await fetchUsersInfo();
         const usersCredentialsData = await fetchUsersCredentials();
+        const symptomsListData = await fetchSymptomsList();
 
         const formattedDoctorsData = doctorsData.map((doctor) => {
           const specialty = specialtiesData.find(
@@ -81,6 +84,7 @@ export const DataProvider = ({ children }) => {
           const hospitalImage = hospitalsData.find(
             (hosp) => hosp.hospital_id === doctor.hospital_id
           )?.imgPath;
+
           const scheduleInfo = doctorsScheduleData.find(
             (schedule) => schedule.doctor_id === doctor.doctor_id
           );
@@ -119,6 +123,14 @@ export const DataProvider = ({ children }) => {
           };
         });
 
+        const formattedSymptomsList = symptomsListData.map((item) => ({
+          specialty_name:
+            specialtiesData.find(
+              (spec) => spec.specialty_id === item.specialty_id
+            )?.specialty_name || "",
+          ...item,
+        }));
+
         const searchData = doctorsData
           .map((doctor) => ({
             id: doctor.doctor_id,
@@ -148,6 +160,7 @@ export const DataProvider = ({ children }) => {
         setUsersCredentials(usersCredentialsData || []);
         setUsersInfo(formattedUsersInfo || []);
         setSearchData(searchData);
+        setSymptomsListData(formattedSymptomsList || []);
         setError(null);
       } catch (err) {
         console.warn("Error fetching data:", err.message);
@@ -181,6 +194,7 @@ export const DataProvider = ({ children }) => {
         searchData,
         loading,
         error,
+        symptomsListData,
       }}
     >
       {children}

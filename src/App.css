@@ -17,7 +17,7 @@
 
 body {
   background-color: #f9fafb !important;
-  height: 100vh;
+  width: 100%;
 }
 
 a:hover {
@@ -331,7 +331,7 @@ button:hover {
   min-width: 48px;
   height: 48px;
   border-radius: 8px;
-  background: var(--hq-navy);
+  background: white;
   display: flex;
   align-items: center;
   justify-content: center;

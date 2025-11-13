@@ -378,4 +378,9 @@ export const fetchUsersInfo = async () => {
   await delay();
   return Data.users_info;
 };
+
+export const fetchSymptomsList = async () => {
+  await delay();
+  return Data.symptom_to_specialty;
+};
 export default Data;
