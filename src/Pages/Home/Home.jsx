@@ -63,7 +63,7 @@ const Home = () => {
         {/* Recommended */}
         <hr className="border border-black m-auto" style={{ width: "97%" }} />
         <h3 className="text-black m-4 mt-1 mb-3">แพทย์แนะนำ</h3>
-        <div className="d-flex flex-row gap-3 flex-wrap">
+        <div className="d-flex flex-row gap-3 mb-3 flex-warp">
           {recDoctors && recDoctors.length > 0 ? (
             recDoctors.map((doctor) => (
               <DoctorCard key={doctor.doctor_id} doctor={doctor} />

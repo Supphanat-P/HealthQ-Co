@@ -14,8 +14,11 @@ export default function Appointment() {
     useData();
 
   const location = useLocation();
-  const { selectedDate: initDate, selectedTime: initTime, selectedSlot: initSlot } =
-    location.state || {};
+  const {
+    selectedDate: initDate,
+    selectedTime: initTime,
+    selectedSlot: initSlot,
+  } = location.state || {};
   const { doctor } = location.state || {};
 
   const [selectedDate, setSelectedDate] = useState(initDate || null);
@@ -38,7 +41,6 @@ export default function Appointment() {
   }
   return (
     <>
-      <Toaster />
       {!selectedDoctorId && (
         <div className="alert alert-warning">
           กรุณาเลือกแพทย์ก่อนทำการนัดหมาย

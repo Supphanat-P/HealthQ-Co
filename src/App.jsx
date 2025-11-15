@@ -49,7 +49,6 @@ function AppContent() {
         <Route path="/appointments" element={<AppoitmentData />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-
         <Route path="/logout" element={<Logout />} />
         <Route path="/locationcompare" element={<LocationCompare />} />
         <Route path="/profile" element={<Profile />} />

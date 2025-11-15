@@ -13,6 +13,8 @@ const Doctorinfo = () => {
 
   const location = useLocation();
   const { doctor } = location.state || {};
+  
+  console.log("Selected Doctor:", doctor);
 
   const selectedDoctorId = doctor?.doctor_id || null;
 
@@ -138,7 +140,9 @@ const Doctorinfo = () => {
             }}
           />
           <Button className="text-navy text-white" onClick={handleSubmit}>
-            ยืนยันนัดหมายวันที่ {selectedDate ? dayjs(selectedDate).format("DD/MM/YYYY") : "-"} เวลา {selectedTime || "-"}
+            ยืนยันนัดหมายวันที่{" "}
+            {selectedDate ? dayjs(selectedDate).format("DD/MM/YYYY") : "-"} เวลา{" "}
+            {selectedTime || "-"}
           </Button>
         </div>
       </div>
