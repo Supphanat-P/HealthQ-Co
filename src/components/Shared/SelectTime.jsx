@@ -33,8 +33,18 @@ const SelectTime = ({
   }, [doctorSchedule, selectedDate]);
 
   useEffect(() => {
+    if (propSelectedTime && slotsForDate.length > 0) {
+      const match = slotsForDate.find(
+        (s) => `${s.start_time} - ${s.end_time}` === propSelectedTime
+      );
+      if (match) {
+        setSelectedTime(propSelectedTime);
+        onTimeChange?.(match);
+        return;
+      }
+    }
     setSelectedTime(null);
-  }, [selectedDate]);
+  }, [selectedDate, propSelectedTime, slotsForDate]);
 
   return (
     <>
@@ -42,7 +52,7 @@ const SelectTime = ({
         <h5 className="text-navy">เลือกเวลา</h5>
         <div className="d-flex flex-wrap gap-2 mb-4 ">
           {slotsForDate.length === 0 && <div>กรุณาเลือกวัน</div>}
-          {slotsForDate.map((slot, idx) => {
+          {slotsForDate.map((slot, i) => {
             const orderByStartTime = slotsForDate.sort((a, b) =>
               dayjs(a.start_time, "HH:mm").isBefore(
                 dayjs(b.start_time, "HH:mm")
@@ -55,7 +65,7 @@ const SelectTime = ({
             const label = `${slot.start_time} - ${slot.end_time}`;
             return (
               <Button
-                key={`${idx}-${slot.status}`}
+                key={`${i}-${slot.status}`}
                 variant={isPending ? "warning" : isBooked ? "danger" : ""}
                 disabled={isBooked}
                 className={`time-button shadow-sm ${

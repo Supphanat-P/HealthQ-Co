@@ -1,143 +1,101 @@
 import { MdDescription } from "react-icons/md";
-import ImgChild from "../assets/childPackage.png";
-import ImgHeart from "../assets/heartPackage.png";
-import ImgLiver from "../assets/liverPackage.png";
-import ImgOld from "../assets/oldPackage.png";
 
 const Data = (() => {
-  let slots = [];
-  const genSlots = () => {
-    const doctorIds = Array.from(
-      { length: 10 },
-      (_, i) => `D${String(i + 1).padStart(3, "0")}`
-    );
-    const year = 2025;
-    const monthIndex = 10;
-    const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
-
-    const startHour = 9;
-    const endHour = 16;
-    const allTimes = [];
-    for (let h = startHour; h <= endHour; h += 2) {
-      const sh = String(h).padStart(2, "0") + ":00";
-      const eh = String(h + 1).padStart(2, "0") + ":00";
-      allTimes.push({ start: sh, end: eh });
-    }
-
-    let nextSlotNum = slots.length + 1;
-
-    const randInt = (min, max) =>
-      Math.floor(Math.random() * (max - min + 1)) + min;
-    const shuffle = (arr) => arr.sort(() => Math.random() - 0.5);
-
-    for (const doctorId of doctorIds) {
-      for (let d = 1; d <= daysInMonth; d++) {
-        const dateObj = new Date(year, monthIndex, d);
-        const dd = String(dateObj.getDate()).padStart(2, "0");
-        const mm = String(dateObj.getMonth() + 1).padStart(2, "0");
-        const yyyy = dateObj.getFullYear();
-        const dateStr = `${dd}/${mm}/${yyyy}`;
-
-        const maxSlotsToday = allTimes.length;
-        const numSlots = randInt(0, Math.min(6, maxSlotsToday));
-
-        const existingStartTimes = new Set(
-          slots
-            .filter((s) => s.doctor_id === doctorId && s.date === dateStr)
-            .map((s) => s.start_time)
-        );
-
-        const choices = allTimes
-          .map((t) => ({ start: t.start, end: t.end }))
-          .filter((t) => !existingStartTimes.has(t.start));
-
-        shuffle(choices);
-        const picks = choices.slice(0, numSlots);
-
-        for (const pick of picks) {
-          const isBooked = Math.random() < 0.35;
-          const isPending = !isBooked && Math.random() < 0.2;
-          const patientId = isBooked
-            ? `PT${String(randInt(1, 9999)).padStart(4, "0")}`
-            : null;
-
-          const slot = {
-            slot_id: `SL${String(nextSlotNum).padStart(3, "0")}`,
-            doctor_id: doctorId,
-            schedule_text: `วันที่ ${dateStr} ${pick.start}-${pick.end}`,
-            date: dateStr,
-            start_time: pick.start,
-            end_time: pick.end,
-            duration: 60,
-            status: isBooked ? "booked" : isPending ? "pending" : "available",
-            patient_id: patientId,
-          };
-
-          slots.push(slot);
-          nextSlotNum += 1;
-        }
-      }
-    }
-  };
-  genSlots();
-
-  const doctorIdsSet = new Set(slots.map((s) => s.doctor_id));
-  const doctorIds = Array.from(doctorIdsSet).sort();
-
-  const DoctorsScheduleData = doctorIds.map((doctorId, idx) => ({
-    schedule_id: `SCH${String(idx + 1).padStart(3, "0")}`,
-    doctor_id: doctorId,
-    slots: slots.filter((s) => s.doctor_id === doctorId),
-  }));
+  const DoctorsScheduleData = [
+    {
+      schedule_id: "SCH001",
+      doctor_id: "D001",
+      slots: [
+        {
+          slot_id: "SL001",
+          date: "2025-11-14",
+          start_time: "09:00",
+          end_time: "10:00",
+          status: "pending",
+        },
+        {
+          slot_id: "SL002",
+          date: "2025-11-14",
+          start_time: "10:00",
+          end_time: "11:00",
+          status: "completed",
+          patient_id: "PT00001",
+        },
+        {
+          slot_id: "SL003",
+          date: "2025-11-14",
+          start_time: "12:00",
+          end_time: "13:00",
+          status: "booked",
+          patient_id: "PT00001",
+        },
+        {
+          slot_id: "SL004",
+          date: "2025-11-15",
+          start_time: "13:00",
+          end_time: "14:00",
+          status: "available",
+        },
+      ],
+    },
+  ];
 
   const hospitalsData = [
     {
       hospital_id: "H001",
-      hospital_name: "โรงพยาบาล กรุงเทพ",
+      hospital_name: "โรงพยาบาลกรุงเทพ",
       lat: 13.7495071,
       lng: 100.5810116,
+      imgPath: "BangkokHospital.png",
     },
     {
       hospital_id: "H002",
-      hospital_name: "โรงพยาบาล สมิติเวช สุขุมวิท",
+      hospital_name: "โรงพยาบาลสมิติเวช สาขาสุขุมวิท",
       lat: 13.7489617,
       lng: 100.5426656,
+      imgPath: "SamitivejSukhumvit.png",
     },
     {
       hospital_id: "H003",
-      hospital_name: "โรงพยาบาล บำรุงราษฎร์",
+      hospital_name: "โรงพยาบาลบำรุงราษฎร์",
       lat: 13.7460712,
       lng: 100.5501064,
+      imgPath: "BumrungradHospital.png",
     },
     {
       hospital_id: "H004",
-      hospital_name: "โรงพยาบาล พญาไท พหลโยธิน",
+      hospital_name: "โรงพยาบาลพญาไท สาขาพหลโยธิน",
       lat: 13.8191002,
       lng: 100.5602871,
+      imgPath: "PhyathaiPhaholyothin.png",
     },
     {
       hospital_id: "H005",
-      hospital_name: "โรงพยาบาล วิชัยยุทธ",
+      hospital_name: "โรงพยาบาลวิชัยยุทธ",
       lat: 13.7832026,
       lng: 100.5288346,
+      imgPath: "VichaiyutHospital.png",
     },
     {
       hospital_id: "H006",
-      hospital_name: "โรงพยาบาล เวชธานี",
+      hospital_name: "โรงพยาบาลเวชธานี",
       lat: 13.918137,
       lng: 100.604613,
+      imgPath: "VejthaniHospital.png",
     },
     {
       hospital_id: "H007",
-      hospital_name: "โรงพยาบาล ศิริราช",
+      hospital_name: "โรงพยาบาลศิริราช",
       lat: 13.756331,
       lng: 100.488882,
+      imgPath: "SirirajHospital.png",
     },
     {
       hospital_id: "H008",
-      hospital_name: "โรงพยาบาล รามาธิบดี",
+      hospital_name: "โรงพยาบาลรามาธิบดี",
       lat: 13.756303,
       lng: 100.501765,
+      imgPath: "RamathibodiHospital.png",
     },
   ];
 
@@ -263,62 +221,115 @@ const Data = (() => {
     { symptom: "ฟื้นฟูกายภาพหลังอาการ/ผ่าตัด", specialty_id: "S021" },
   ];
 
-  const PackageData = [
+  const appointmentData = [
     {
-      package_id: "P001",
-      package_name: "ตรวจสุขภาพทั่วไป",
-      price: 1500,
-      description: "ตรวจสุขภาพร่างกายครบวงจร",
-      headline: "สุขภาพดี เริ่มต้นที่นี่",
-      image: ImgChild,
+      appointment_id: "APPT20803",
+      patient_id: "PT00001",
+      patient_name: "สมชาย ใจดี",
+      patient_phone: "0629735453",
+      patient_email: "sxphxnxt@gmail.com",
+      patient_symptom: "sssssssssssssssssss",
+      doctor_id: "D001",
+      slot_id: "SL001",
+      created_at: "2025-11-11T11:25:15.068Z",
     },
     {
-      package_id: "P002",
-      package_name: "ตรวจสุขภาพสตรี",
-      price: 2500,
-      description: "ตรวจสุขภาพสำหรับผู้หญิงโดยเฉพาะ",
-      headline: "เพราะคุณผู้หญิงคือคนสำคัญ",
-      image: ImgHeart,
+      appointment_id: "APPT20804",
+      patient_id: "PT00001",
+      patient_name: "สมชาย ใจดี",
+      patient_phone: "0629735453",
+      patient_email: "sxphxnxt@gmail.com",
+      patient_symptom: "ปวดหัวและมีไข้",
+      doctor_id: "D001",
+      slot_id: "SL002",
+      created_at: "2025-11-12T09:15:30.000Z",
     },
     {
-      package_id: "P003",
-      package_name: "ตรวจสุขภาพหัวใจ",
-      price: 3000,
-      description: "ตรวจสุขภาพหัวใจโดยละเอียด",
-      headline: "หัวใจแข็งแรง ชีวิตยืนยาว",
-      image: ImgHeart,
+      appointment_id: "APPT20805",
+      patient_id: "PT00001",
+      patient_name: "สมชาย ใจดี",
+      patient_phone: "0629735453",
+      patient_email: "sxphxnxt@gmail.com",
+      patient_symptom: "ปวดหัวและมีไข้",
+      doctor_id: "D001",
+      slot_id: "SL003",
+      created_at: "2025-11-12T09:15:30.000Z",
+    },
+  ];
+
+  const usersCredentialsData = [
+    {
+      user_id: "PT00001",
+      email: "sxphxnxt@gmail.com",
+      password: "1",
+      phone: "0629735453",
+      role: "patient",
     },
     {
-      package_id: "P004",
-      package_name: "ตรวจสุขภาพเบาหวาน",
-      price: 2000,
-      description: "ติดตามและป้องกันโรคเบาหวาน",
-      headline: "ควบคุมเบาหวาน ปลอดภัยทุกวัน",
-      image: ImgLiver,
+      user_id: "PT00002",
+      email: "sxphxnxt2@gmail.com",
+      password: "1",
+      phone: "0629735454",
+      role: "patient",
     },
     {
-      package_id: "P005",
-      package_name: "ตรวจสุขภาพเด็ก",
-      price: 1800,
-      description: "ตรวจสุขภาพสำหรับเด็ก",
-      headline: "สุขภาพดี เริ่มต้นตั้งแต่เด็ก",
-      image: ImgChild,
+      user_id: "PT00003",
+      email: "theeradon@gmail.com",
+      password: "1",
+      phone: "0991991991",
+      role: "patient",
     },
     {
-      package_id: "P006",
-      package_name: "ตรวจสุขภาพผู้สูงอายุ",
-      price: 2200,
-      description: "ดูแลสุขภาพผู้สูงวัยอย่างครบถ้วน",
-      headline: "สุขภาพดี ไม่มีวันหยุดสำหรับผู้สูงวัย",
-      image: ImgOld,
+      user_id: "ADMIN01",
+      email: "admin@healthq.test",
+      password: "adminpass",
+      phone: "0801234567",
+      role: "admin",
+    },
+  ];
+
+  const usersInfoData = [
+    {
+      user_id: "PT00001",
+      first_name: "สมชาย",
+      last_name: "ใจดี",
+      full_name: "สมชาย ใจดี",
+      dob: "1985-06-20",
+      gender: "male",
+      phone: "0629735453",
+      email: "sxphxnxt@gmail.com",
+      address: "123 ถนนสุขภาพ เขตตัวอย่าง กรุงเทพฯ",
+      emergency_contact: {
+        name: "สมหญิง ใจดี",
+        phone: "0812345678",
+        relation: "ภรรยา",
+      },
+      blood_type: "O+",
+      allergies: ["penicillin"],
+      chronic_conditions: ["hypertension"],
+      created_at: "2025-11-11T10:00:00.000Z",
+      updated_at: "2025-11-11T11:25:15.068Z",
     },
     {
-      package_id: "P007",
-      package_name: "ตรวจสุขภาพตับ",
-      price: 2800,
-      description: "ตรวจสุขภาพตับโดยเฉพาะ",
-      headline: "ตับแข็งแรง ชีวิตกระปรี้กระเปร่า",
-      image: ImgLiver,
+      user_id: "PT00002",
+      first_name: "สมหญิง",
+      last_name: "ใจดี",
+      full_name: "สมหญิง ใจดี",
+      dob: "1985-06-20",
+      gender: "female",
+      phone: "0629735454",
+      email: "sxphxnxt2@gmail.com",
+      address: "123 ถนนสุขภาพ เขตตัวอย่าง กรุงเทพฯ",
+      emergency_contact: {
+        name: "สมชาย ใจดี",
+        phone: "0812345678",
+        relation: "สามี",
+      },
+      blood_type: "O+",
+      allergies: ["penicillin"],
+      chronic_conditions: ["hypertension"],
+      created_at: "2025-11-11T10:00:00.000Z",
+      updated_at: "2025-11-11T11:25:15.068Z",
     },
   ];
 
@@ -327,7 +338,10 @@ const Data = (() => {
     hospitals: hospitalsData,
     specialties: specialtiesData,
     schedules: DoctorsScheduleData,
-    packages: PackageData,
+    appointments: appointmentData,
+    users_credentials: usersCredentialsData,
+    users_info: usersInfoData,
+    symptom_to_specialty: symptomToSpecialty,
   };
 })();
 
@@ -356,5 +370,24 @@ export const fetchSpecialties = async () => {
 export const fetchPackages = async () => {
   await delay();
   return Data.packages;
+};
+export const fetchAppointments = async () => {
+  await delay();
+  return Data.appointments;
+};
+
+export const fetchUsersCredentials = async () => {
+  await delay();
+  return Data.users_credentials;
+};
+
+export const fetchUsersInfo = async () => {
+  await delay();
+  return Data.users_info;
+};
+
+export const fetchSymptomsList = async () => {
+  await delay();
+  return Data.symptom_to_specialty;
 };
 export default Data;

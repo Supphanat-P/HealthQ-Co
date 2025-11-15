@@ -14,15 +14,14 @@ const LocationCompare = () => {
       setSelectedLocation({ lat: 13.7712627, lng: 100.5879442 });
       return;
     }
+
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const userLat = position.coords.latitude;
         const userLon = position.coords.longitude;
         setSelectedLocation({ lat: userLat, lng: userLon });
-        console.log("ตำแหน่งของผู้ใช้:", userLat, userLon);
       },
       (error) => {
-        console.error("ไม่สามารถรับตำแหน่งได้:", error);
         setSelectedLocation({ lat: 13.822, lng: 100.5879442 });
       }
     );
@@ -50,16 +49,7 @@ const LocationCompare = () => {
 
     try {
       localStorage.setItem("hq_closest_hospital", JSON.stringify(closest));
-    } catch (err) {
-      console.warn("Could not persist closest hospital", err);
-    }
-    console.log(
-      "ตำแหน่งของผู้ใช้:",
-      selectedLocation.lat,
-      selectedLocation.lng
-    );
-
-    console.log("Closest Hospital :", closest);
+    } catch (err) {}
   }, [selectedLocation, hospitals]);
 
   return null;

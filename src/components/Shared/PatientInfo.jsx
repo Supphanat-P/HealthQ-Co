@@ -1,16 +1,49 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { red } from "@mui/material/colors";
-
-const PatientInfo = () => {
+import { useData } from "../../Context/DataContext";
+import toast from "react-hot-toast";
+const PatientInfo = ({ onChange } = {}) => {
   const [files, setFiles] = useState([]);
+  const [lastName, setLastName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [gender, setGender] = useState("");
+  const [symptom, setSymptom] = useState("");
+  const { isAuthenticated, usersInfo, currentUser } = useData();
+
+  useEffect(() => {
+    if (
+      !isAuthenticated ||
+      !currentUser ||
+      !usersInfo ||
+      usersInfo.length === 0
+    ) {
+      toast.error("ไม่สามารถโหลดข้อมูลผู้ใช้ได้");
+      return;
+    }
+
+    const info = usersInfo.find((u) => u.user_id === currentUser.userId);
+    if (!info) return;
+    if (!firstName) setFirstName(info.first_name || "");
+    if (!lastName) setLastName(info.last_name || "");
+    if (!gender) setGender(info.gender || "");
+    if (!phone) setPhone(info.phone || "");
+    if (!email) setEmail(info.email || "");
+    console.log(info);
+  }, [isAuthenticated, currentUser, usersInfo]);
+
+  useEffect(() => {
+    onChange?.({ lastName, firstName, phone, email, symptom, files });
+  }, [lastName, firstName, phone, email, symptom, files]);
 
   const handleFileChange = (e) => {
     if (e.target.files.length + files.length > 5) {
       alert("คุณสามารถอัปโหลดไฟล์ได้สูงสุด 5 ไฟล์");
       return;
     }
-    setFiles([...files, ...Array.from(e.target.files)]);
+    setFiles((prev) => [...prev, ...Array.from(e.target.files)]);
   };
   const clearFiles = () => {
     setFiles([]);
@@ -20,27 +53,62 @@ const PatientInfo = () => {
       <h4 className="mb-4 fw-semibold fs-3 text-center">ข้อมูลผู้ป่วย</h4>
       <div className="row">
         <div className="col-md-7">
-          <div className="mb-3">
-            <label className="form-label fw-ligh ">ชื่อ-นามสกุล</label>
-            <input
-              type="text"
-              className="form-control  shadow-sm"
-              placeholder="กรอกชื่อ-นามสกุล"
-            />
-          </div>
+          <div className="col">
+            <div className="mb-3">
+              <div className="row g-2">
+                <div className="col-2">
+                  <label className="form-label fw-ligh ">เพศ</label>
+                  <select
+                    name="gender"
+                    id="gender"
+                    className="form-control  shadow-sm"
+                    value={gender ? gender : ""}
+                  >
+                    <option value="">เพศ</option>
+                    <option value="male">ชาย</option>
+                    <option value="female">หญิง</option>
+                  </select>
+                </div>
+                <div className="col-5">
+                  <label className="form-label fw-ligh ">ชื่อ</label>
+                  <input
+                    value={firstName ? firstName : ""}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    type="text"
+                    className="form-control  shadow-sm"
+                    placeholder="กรอกชื่อ"
+                  />
+                </div>
+                <div className="col-5">
+                  <label className="form-label fw-ligh ">นามสกุล</label>
+                  <input
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    type="text"
+                    className="form-control  shadow-sm"
+                    placeholder="กรอกนามสกุล"
+                  />
+                </div>
+              </div>
+            </div>
 
-          <div className="mb-3">
-            <label className="form-label fw-ligh ">เบอร์โทร</label>
-            <input
-              type="text"
-              className="form-control  shadow-sm"
-              placeholder="กรอกเบอร์โทรติดต่อ"
-            />
+            <div className="mb-3">
+              <label className="form-label fw-ligh ">เบอร์โทร</label>
+              <input
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                type="text"
+                className="form-control  shadow-sm"
+                placeholder="กรอกเบอร์โทรติดต่อ"
+              />
+            </div>
           </div>
 
           <div className="mb-3">
             <label className="form-label fw-ligh ">E-mail</label>
             <input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               type="email"
               className="form-control  shadow-sm"
               placeholder="กรอกอีเมล"
@@ -50,6 +118,8 @@ const PatientInfo = () => {
           <div className="mb-3">
             <label className="form-label fw-ligh ">อาการเบื้องต้น</label>
             <textarea
+              value={symptom}
+              onChange={(e) => setSymptom(e.target.value)}
               className="form-control  shadow-sm"
               rows="4"
               placeholder="อธิบายอาการเบื้องต้น"

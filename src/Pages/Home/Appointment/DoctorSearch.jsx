@@ -31,7 +31,7 @@ const DoctorSearch = () => {
   ///pageination
   const [currpage, setCurrpage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const itemsPerPage = 8;
+  const itemsPerPage = 6;
 
   ///Map
   useEffect(() => {
@@ -57,11 +57,11 @@ const DoctorSearch = () => {
     }
 
     if (selectedDate) {
-      let formattedDate = dayjs(selectedDate).format("DD/MM/YYYY");
+      const isoDate = dayjs(selectedDate).format("YYYY-MM-DD");
       filteredDoctors = filteredDoctors.filter(
         (doctor) =>
           Array.isArray(doctor.available_dates) &&
-          doctor.available_dates.includes(formattedDate)
+          doctor.available_dates.includes(isoDate)
       );
     }
 

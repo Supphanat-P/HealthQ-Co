@@ -1,11 +1,9 @@
-import { Button, Card, Carousel, Modal } from "react-bootstrap";
-import Sample320x240 from "../../assets/Sample320x240.png";
 import Sample1500x500 from "../../assets/Sample1500x500.png";
 import { useEffect, useContext, useState } from "react";
 import DataContext from "../../Context/DataContext";
 import ButtonLink from "../../components/Shared/ButtonLink";
-import PackageCard from "../../components/Shared/PackageCard";
-import PackageCarousel from "../../components/Shared/PackageCarousel";
+// import PackageCard from "../../components/Shared/PackageCard";
+// import PackageCarousel from "../../components/Shared/PackageCarousel";
 import DoctorCard from "../../components/Shared/DoctorCard";
 const Home = () => {
   const { doctors, packages } = useContext(DataContext);
@@ -60,12 +58,12 @@ const Home = () => {
         {/* Package */}
         <hr className="border border-black m-auto" style={{ width: "100%" }} />
         <h3 className="text-black m-4 mt-1 mb-3">แพ็กเกจ และ โปรโมชั่น</h3>
-        <PackageCarousel packages={packages} />
+        {/* <PackageCarousel packages={packages} /> */}
 
         {/* Recommended */}
         <hr className="border border-black m-auto" style={{ width: "97%" }} />
         <h3 className="text-black m-4 mt-1 mb-3">แพทย์แนะนำ</h3>
-        <div className="d-flex flex-row gap-3 flex-wrap">
+        <div className="d-flex flex-row gap-3 mb-3 flex-warp">
           {recDoctors && recDoctors.length > 0 ? (
             recDoctors.map((doctor) => (
               <DoctorCard key={doctor.doctor_id} doctor={doctor} />
