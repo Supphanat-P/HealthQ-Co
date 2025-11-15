@@ -81,6 +81,12 @@ const AppointmentHistory = () => {
   const completedAppointments = enrichedAppointments.filter(
     (appointment) => appointment.status === "completed"
   );
+  const currentAppointments =
+    selectedTab === "coming"
+      ? comingAppointments
+      : selectedTab === "pending"
+      ? pendingAppointments
+      : completedAppointments;
 
   const renderCard = (appointment) => (
     <Col md={6} key={appointment.key}>
@@ -183,13 +189,35 @@ const AppointmentHistory = () => {
 
   return (
     <div className="container my-5">
-      <Button>นัดหมายที่กำลังจะมาถึง</Button>
-      <Button>รอการอนุมัติ</Button>
-      <Button>นัดหมายที่เสร็จสิ้น</Button>
+      <Button
+        onClick={() => setSelectedTab("1")}
+        variant={selectedTab === "1" ? "primary" : "outline-primary"}
+        className="me-2 rounded-pill shadow-sm py-2 px-3"
+        style={{ transition: "all 0.2s ease-in-out" }}
+      >
+        นัดหมายที่กำลังจะมาถึง ({comingAppointments.length})
+      </Button>
 
-      <h3 className="text-navy fw-bold mb-4">ประวัติการนัดหมาย</h3>
-      <div className="card p-4">
-        {comingAppointments.length > 0 && (
+      <Button
+        onClick={() => setSelectedTab("2")}
+        variant={selectedTab === "2" ? "warning" : "outline-warning"}
+        className="me-2 rounded-pill shadow-sm py-2 px-3"
+        style={{ transition: "all 0.2s ease-in-out" }}
+      >
+        รอการอนุมัติ ({pendingAppointments.length})
+      </Button>
+
+      <Button
+        onClick={() => setSelectedTab("3")}
+        variant={selectedTab === "3" ? "success" : "outline-success"}
+        className="me-2 rounded-pill shadow-sm py-2 px-3"
+        style={{ transition: "all 0.2s ease-in-out" }}
+      >
+        นัดหมายที่เสร็จสิ้น ({completedAppointments.length})
+      </Button>
+
+      <div className="card p-4 mt-4">
+        {selectedTab === "1" && comingAppointments.length > 0 && (
           <div className="mb-5">
             <h5 className="text-navy fw-bold mb-3">นัดหมายที่กำลังจะมาถึง</h5>
             <hr />
@@ -198,8 +226,8 @@ const AppointmentHistory = () => {
             </Row>
           </div>
         )}
-        {pendingAppointments.length > 0 && (
-          <div className="mb-5 d-none">
+        {selectedTab === "2" && pendingAppointments.length > 0 && (
+          <div className="mb-5 ">
             <h5 className="text-navy fw-bold mb-3">รอการอนุมัติ</h5>
             <hr />
             <Row className="g-4">
@@ -209,8 +237,8 @@ const AppointmentHistory = () => {
             </Row>
           </div>
         )}
-        {completedAppointments.length > 0 && (
-          <div className="mb-5 d-none">
+        {selectedTab === "3" && completedAppointments.length > 0 && (
+          <div className="mb-5 ">
             <h5 className="text-navy fw-bold mb-3">นัดหมายที่เสร็จสิ้น</h5>
             <hr />
             <Row className="g-4">
