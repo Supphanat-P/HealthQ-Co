@@ -4,6 +4,7 @@ import {
   MapPin,
   CheckCircle,
   AlertCircle,
+  Search,
 } from "lucide-react";
 import { Badge, Button, Col, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
@@ -57,7 +58,7 @@ const AppointmentHistory = () => {
     const apptStartTime = slot?.start_time || "";
     const apptEndTime = slot?.end_time || "";
     const status = slot?.status;
-    const note = a.patient_symptom || "";
+    const symptoms = a.patient_symptom || "";
     return {
       ...a,
       doctorName: doctor?.doctor_name || "ไม่ระบุ",
@@ -67,7 +68,7 @@ const AppointmentHistory = () => {
       apptDate,
       apptStartTime,
       apptEndTime,
-      note,
+      symptoms,
       key: a.appointment_id,
     };
   });
@@ -114,11 +115,11 @@ const AppointmentHistory = () => {
               className="text-decoration-none d-block mb-2"
               style={{ fontSize: 13 }}
             >
+              <Search className="me-2" />
               ดูรายละเอียดแพทย์
             </a>
             <small className="text-muted">{appointment.specialtyName}</small>
           </div>
-
           <div>
             {appointment.status === "booked" && (
               <Badge bg="info" text="dark">
@@ -180,7 +181,7 @@ const AppointmentHistory = () => {
 
         <div className="alert alert-light rounded-2 p-2 mb-0">
           <small className="text-muted">
-            <strong>หมายเหตุ:</strong> {appointment.note}
+            <strong>อาการของผู้ป่วย:</strong> {appointment.symptoms}
           </small>
         </div>
       </div>

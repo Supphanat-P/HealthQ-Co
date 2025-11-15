@@ -38,6 +38,26 @@ const Data = (() => {
         },
       ],
     },
+    {
+      schedule_id: "SCH002",
+      doctor_id: "D002",
+      slots: [
+        {
+          slot_id: "SL005",
+          date: "2025-11-17",
+          start_time: "09:00",
+          end_time: "10:00",
+          status: "available",
+        },
+        {
+          slot_id: "SL006",
+          date: "2025-11-17",
+          start_time: "10:00",
+          end_time: "11:00",
+          status: "available",
+        },
+      ],
+    },
   ];
 
   const hospitalsData = [
