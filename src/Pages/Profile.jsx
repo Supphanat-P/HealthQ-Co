@@ -7,7 +7,7 @@ const Profile = () => {
       <AppointmentHeader label={"ข้อมูลผู้ใช้"} />
 
       <div
-        className="bg-navy text-white rounded-4 shadow-lg p-5 mx-auto mt-4"
+        className="text-white rounded-4 shadow-lg p-5 mx-auto mt-4"
         style={{ width: "90%" }}
       >
         <div className="d-flex justify-content-between flex-wrap">
