@@ -22,7 +22,6 @@ import Appointment from "./Pages/Home/Appointment/Appointment";
 import AdminDoctorSchedule from "./Pages/Adminstrator/AdminDoctorSchedule";
 import LocationCompare from "./components/Shared/LocationCompare";
 import Profile from "./Pages/Profile";
-import ProfileNew from "./Pages/ProfileNew";
 import Register from "./Pages/Home/Login/Register";
 import { Toaster } from "react-hot-toast";
 import Chatbot from "./components/Chatbot/Chatbot";
@@ -53,7 +52,6 @@ function AppContent() {
         <Route path="/logout" element={<Logout />} />
         <Route path="/locationcompare" element={<LocationCompare />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/profileNew" element={<ProfileNew />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>

@@ -1,15 +1,12 @@
 import { useState } from "react";
-import AppointmentHeader from "../components/Shared/AppointmentHeader";
 
-const ProfileNew = () => {
+const ProfileCard = () => {
   const [selectedTab, setSelectedTab] = useState("1");
 
   return (
     <>
-      <AppointmentHeader label={"ข้อมูลผู้ใช้"} />
-
       <div
-        className="bg-white text-navy rounded-4 p-5 mx-auto shadow-lg"
+        className="card p-4 mt-4 justify-content-center d-flex m-auto"
         style={{ width: "70%" }}
       >
         {/* Header Profile */}
@@ -31,7 +28,7 @@ const ProfileNew = () => {
 
         <div className="d-flex gap-4 border-bottom pb-2 mb-4">
           <div
-            onClick={() => setSelectedTab("1")} 
+            onClick={() => setSelectedTab("1")}
             style={{
               cursor: "pointer",
               borderBottom: selectedTab === "1" ? "3px solid #1f2054" : "",
@@ -137,4 +134,4 @@ const ProfileNew = () => {
   );
 };
 
-export default ProfileNew;
+export default ProfileCard;

@@ -11,27 +11,25 @@ const Data = (() => {
           date: "2025-11-14",
           start_time: "09:00",
           end_time: "10:00",
-          status: "pending",
+          status: "completed",
         },
         {
           slot_id: "SL002",
           date: "2025-11-14",
           start_time: "10:00",
           end_time: "11:00",
-          status: "completed",
-          patient_id: "PT00001",
+          status: "booked",
         },
         {
           slot_id: "SL003",
           date: "2025-11-14",
           start_time: "12:00",
           end_time: "13:00",
-          status: "booked",
-          patient_id: "PT00001",
+          status: "pending",
         },
         {
           slot_id: "SL004",
-          date: "2025-11-15",
+          date: "2025-11-25",
           start_time: "13:00",
           end_time: "14:00",
           status: "available",
@@ -44,14 +42,14 @@ const Data = (() => {
       slots: [
         {
           slot_id: "SL005",
-          date: "2025-11-17",
+          date: "2025-11-29",
           start_time: "09:00",
           end_time: "10:00",
           status: "available",
         },
         {
           slot_id: "SL006",
-          date: "2025-11-17",
+          date: "2025-11-30",
           start_time: "10:00",
           end_time: "11:00",
           status: "available",
@@ -365,7 +363,7 @@ const Data = (() => {
   };
 })();
 
-const delay = (ms = 150) => new Promise((res) => setTimeout(res, ms));
+const delay = (ms = 500) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const fetchDoctorsScheduleData = async () => {
   await delay();
