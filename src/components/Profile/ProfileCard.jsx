@@ -1,8 +1,10 @@
 import { useState } from "react";
-
+import { useData } from "../../Context/DataContext";
 const ProfileCard = () => {
   const [selectedTab, setSelectedTab] = useState("1");
-
+  const { currentUser, usersInfo } = useData();
+  const findUserId = usersInfo.find((u) => u.user_id === currentUser.userId);
+  console.log(findUserId);
   return (
     <>
       <div
@@ -21,8 +23,8 @@ const ProfileCard = () => {
           ></div>
 
           <div className="ms-3">
-            <div className="fs-3 fw-bold">นายธีรดน คนธรรมดา</div>
-            <div className="text-gray">Theeradon.kontamada@gmail.com</div>
+            <div className="fs-3 fw-bold">{findUserId.full_name}</div>
+            <div className="text-gray">{findUserId.email}</div>
           </div>
         </div>
 
@@ -65,30 +67,30 @@ const ProfileCard = () => {
           <div className="row fs-6">
             <div className="col-6">
               <div className="text-black">ชื่อ - นามสกุล</div>
-              <div className="text-navy mb-4">นาย ธีรดน คนธรรมดา</div>
+              <div className="text-navy mb-4">{findUserId.full_name}</div>
 
               <div className="text-black">เพศ</div>
-              <div className="text-navy mb-4">ชาย</div>
+              <div className="text-navy mb-4">{findUserId.gender}</div>
 
               <div className="text-black">วันเกิด</div>
-              <div className="text-navy mb-4">05-01-2549</div>
+              <div className="text-navy mb-4">{findUserId.dob}</div>
 
               <div className="text-black">สัญชาติ</div>
-              <div className="text-navy">ไทย</div>
+              <div className="text-navy">{findUserId.nation}</div>
             </div>
 
             <div className="col-6">
               <div className="text-black">เลขประจำตัวประชาชน</div>
-              <div className="text-navy mb-4">1234567890123</div>
+              <div className="text-navy mb-4">{findUserId.nId}</div>
 
               <div className="text-black">หมู่เลือด</div>
-              <div className="text-navy mb-4">O</div>
+              <div className="text-navy mb-4">{findUserId.blood_type}</div>
 
               <div className="text-black">ส่วนสูง</div>
-              <div className="text-navy mb-4">170</div>
+              <div className="text-navy mb-4">{findUserId.height}</div>
 
               <div className="text-black">น้ำหนัก</div>
-              <div className="text-navy">52</div>
+              <div className="text-navy">{findUserId.weight}</div>
             </div>
           </div>
         )}
@@ -97,18 +99,18 @@ const ProfileCard = () => {
           <div className="row fs-6">
             <div className="col-6">
               <div className="text-black">โรคประจำตัว</div>
-              <div className="text-navy mb-4">ไม่มี</div>
+              <div className="text-navy mb-4">{findUserId.chronic_conditions}</div>
 
               <div className="text-black">ยาประจำตัว</div>
-              <div className="text-navy mb-4">ไม่มี</div>
+              <div className="text-navy mb-4">{findUserId.regular_med}</div>
             </div>
 
             <div className="col-6">
               <div className="text-black">ประวัติแพ้ยา</div>
-              <div className="text-navy mb-4">ไม่มี</div>
+              <div className="text-navy mb-4">{findUserId.allergies}</div>
 
               <div className="text-black">ประวัติแพ้อาหาร</div>
-              <div className="text-navy mb-4">ไม่มี</div>
+              <div className="text-navy mb-4">{findUserId.food_allergies}</div>
             </div>
           </div>
         )}
@@ -117,15 +119,15 @@ const ProfileCard = () => {
           <div className="row fs-6">
             <div className="col-6">
               <div className="text-black">เบอร์โทรศัพท์</div>
-              <div className="text-navy mb-4">ไม่มี</div>
+              <div className="text-navy mb-4">{findUserId.phone}</div>
 
               <div className="text-black">อีเมล</div>
-              <div className="text-navy mb-4">ไม่มี</div>
+              <div className="text-navy mb-4">{findUserId.email}</div>
             </div>
 
             <div className="col-6">
               <div className="text-black">เบอร์ติดต่อฉุกเฉิน</div>
-              <div className="text-navy mb-4">ไม่มี</div>
+              <div className="text-navy mb-4">{findUserId.emergency_contact.phone}</div>
             </div>
           </div>
         )}

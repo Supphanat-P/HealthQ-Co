@@ -122,7 +122,7 @@ const AppointmentHistory = () => {
           </div>
           <div>
             {appointment.status === "booked" && (
-              <Badge bg="info" text="dark">
+              <Badge bg="primary" text="light">
                 <AlertCircle size={14} className="me-1" /> กำลังมาถึง
               </Badge>
             )}
