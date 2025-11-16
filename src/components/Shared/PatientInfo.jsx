@@ -11,11 +11,11 @@ const PatientInfo = ({ onChange } = {}) => {
   const [email, setEmail] = useState("");
   const [gender, setGender] = useState("");
   const [symptom, setSymptom] = useState("");
-  const { isAuthenticated, usersInfo, currentUser } = useData();
+  const { isLogin, usersInfo, currentUser } = useData();
 
   useEffect(() => {
     if (
-      !isAuthenticated ||
+      !isLogin ||
       !currentUser ||
       !usersInfo ||
       usersInfo.length === 0
@@ -32,7 +32,7 @@ const PatientInfo = ({ onChange } = {}) => {
     if (!phone) setPhone(info.phone || "");
     if (!email) setEmail(info.email || "");
     console.log(info);
-  }, [isAuthenticated, currentUser, usersInfo]);
+  }, [isLogin, currentUser, usersInfo]);
 
   useEffect(() => {
     onChange?.({ lastName, firstName, phone, email, symptom, files });

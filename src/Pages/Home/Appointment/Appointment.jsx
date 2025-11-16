@@ -10,7 +10,7 @@ import AppointmentHeader from "../../../components/Shared/AppointmentHeader";
 import PatientInfo from "../../../components/Shared/PatientInfo";
 import toast, { Toaster } from "react-hot-toast";
 export default function Appointment() {
-  const { doctorsSchedule, isAuthenticated, usersInfo, currentUser } =
+  const { doctorsSchedule, isLogin, usersInfo, currentUser } =
     useData();
 
   const location = useLocation();
@@ -35,7 +35,7 @@ export default function Appointment() {
     return <Navigate to="/doctorsearch" />;
   }
 
-  if (!isAuthenticated) {
+  if (!isLogin) {
     toast.error("กรุณาเข้าสู่ระบบก่อนทำการนัดหมาย", { duration: 2000 });
     return <Navigate to="/login" />;
   }

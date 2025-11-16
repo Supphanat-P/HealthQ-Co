@@ -246,7 +246,7 @@ const Data = (() => {
       patient_name: "สมชาย ใจดี",
       patient_phone: "0629797123",
       patient_email: "somchai@gmail.com",
-      patient_symptom: "อย่าเล่นเกมดึก",
+      patient_symptom: "ง่วงนอนแต่ร่างกายไม่ยอมนอน",
       doctor_id: "D001",
       slot_id: "SL001",
       created_at: "2025-11-11T11:25:15.068Z",
@@ -336,7 +336,7 @@ const Data = (() => {
     },
     {
       user_id: "PT00002",
-      first_name: "สมหญิง",
+      first_name: "นางสมหญิง",
       last_name: "ใจดี",
       full_name: "สมหญิง ใจดี",
       dob: "1985-06-20",

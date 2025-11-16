@@ -9,12 +9,12 @@ import { FaUserDoctor } from "react-icons/fa6";
 import toast, { Toaster } from "react-hot-toast";
 
 const DoctorCard = ({ doctor, selectedDate }) => {
-  const { isAuthenticated } = useData();
+  const { isLogin } = useData();
   const navigate = useNavigate();
   const { hospitals } = useData();
 
   const handleBook = () => {
-    if (!isAuthenticated) {
+    if (!isLogin) {
       toast.error("กรุณาเข้าสู่ระบบก่อนทำการนัดหมาย", { duration: 2000 });
     } else {
       navigate("/appointment", { state: { doctor, selectedDate } });

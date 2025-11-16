@@ -188,7 +188,7 @@ export const DataProvider = ({ children }) => {
         usersCredentials,
         token,
         currentUser,
-        isAuthenticated: !!token,
+        isLogin: !!token, //isAuthenticated
         login,
         logout,
         searchData,

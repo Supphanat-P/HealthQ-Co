@@ -10,7 +10,7 @@ import { Link, useNavigate, NavLink } from "react-router-dom";
 import { useData } from "../../Context/DataContext";
 import { FaSearch } from "react-icons/fa";
 const NavigateBar = () => {
-  const { isAuthenticated } = useData();
+  const { isLogin } = useData();
   const token = localStorage.getItem("token");
 
   return (
