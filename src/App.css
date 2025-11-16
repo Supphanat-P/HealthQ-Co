@@ -359,3 +359,27 @@ button:hover {
 .w-max {
   width: max-content;
 }
+.gradient-logo { 
+  background: linear-gradient(45deg, #1F2054 , #8486C9,#C5C6DA);
+}
+.bg-none{
+  background: transparent;
+}
+.bg-sky {
+ background-color: #1F2054 !important;  
+}
+.text-darkblue {
+  color: #1F2054 !important;
+}
+.move-left {
+  margin-left: 180px;
+}
+.invisible-button {
+  background-color: transparent; 
+  border: none;                 
+  color: white;                 
+  cursor: pointer;            
+}
+.box-shadow {
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
+}
