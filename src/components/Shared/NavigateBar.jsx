@@ -4,14 +4,16 @@ import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
-import Button from "react-bootstrap/Button";
-import React from "react";
+import Button from "react-bootstrap/Button"; 
+import React, { useState } from "react"; 
 import { Link, useNavigate, NavLink } from "react-router-dom";
 import { useData } from "../../Context/DataContext";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa"; 
+
 const NavigateBar = () => {
   const { isLogin } = useData();
   const token = localStorage.getItem("token");
+  const [lang, setLang] = useState("TH");
 
   return (
     <Navbar expand="lg" className="bg-navy shadow-sm m-2 rounded">
@@ -49,7 +51,7 @@ const NavigateBar = () => {
             </Nav.Link>
           </Nav>
 
-          <Nav className="ms-auto align-items-center">
+          <Nav className="ms-auto align-items-center gap-3">
             {!token ? (
               <>
                 <Nav.Link as={NavLink} to="/login" className="text-white">
@@ -69,6 +71,30 @@ const NavigateBar = () => {
                 </Nav.Link>
               </>
             )}
+            {/* ปุ่มเปลี่ยนภาษา */}
+            <div className="flex border border-white rounded-md overflow-hidden">
+              <button
+                onClick={() => setLang("TH")}
+                className={`px-3 py-1 text-sm font-bold transition-colors ${
+                  lang === "TH"
+                    ? "bg-white text-blue-900"
+                    : "text-white hover:bg-white/20"
+                }`}
+              >
+                TH
+              </button>
+              <div className="w-px bg-white"></div>
+              <button
+                onClick={() => setLang("EN")}
+                className={`px-3 py-1 text-sm font-bold transition-colors ${
+                  lang === "EN"
+                    ? "bg-white text-blue-900"
+                    : "text-white hover:bg-white/20"
+                }`}
+              >
+                EN
+              </button>
+            </div>
           </Nav>
         </Navbar.Collapse>
       </Container>
