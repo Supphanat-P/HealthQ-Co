@@ -122,24 +122,25 @@ const AppointmentHistory = () => {
           </div>
           <div>
             {appointment.status === "booked" && (
-              <Badge bg="primary" text="light">
-                <AlertCircle size={14} className="me-1" /> กำลังมาถึง
-              </Badge>
+              <span className="inline-flex items-center bg-blue-500 text-white text-sm font-medium px-3 py-1 rounded-full shadow-sm">
+                <AlertCircle size={16} className="me-1" />{" "}
+                กำลังมาถึง
+              </span>
             )}
             {appointment.status === "pending" && (
-              <Badge bg="warning" text="dark">
-                <AlertCircle size={14} className="me-1" /> รอการอนุมัติ
-              </Badge>
+              <span className="inline-flex items-center bg-yellow-500 text-sm font-medium px-3 py-1 rounded-full shadow-sm">
+                <Clock size={16} className="me-1" /> รอการอนุมัติ
+              </span>
             )}
             {appointment.status === "completed" && (
-              <Badge bg="success">
-                <CheckCircle size={14} className="me-1" /> เสร็จสิ้น
-              </Badge>
+              <span className="inline-flex items-center bg-green-700 text-white text-sm font-medium px-3 py-1 rounded-full shadow-sm">
+                <CheckCircle size={16} className="me-1" /> เสร็จสิ้น
+              </span>
             )}
             {appointment.status === "available" && (
-              <Badge bg="secondary">
-                <AlertCircle size={14} className="me-1" /> ไม่ระบุ
-              </Badge>
+              <span bg="secondary">
+                <AlertCircle size={16} className="me-1" /> ไม่ระบุ
+              </span>
             )}
           </div>
         </div>
