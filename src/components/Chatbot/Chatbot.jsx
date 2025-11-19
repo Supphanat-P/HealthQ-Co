@@ -8,9 +8,10 @@ import buildSymptomsIntro from "../../symptomsList";
 import { useData } from "../../Context/DataContext";
 
 const Chatbot = () => {
+  // ดึงข้อมูล
   const { specialties, hospitals, doctors, doctorsSchedule, symptomsListData } =
     useData();
-
+  // State เก็บข้อมูล
   const [chatHistory, setChatHistory] = useState([
     {
       hideInChat: true,
@@ -20,7 +21,7 @@ const Chatbot = () => {
   ]);
   const [showChatbot, setShowChatbot] = useState(false);
   const chatBodyRef = useRef();
-
+  // ฟังก์ชันส่งข้อความไปหา AI
   const generateBotResponse = async (history) => {
     const updateHistory = (text, isError = false) => {
       setChatHistory((prev) => {
@@ -90,7 +91,7 @@ const Chatbot = () => {
         doctorsSchedule,
         symptomsListData,
       });
-
+      // อัปเดตข้อความแรก
       setChatHistory((prev) => {
         const updated = [...prev];
         if (updated.length && updated[0]?.hideInChat) {
@@ -106,6 +107,7 @@ const Chatbot = () => {
   return (
     <div className="chatbot-all">
       <div className={`chatbot-container ${showChatbot ? "show-chatbot" : ""}`}>
+        {/* เปิด/ปิด แชทบอท */}
         <button
           onClick={() => setShowChatbot((prev) => !prev)}
           id="chatbot-toggler"
@@ -122,7 +124,7 @@ const Chatbot = () => {
           <div className="chat-header">
             <div className="header-info">
               <ChatbotIcon />
-              <h2 className="logo-text">Chatbot</h2>
+              <h2 className="logo-text">แชทบอท</h2>
             </div>
             <button onClick={() => setShowChatbot((prev) => !prev)}>
               <i className="bi bi-chevron-down"></i>
@@ -130,6 +132,7 @@ const Chatbot = () => {
           </div>
 
           <div ref={chatBodyRef} className="chat-body">
+            {/* ข้อความเริ่มต้นจากแชทบอท */}
             <div className="message bot-message">
               <ChatbotIcon />
               <p className="message-text">
@@ -142,6 +145,7 @@ const Chatbot = () => {
           </div>
 
           <div className="chat-footer">
+            {/* พิมพ์ข้อความ */}
             <ChatForm
               chatHistory={chatHistory}
               setChatHistory={setChatHistory}
