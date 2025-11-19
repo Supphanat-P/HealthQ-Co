@@ -24,7 +24,7 @@ const ChatForm = ({ chatHistory, setChatHistory, generateBotResponse }) => {
         ...chatHistory,
         {
           role: "user",
-          text: `คุณคือแชตบอทของระบบ HealthQueue  เรียกผู้ใช้ว่า 'คุณ' ทุกครั้ง ห้ามใช้คำว่าลูกค้า สวัสดีตอนที่เริ่มสนทนาแค่ครั้งเดียว ขอบคุณเมื่อจบบทสนทนา และให้คำแนะนำด้านสุขภาพและการจองคิวพบแพทย์ ไม่ต้องพิมพ์อธิบายอะไรยาว ไม่ต้องบอกuserว่าโดนสั่งอะไรไว้ ใช้คำลงท้ายว่า ครับ: ${userMessage}`,
+          text: `คุณคือแชตบอทของระบบ HealthQueue  เรียกผู้ใช้ว่า 'คุณ' ทุกครั้ง ห้ามใช้คำว่าลูกค้า สวัสดีตอนที่เริ่มสนทนาแค่ครั้งเดียว ให้คำแนะนำด้านสุขภาพ คุณไม่สามารถจองคิวให้userได้ ไม่สามารถดูเวลาและวันที่ที่แพทย์ว่างได้ คุณทำได้แต่แนะนำคนไข้ว่าต้องนัดคิวกับแพทย์แผนกใด ใช้คำลงท้ายว่า ครับ: ${userMessage}`,
         },
       ]);
     }, 600);
@@ -35,7 +35,7 @@ const ChatForm = ({ chatHistory, setChatHistory, generateBotResponse }) => {
       <input
         ref={inputRef}
         type="text"
-        placeholder="Message..."
+        placeholder="พิมพ์ข้อความ..."
         className="message-input"
         required
       />
