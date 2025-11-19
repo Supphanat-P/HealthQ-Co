@@ -134,7 +134,7 @@ const PopupModal = ({
                             </div>
                           )}
                         </div>
-                        <Badge>ใกล้ที่สุด</Badge>
+                        <span className="bg-blue-800 text-white text-[14px] font-medium p-2 py-1 rounded-full">ใกล้ที่สุด</span>
                       </button>
                     </div>
                   )}
