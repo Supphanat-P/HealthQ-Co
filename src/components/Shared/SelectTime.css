@@ -1,0 +1,37 @@
+.custom-timepicker.react-time-picker {
+  width: 140px;
+  border-radius: 10px;
+  border: 1px solid #1a3e72;
+  font-size: 14px;
+  padding: 2px 8px;
+}
+
+.custom-timepicker .react-time-picker__wrapper {
+  border: none;
+  padding: 2px 8px;
+}
+
+.custom-timepicker .react-time-picker__inputGroup input {
+  text-align: center;
+  font-weight: 500;
+  color: #1a3e72;
+  border-radius: 5px;
+}
+
+.custom-timepicker .react-time-picker__button {
+  background-color: #1a3e72;
+  color: white;
+  border-radius: 6px;
+  padding: 2px 4px;
+}
+
+.custom-timepicker .react-time-picker__button:hover {
+  background-color: #0f2b50;
+}
+
+.custom-timepicker .react-time-picker__inputGroup__input {
+  text-align: center;
+  font-weight: 500;
+  color: #1a3e72;
+  border-radius: 5px;
+}

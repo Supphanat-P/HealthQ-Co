@@ -1,87 +1,46 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
 import th from "date-fns/locale/th";
-import "react-day-picker/dist/style.css";
 import dayjs from "dayjs";
-import { useData } from "../../Context/DataContext";
+import toast from "react-hot-toast";
+import 'react-day-picker/dist/style.css';
 
-function Calendar({
-  className,
-  showOutsideDays = true,
-  locale = th,
-  weekStartsOn = 1,
-  selectedDoctorId,
-  onDateSelect,
-  selectedDate,
-}) {
-  const { doctors } = useData();
-  const [availableDates, setAvailableDates] = useState([]);
-
-  const doctor = (doctors || []).find(
-    (doc) => doc.doctor_id === selectedDoctorId
-  );
-
-  useEffect(() => {
-    if (doctor?.available_dates) {
-      const formattedAvailableDates = doctor.available_dates.map((date) => {
-        const parsed = dayjs(date, "DD/MM/YYYY", true);
-        const final = parsed.isValid() ? parsed : dayjs(date);
-        return final.format("YYYY-MM-DD");
-      });
-      setAvailableDates(formattedAvailableDates);
-    } else {
-      setAvailableDates([]);
-    }
-  }, [doctor]);
-
-  const isDisabled = (date) => {
-    const formatted = dayjs(date).format("YYYY-MM-DD");
-    return !availableDates.includes(formatted);
-  };
-
+const Calendar = ({ selectedDates = [], onDateSelect }) => {
+  const [dates, setDates] = useState(selectedDates);
   const today = new Date();
 
+  const handleSelect = (selected) => {
+    if (selected.length > 3) {
+      toast.error("เลือกได้สูงสุด 3 วัน");
+      return;
+    }
+    setDates(selected);
+    const formattedDates = selected.map(d => dayjs(d).format("YYYY-MM-DD"));
+    onDateSelect?.(formattedDates);
+  };
+
   return (
-    <>
-      <div className="ms-4 d-flex flex-column">
-        <h5 className="text-navy">เลือกวันที่</h5>
-        <div
-          className="card border-navy p-2 w-fit justify-self-center"
-          style={{ width: "312px" }}
-        >
-          <DayPicker
-            navLayout="around"
-            className={className}
-            components={{
-              IconLeft: () => <ChevronLeft />,
-              IconRight: () => <ChevronRight />,
-            }}
-            locale={locale}
-            showOutsideDays={showOutsideDays}
-            weekStartsOn={weekStartsOn}
-            mode="single"
-            selected={selectedDate ? new Date(selectedDate) : undefined}
-            onSelect={(date) => {
-              const formatted = dayjs(date).format("YYYY-MM-DD");
-              onDateSelect?.(formatted);
-            }}
-            disabled={[{ before: today }, isDisabled]}
-            required
-          />
-          <div className="text-center mt-2">
-            {selectedDate ? (
-              <span className="text-navy fw-medium">
-                วันที่เลือก: {dayjs(selectedDate).format("D MMMM YYYY")}
-              </span>
-            ) : (
-              <span className="text-muted">กรุณาเลือกวันที่</span>
-            )}
-          </div>
-        </div>
+    <div className="flex flex-col space-y-2">
+      <h5 className="text-lg font-semibold text-navy-600 mb-2">เลือกวันที่</h5>
+      <div className="border border-gray-300 rounded p-2">
+        <DayPicker
+          navLayout="around"
+          components={{
+            IconLeft: () => <ChevronLeft />,
+            IconRight: () => <ChevronRight />,
+          }}
+          locale={th}
+          showOutsideDays
+          weekStartsOn={1}
+          mode="multiple"
+          selected={dates}
+          onSelect={handleSelect}
+          disabled={[{ before: today }]}
+        />
       </div>
-    </>
+    </div>
   );
-}
+};
 
 export default Calendar;

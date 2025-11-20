@@ -1,108 +1,53 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Button } from "react-bootstrap";
-import { useData } from "../../Context/DataContext";
+import React, { useState } from "react";
+import TimePicker from "react-time-picker";
 import dayjs from "dayjs";
-import buddhistEra from "dayjs/plugin/buddhistEra";
-dayjs.extend(buddhistEra);
+import 'dayjs/locale/th';
+import 'react-time-picker/dist/TimePicker.css';
+import "./SelectTime.css"
 dayjs.locale("th");
-const SelectTime = ({
-  selectedTime: propSelectedTime,
-  selectedDoctorId,
-  onTimeChange,
-  selectedDate,
-}) => {
-  const { doctorsSchedule } = useData();
-  const doctorSchedule = (doctorsSchedule || []).find(
-    (ds) => ds.doctor_id === selectedDoctorId
-  );
 
-  const [selectedTime, setSelectedTime] = useState(propSelectedTime || null);
+const SelectTime = ({ selectedDates = [], selectedTimes = {}, onTimeChange }) => {
+  const [localTimes, setLocalTimes] = useState(selectedTimes);
 
-  const slotsForDate = useMemo(() => {
-    if (!doctorSchedule || !selectedDate) return [];
-    const slots = doctorSchedule.slots || [];
+  const handleTimeChange = (date, time) => {
+    const updated = { ...localTimes, [date]: time };
+    setLocalTimes(updated);
+    onTimeChange?.(updated);
+  };
 
-    return slots.filter((slot) => {
-      const parsed = dayjs(slot.date, "DD/MM/YYYY", true);
-      const slotKey = parsed.isValid()
-        ? parsed.format("YYYY-MM-DD")
-        : dayjs(slot.date).format("YYYY-MM-DD");
-      const formattedSelectedDate = dayjs(selectedDate).format("YYYY-MM-DD");
-      return slotKey === formattedSelectedDate;
-    });
-  }, [doctorSchedule, selectedDate]);
-
-  useEffect(() => {
-    if (propSelectedTime && slotsForDate.length > 0) {
-      const match = slotsForDate.find(
-        (s) => `${s.start_time} - ${s.end_time}` === propSelectedTime
-      );
-      if (match) {
-        setSelectedTime(propSelectedTime);
-        onTimeChange?.(match);
-        return;
-      }
-    }
-    setSelectedTime(null);
-  }, [selectedDate, propSelectedTime, slotsForDate]);
+  if (selectedDates.length === 0)
+    return <div className="text-red-500">กรุณาเลือกวันก่อน</div>;
 
   return (
-    <>
-      <div className="ms-4 d-flex flex-column">
-        <h5 className="text-navy">เลือกเวลา</h5>
-        <div className="d-flex flex-wrap gap-2 mb-4 ">
-          {slotsForDate.length === 0 && <div>กรุณาเลือกวัน</div>}
-          {slotsForDate.map((slot, i) => {
-            const orderByStartTime = slotsForDate.sort((a, b) =>
-              dayjs(a.start_time, "HH:mm").isBefore(
-                dayjs(b.start_time, "HH:mm")
-              )
-                ? -1
-                : 1
-            );
-            const isBooked = slot.status !== "available";
-            const isPending = slot.status === "pending";
-            const label = `${slot.start_time} - ${slot.end_time}`;
-            return (
-              <Button
-                key={`${i}-${slot.status}`}
-                variant={isPending ? "warning" : isBooked ? "danger" : ""}
-                disabled={isBooked}
-                className={`time-button shadow-sm ${
-                  selectedTime === label ? "bg-navy text-white" : ""
-                } ${isPending ? "text-black" : ""}`}
-                style={{ width: "140px" }}
-                onClick={() => {
-                  setSelectedTime(label);
-                  onTimeChange?.(slot);
-                }}
-              >
-                {label}
-              </Button>
-            );
-          })}
-        </div>
-        <hr style={{ width: "100%" }} />
-        <h5 className="text-navy">วัน-เวลานัด</h5>
-        <div className="mb-3">
-          <strong>วันที่</strong>: &nbsp;
-          {selectedDate
-            ? dayjs(selectedDate).format("DD MMMM BBBB")
-            : "กรุณาเลือกวัน"}
-          &nbsp; <strong>เวลา</strong>: &nbsp;
-          {selectedTime || "กรุณาเลือกเวลา"} น.
-          <div className="mt-5 alert alert-warning">
-            <strong>หมายเหตุ:</strong>
-            <br />
-            สีขาว = ว่างสามารถจองได้
-            <br />
-            สีแดง = จองแล้ว
-            <br />
-            สีเหลือง = รอดำเนินการ
+    <div className="flex flex-col justify-self-center">
+      <h5 className="text-lg font-semibold text-navy-600">เลือกเวลา</h5>
+      {selectedDates.map((date) => {
+        const selectedTime = localTimes[date];
+        return (
+          <div key={date} className="flex flex-col justify-center">
+            <div className="d-flex">
+              <strong className="mb-2">{dayjs(date).format("D MMMM YYYY")}  </strong>
+              &nbsp;
+              {selectedTime && (
+                <p className="mb-2 text-gray-600">
+                  เวลา: {dayjs(selectedTime, "HH:mm").format("HH:mm")}
+                </p>
+              )}
+            </div>
+            <TimePicker
+              onChange={(time) => handleTimeChange(date, time)}
+              value={selectedTime || ""}
+              disableClock
+              className="custom-timepicker border border-gray-300 rounded px-3 py-1 w-36 focus:outline-none focus:ring-2 focus:ring-navy-500"
+              format="HH:mm:a"
+              clearIcon={null}
+            />
+
+
           </div>
-        </div>
-      </div>
-    </>
+        );
+      })}
+    </div >
   );
 };
 
