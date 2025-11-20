@@ -1,9 +1,10 @@
 .custom-timepicker.react-time-picker {
-  width: 140px;
+  width: fit-content;
   border-radius: 10px;
   border: 1px solid #1a3e72;
   font-size: 14px;
   padding: 2px 8px;
+  text-align: center;
 }
 
 .custom-timepicker .react-time-picker__wrapper {

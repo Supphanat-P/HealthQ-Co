@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TimePicker from "react-time-picker";
 import dayjs from "dayjs";
 import 'dayjs/locale/th';
@@ -8,6 +8,10 @@ dayjs.locale("th");
 
 const SelectTime = ({ selectedDates = [], selectedTimes = {}, onTimeChange }) => {
   const [localTimes, setLocalTimes] = useState(selectedTimes);
+
+  useEffect(() => {
+    console.log(selectedTimes);
+  }, [selectedTimes]);
 
   const handleTimeChange = (date, time) => {
     const updated = { ...localTimes, [date]: time };
@@ -39,8 +43,9 @@ const SelectTime = ({ selectedDates = [], selectedTimes = {}, onTimeChange }) =>
               value={selectedTime || ""}
               disableClock
               className="custom-timepicker border border-gray-300 rounded px-3 py-1 w-36 focus:outline-none focus:ring-2 focus:ring-navy-500"
-              format="HH:mm:a"
+              format="HH:mm"
               clearIcon={null}
+              required	
             />
 
 
