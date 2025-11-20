@@ -12,18 +12,17 @@ const AppointmentDoctor = ({ selectedDoctor }) => {
         alt="docmint"
         style={{ borderRadius: "50%", width: "125px", height: "125px" }}
       />
-
-      <div className="">
-        <p className="fs-5 text-navy ps-4 fw-bold  ">
+      <div>
+        <p className="fs-5 text-navy ps-4 fw-bold d-flex ">
           <Stethoscope /> &nbsp;
           {selectedDoctor?.doctor_name || "กรุณาเลือกแพทย์"}
         </p>
-        <p className="text-secondary ps-4">
+        <p className="text-secondary ps-4 d-flex">
           <Star />
           &nbsp;
           {selectedDoctor?.specialty_name || "กรุณาเลือกแพทย์"}
         </p>
-        <p className="text-secondary ps-4">
+        <p className="text-secondary ps-4 d-flex">
           <MapPin />
           &nbsp;
           {selectedDoctor?.hospital_name || "กรุณาเลือกแพทย์"}

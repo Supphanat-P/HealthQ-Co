@@ -9,25 +9,17 @@ import AppointmentDoctor from "../../../components/Shared/AppointmentDoctor";
 import AppointmentHeader from "../../../components/Shared/AppointmentHeader";
 import PatientInfo from "../../../components/Shared/PatientInfo";
 import toast, { Toaster } from "react-hot-toast";
-export default function Appointment() {
-  const { doctorsSchedule, isLogin, usersInfo, currentUser } =
-    useData();
 
+export default function Appointment() {
+  const { doctorsSchedule, isLogin, usersInfo, currentUser } = useData();
   const location = useLocation();
-  const {
-    selectedDate: initDate,
-    selectedTime: initTime,
-    selectedSlot: initSlot,
-  } = location.state || {};
+  const { selectedDate: initDate, selectedTime: initTime, selectedSlot: initSlot } = location.state || {};
   const { doctor } = location.state || {};
 
-  const [selectedDate, setSelectedDate] = useState(initDate || null);
-
-  const [selectedDoctorId, setSelectedDoctorId] = useState(
-    doctor?.doctor_id || null
-  );
-
-  const [selectedTime, setSelectedTime] = useState(initTime || null);
+  const [selectedDoctorId, setSelectedDoctorId] = useState(doctor?.doctor_id || null);
+  const [selectedTimes, setSelectedTimes] = useState({});
+  const [selectedDates, setSelectedDates] = useState([]);
+  const [mapDatesTimes, setMapDatesTimes] = useState([]);
   const [selectedSlot, setSelectedSlot] = useState(initSlot || null);
   const [patientInfo, setPatientInfo] = useState({});
 
@@ -39,82 +31,59 @@ export default function Appointment() {
     toast.error("กรุณาเข้าสู่ระบบก่อนทำการนัดหมาย", { duration: 2000 });
     return <Navigate to="/login" />;
   }
+
+  useEffect(() => {
+    const mapped = selectedDates.map((date) => ({
+      date,
+      time: selectedTimes[date] || null,
+    }));
+    setMapDatesTimes(mapped);
+    console.log("Mapped Dates & Times:", mapped);
+  }, [selectedDates, selectedTimes]);
+
   return (
     <>
+      <Toaster />
       {!selectedDoctorId && (
-        <div className="alert alert-warning">
+        <div className="bg-yellow-100 text-yellow-800 px-4 py-2 rounded mb-4">
           กรุณาเลือกแพทย์ก่อนทำการนัดหมาย
         </div>
       )}
+
       <BackToNavigate label="กลับไปหน้าค้นหาแพทย์" linkTo="doctorsearch" />
       <AppointmentHeader />
-      <div
-        className="main d-flex justify-content-center"
-        style={{ marginLeft: "7.5rem" }}
-      >
-        <div className="d-flex flex-row" width="100%">
-          <div className="d-flex flex-column">
-            {/* Doctor info */}
-            <div
-              className="card shadow-lg p-4 m-2"
-              style={{
-                borderRadius: "20px",
-                width: "900px",
-                maxWidth: "900px",
-              }}
-            >
-              <h4 className="mb-4 fw-semibold fs-3 text-center">
-                ข้อมูลผู้แพทย์
-              </h4>
 
-              <AppointmentDoctor selectedDoctor={doctor} />
-            </div>
-            {/* P */}
-            <div
-              className="card shadow-lg p-4 m-2"
-              style={{
-                borderRadius: "20px",
-                width: "900px",
-                maxWidth: "900px",
-              }}
-            >
-              <h4 className="mb-4 fw-semibold fs-3 text-center">
-                เลือกวันและเวลานัดหมาย
-              </h4>
+      <div className="flex flex-col md:flex-row justify-self-center mt-6 px-4 md:px-8 gap-4">
+        <div className="flex-1 flex flex-col space-y-6">
+          <div className="bg-white shadow-lg rounded-2xl p-4 mb-3">
+            <h4 className="text-center text-2xl font-semibold mb-4">ข้อมูลผู้แพทย์</h4>
+            <AppointmentDoctor selectedDoctor={doctor} />
+          </div>
 
-              <div className="d-flex flex-row p-3">
-                <Calendar
-                  mode="single"
-                  selectedDoctorId={selectedDoctorId}
-                  onDateSelect={(d) => setSelectedDate(d)}
-                  selectedDate={selectedDate}
-                />
+          <div className="bg-white shadow-lg rounded-2xl p-4 mb-3" style={{ maxWidth: "750px" }}>
+            <h4 className="text-center text-2xl font-semibold mb-4">เลือกวันและเวลานัดหมาย</h4>
+            <div className="flex flex-col md:flex-row gap-5">
+              <Calendar
+                selectedDates={selectedDates}
+                onDateSelect={(dates) => setSelectedDates(dates)}
+              />
                 <SelectTime
-                  selectedDoctorId={selectedDoctorId}
-                  selectedDate={selectedDate}
-                  selectedTime={selectedTime}
-                  onTimeChange={(slot) => {
-                    setSelectedSlot(slot);
-                    setSelectedTime(`${slot.start_time} - ${slot.end_time}`);
-                  }}
+                  selectedDates={selectedDates}
+                  selectedTimes={selectedTimes}
+                  onTimeChange={(times) => setSelectedTimes(times)}
                 />
-              </div>
-            </div>
-            {/* Patient Info */}
-            <div
-              className="card shadow-lg p-4 m-2"
-              style={{
-                borderRadius: "20px",
-                width: "900px",
-                maxWidth: "900px",
-              }}
-            >
-              <PatientInfo onChange={(data) => setPatientInfo(data)} />
             </div>
           </div>
+
+          <div className="bg-white shadow-lg rounded-2xl p-4 mb-3" style={{ maxWidth: "750px" }}>
+            <PatientInfo onChange={(data) => setPatientInfo(data)} />
+          </div>
+        </div>
+
+        <div className="w-full md:w-96" >
           <AppointmentSummary
-            selectedDate={selectedDate}
-            selectedTime={selectedTime}
+            selectedDates={selectedDates}
+            selectedTimes={selectedTimes}
             selectedSlot={selectedSlot}
             patientInfo={patientInfo}
             doctorId={doctor?.doctor_id}

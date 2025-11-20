@@ -10,7 +10,7 @@ const BackToNavigate = ({ label, linkTo }) => {
     >
       <Link
         to={`/${linkTo}`}
-        className="text-navy text-decoration-none fw-medium"
+        className="text-navy text-decoration-none d-flex"
       >
         <ArrowLeft />
         &nbsp;
