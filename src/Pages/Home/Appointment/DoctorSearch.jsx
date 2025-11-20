@@ -1,8 +1,8 @@
 import React, { use, useContext, useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { DataContext } from "../../../Context/DataContext";
-import DoctorCard from "../../../components/Shared/DoctorCard";
-import DoctorFilter from "../../../components/Shared/DoctorFilter";
+import DoctorCard from "../../../components/DoctorSearch/DoctorCard";
+import DoctorFilter from "../../../components/DoctorSearch/DoctorFilter";
 import { Button } from "react-bootstrap";
 import dayjs from "dayjs";
 

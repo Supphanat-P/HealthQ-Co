@@ -1,26 +1,24 @@
 import React, { useEffect, useState } from "react";
-import Calendar from "../../../components/Shared/Calendar";
-import SelectTime from "../../../components/Shared/SelectTime";
+import Calendar from "../../../components/Appointment/Calendar";
+import SelectTime from "../../../components/Appointment/SelectTime";
 import BackToNavigate from "../../../components/Shared/backToNavigate";
-import AppointmentSummary from "../../../components/Shared/AppointmentSummary";
+import AppointmentSummary from "../../../components/Appointment/AppointmentSummary";
 import { Navigate, useLocation } from "react-router-dom";
 import { useData } from "../../../Context/DataContext";
-import AppointmentDoctor from "../../../components/Shared/AppointmentDoctor";
+import AppointmentDoctor from "../../../components/Appointment/AppointmentDoctor";
 import AppointmentHeader from "../../../components/Shared/AppointmentHeader";
-import PatientInfo from "../../../components/Shared/PatientInfo";
+import PatientInfo from "../../../components/Appointment/PatientInfo";
 import toast, { Toaster } from "react-hot-toast";
 
 export default function Appointment() {
   const { doctorsSchedule, isLogin, usersInfo, currentUser } = useData();
   const location = useLocation();
-  const { selectedDate: initDate, selectedTime: initTime, selectedSlot: initSlot } = location.state || {};
   const { doctor } = location.state || {};
 
   const [selectedDoctorId, setSelectedDoctorId] = useState(doctor?.doctor_id || null);
   const [selectedTimes, setSelectedTimes] = useState({});
   const [selectedDates, setSelectedDates] = useState([]);
   const [mapDatesTimes, setMapDatesTimes] = useState([]);
-  const [selectedSlot, setSelectedSlot] = useState(initSlot || null);
   const [patientInfo, setPatientInfo] = useState({});
 
   if (!doctor) {
@@ -67,11 +65,11 @@ export default function Appointment() {
                 selectedDates={selectedDates}
                 onDateSelect={(dates) => setSelectedDates(dates)}
               />
-                <SelectTime
-                  selectedDates={selectedDates}
-                  selectedTimes={selectedTimes}
-                  onTimeChange={(times) => setSelectedTimes(times)}
-                />
+              <SelectTime
+                selectedDates={selectedDates}
+                selectedTimes={selectedTimes}
+                onTimeChange={(times) => setSelectedTimes(times)}
+              />
             </div>
           </div>
 
@@ -84,7 +82,6 @@ export default function Appointment() {
           <AppointmentSummary
             selectedDates={selectedDates}
             selectedTimes={selectedTimes}
-            selectedSlot={selectedSlot}
             patientInfo={patientInfo}
             doctorId={doctor?.doctor_id}
             doctorName={doctor?.doctor_name || "กรุณาเลือกแพทย์"}

@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import "./AppointmentSummary.css"
 
-const AppointmentSummary = ({ selectedDate, selectedTime, selectedSlot, patientInfo, doctorName, doctorHospital }) => {
+const AppointmentSummary = ({ selectedDates, selectedTimes, selectedSlot, patientInfo, doctorName, doctorHospital }) => {
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
@@ -31,17 +31,29 @@ const AppointmentSummary = ({ selectedDate, selectedTime, selectedSlot, patientI
       </div>
 
       <div>
-        <p className="text-gray-500 text-sm flex items-center gap-2"><Calendar /> วันที่</p>
-        <p className="text-black">{selectedDate ? dayjs(selectedDate).locale("th").format("D MMMM YYYY") : "กรุณาเลือกวันที่"}</p>
-      </div>
+        <p className="text-gray-500 text-sm flex items-center gap-2">
+          <Calendar /> วันที่ & เวลา
+        </p>
 
-      <div>
-        <p className="text-gray-500 text-sm flex items-center gap-2"><Clock /> เวลา</p>
-        <p className="text-black">{selectedTime || "กรุณาเลือกเวลา"}</p>
+        {selectedDates && selectedDates.length > 0 ? (
+          <div className="text-black space-y-1">
+            {selectedDates.map((date) => {
+              const formattedDate = dayjs(date).locale("th").format("D MMMM YYYY");
+              const time = selectedTimes?.[date] || "??:??";
+              return (
+                <p key={date}>
+                  {formattedDate} — {time} น.
+                </p>
+              );
+            })}
+          </div>
+        ) : (
+          <p className="text-black">กรุณาเลือกวันที่</p>
+        )}
       </div>
 
       <button
-        className="w-full bg-navy-600 text-white py-3 rounded-xl hover:bg-navy-700 transition"
+        className="w-full bg-navy text-white py-3 rounded hover:bg-navy-700 transition"
         onClick={() => setShowModal(true)}
       >
         ยืนยันการจอง

@@ -1,39 +1,31 @@
 import React, { useState } from "react";
 import { Row, Col, Button } from "react-bootstrap";
 import AppointmentHeader from "../../components/Shared/AppointmentHeader";
-import Calendar from "../../components/Shared/Calendar";
-import SelectTime from "../../components/Shared/SelectTime";
+import Calendar from "../../components/Appointment/Calendar"
+import SelectTime from "../../components/Appointment/SelectTime";
 import BackToNavigate from "../../components/Shared/backToNavigate";
 import { useNavigate, useLocation } from "react-router-dom";
 import dayjs from "dayjs";
+import Appointment from "./Appointment/Appointment";
 const Doctorinfo = () => {
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedTime, setSelectedTime] = useState(null);
+  const [selectedDates, setSelectedDates] = useState([]);
+  const [selectedTimes, setSelectedTimes] = useState([]);
   const [selectedSlot, setSelectedSlot] = useState(null);
 
   const location = useLocation();
   const { doctor } = location.state || {};
-  
+
   console.log("Selected Doctor:", doctor);
 
   const selectedDoctorId = doctor?.doctor_id || null;
 
   const navigate = useNavigate();
 
-  const handleSubmit = () => {
-    if (!selectedDate || !selectedTime) {
-      alert("กรุณาเลือกวันที่และเวลา");
-      return;
-    }
-    navigate("/appointment", {
-      state: {
-        selectedDate: dayjs(selectedDate).format("YYYY-MM-DD"),
-        selectedTime: selectedTime,
-        selectedSlot: selectedSlot,
-        doctor: doctor,
-      },
-    });
-  };
+  const AppointmentClick = () => {
+    console.log(doctor)
+    navigate("/appointment", { state: { doctor } });
+  }
+
   return (
     <>
       {!doctor && (
@@ -111,39 +103,9 @@ const Doctorinfo = () => {
               <p>02-123-4567</p>
               <p>dr.hongsawadee@hearthrakna.co.th</p>
               <p>123 อาคารแพทย์ ชั้น 4 ถนนพระราม 4 กรุงเทพฯ 10110</p>
+              <button className="rounded bg-navy justify-self-end d-flex text-white p-3" onClick={AppointmentClick}>นัดหมาย</button>
             </Col>
           </Row>
-        </div>
-        <div
-          className="card shadow p-4 mb-5"
-          style={{
-            width: "515px",
-            height: "fit-content",
-            borderRadius: "20px",
-          }}
-        >
-          <div className="d-flex justify-content-center mb-3">
-            <Calendar
-              mode="single"
-              selectedDoctorId={selectedDoctorId}
-              onDateSelect={(d) => setSelectedDate(d)}
-              selectedDate={selectedDate}
-            />
-          </div>
-          <SelectTime
-            selectedDoctorId={selectedDoctorId}
-            selectedDate={selectedDate}
-            selectedTime={selectedTime}
-            onTimeChange={(slot) => {
-              setSelectedSlot(slot);
-              setSelectedTime(`${slot.start_time} - ${slot.end_time}`);
-            }}
-          />
-          <Button className="text-navy text-white" onClick={handleSubmit}>
-            ยืนยันนัดหมายวันที่{" "}
-            {selectedDate ? dayjs(selectedDate).format("DD/MM/YYYY") : "-"} เวลา{" "}
-            {selectedTime || "-"}
-          </Button>
         </div>
       </div>
     </>

@@ -28,13 +28,13 @@ const SelectTime = ({ selectedDates = [], selectedTimes = {}, onTimeChange }) =>
       {selectedDates.map((date) => {
         const selectedTime = localTimes[date];
         return (
-          <div key={date} className="flex flex-col justify-center">
+          <div key={date} className="flex flex-col justify-center mb-4">
             <div className="d-flex">
               <strong className="mb-2">{dayjs(date).format("D MMMM YYYY")}  </strong>
               &nbsp;
               {selectedTime && (
                 <p className="mb-2 text-gray-600">
-                  เวลา: {dayjs(selectedTime, "HH:mm").format("HH:mm")}
+                  เวลา: {dayjs(selectedTime, "HH:mm").format("HH:mm")} น.
                 </p>
               )}
             </div>
@@ -45,7 +45,7 @@ const SelectTime = ({ selectedDates = [], selectedTimes = {}, onTimeChange }) =>
               className="custom-timepicker border border-gray-300 rounded px-3 py-1 w-36 focus:outline-none focus:ring-2 focus:ring-navy-500"
               format="HH:mm"
               clearIcon={null}
-              required	
+              required
             />
 
 

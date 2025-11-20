@@ -1,5 +1,5 @@
 import React, { useEffect, useState, forwardRef } from "react";
-import DatePicker from "./DatePickerTh";
+import DatePicker from "../Shared/DatePickerTh";
 import "./DoctorFilter.css";
 import { MdOutlineClear } from "react-icons/md";
 import PopupModal from "./PopupModal";
@@ -51,7 +51,7 @@ const DoctorFilter = ({
       type="button"
       className={
         (className || "") +
-        " btn border-1 border-navy text-navy rounded fs-6 mt-2 p-2 d-flex align-items-center justify-content-center"
+        " btn border border-navy text-navy rounded fs-6 mt-2 p-2 d-flex align-items-center justify-content-center"
       }
       onClick={onClick}
       ref={ref}
@@ -96,9 +96,8 @@ const DoctorFilter = ({
         </button>
       </div>
       <div
-        className={`${
-          filtersOpen ? "d-flex" : "d-none"
-        } gap-4 mt-0 align-items-center`}
+        className={`${filtersOpen ? "d-flex" : "d-none"
+          } gap-4 mt-0 align-items-center`}
         id="filter-div"
       >
         <Button
