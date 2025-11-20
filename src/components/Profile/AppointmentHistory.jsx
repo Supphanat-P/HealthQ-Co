@@ -115,7 +115,7 @@ const AppointmentHistory = () => {
               className="text-decoration-none d-block mb-2"
               style={{ fontSize: 13 }}
             >
-              <Search className="me-2" />
+              <Search className="me-2 inline-flex" />
               ดูรายละเอียดแพทย์
             </a>
             <small className="text-muted">{appointment.specialtyName}</small>
@@ -149,7 +149,7 @@ const AppointmentHistory = () => {
 
         <div className="mb-3">
           <small className="text-muted d-block mb-1">
-            <MapPin size={14} className="me-1" /> โรงพยาบาล
+            <MapPin size={14} className="me-1 inline-flex" /> โรงพยาบาล
           </small>
           <p className="mb-0 fw-500 text-navy">{appointment.hospitalName}</p>
         </div>
@@ -157,7 +157,7 @@ const AppointmentHistory = () => {
         <div className="row g-2 mb-3">
           <div className="col-6">
             <small className="text-muted d-block mb-1">
-              <Calendar size={14} className="me-1" /> วันที่
+              <Calendar size={14} className="me-1 inline-flex" /> วันที่
             </small>
             <p className="mb-0 fw-500 text-navy">
               {appointment.apptDate
@@ -171,7 +171,7 @@ const AppointmentHistory = () => {
           </div>
           <div className="col-6">
             <small className="text-muted d-block mb-1">
-              <Clock size={14} className="me-1" /> เวลา
+              <Clock size={14} className="me-1 inline-flex" /> เวลา
             </small>
             <p className="mb-0 fw-500 text-navy">
               {appointment.apptStartTime || "-"} -{" "}
