@@ -32,8 +32,8 @@ const LocationCompare = () => {
     if (!hospitals || hospitals.length === 0) return;
 
     const distances = hospitals.map((hospital) => {
-      const hLat = hospital.lat;
-      const hLon = hospital.lng;
+      const hLat = Number(hospital.lat);
+      const hLon = Number(hospital.lng);
       const distance = getDistance(
         { latitude: selectedLocation.lat, longitude: selectedLocation.lng },
         { latitude: hLat, longitude: hLon }
@@ -49,7 +49,7 @@ const LocationCompare = () => {
 
     try {
       localStorage.setItem("hq_closest_hospital", JSON.stringify(closest));
-    } catch (err) {}
+    } catch (err) { }
   }, [selectedLocation, hospitals]);
 
   return null;

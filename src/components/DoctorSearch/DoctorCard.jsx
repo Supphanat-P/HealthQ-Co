@@ -31,8 +31,8 @@ const DoctorCard = ({ doctor, selectedDate }) => {
 
         <div className="hospital-badge w-100 bg-none">
           <img
-            src={`/Hospitals/${doctor.hospital_img}`}
-            alt={doctor.hospital_name || "hospital"}
+            src={`/Hospitals/${doctor.hospital.imgPath}`}
+            alt={doctor.hospital.hospital_name || "hospital"}
             className="hospital-logo p-2"
             style={{ width: "50px", height: "50px" }}
           />
@@ -51,14 +51,14 @@ const DoctorCard = ({ doctor, selectedDate }) => {
           <div className="mt-2 d-flex gap-8">
             <div className="d-flex align-items-center bg-light px-2 py-1 rounded chip">
               <FaUserDoctor />
-              <small className="mb-0 ms-2">{doctor.specialty_name}</small>
+              <small className="mb-0 ms-2">{doctor.specialty.specialty_name}</small>
             </div>
           </div>
 
           <div className="mt-2 d-flex gap-8">
             <div className="d-flex align-items-center bg-light px-2 py-1 rounded chip">
               <FaHospital />
-              <small className="mb-0 ms-2">{doctor.hospital_name}</small>
+              <small className="mb-0 ms-2">{doctor.hospital.hospital_name}</small>
             </div>
           </div>
 

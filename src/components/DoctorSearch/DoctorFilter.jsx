@@ -1,5 +1,4 @@
 import React, { useEffect, useState, forwardRef } from "react";
-import DatePicker from "../Shared/DatePickerTh";
 import "./DoctorFilter.css";
 import { MdOutlineClear } from "react-icons/md";
 import PopupModal from "./PopupModal";
@@ -30,11 +29,13 @@ const DoctorFilter = ({
     setSelectedSearch(null);
     setSelectedDoctor(null);
   };
+
   const options = (searchData || []).map((option) => ({
     id: option.id,
     title: option.name,
     category: option.category,
   }));
+
   useEffect(() => {
     if (!selectedSearch) return;
     const cat = selectedSearch.category;
@@ -42,6 +43,7 @@ const DoctorFilter = ({
     else if (cat === "Hospital") setSelectedHospital(selectedSearch.title);
     else if (cat === "Specialty") setSelectedSpecialty(selectedSearch.title);
   }, [selectedSearch]);
+
   const modalShow = (dataName) => {
     if (dataName === "hospitals") setShowHospitalsModal(true);
     else setShowSpecialtiesModal(true);
@@ -72,7 +74,7 @@ const DoctorFilter = ({
       <div className="input-group shadow">
         <Autocomplete
           options={options}
-          className="doctor-filter-input flex-grow-1"
+          className="doctor-filter-input grow"
           groupBy={(option) => option.category}
           getOptionLabel={(option) => option.title}
           sx={{ width: 300 }}
@@ -116,24 +118,6 @@ const DoctorFilter = ({
         >
           {selectedSpecialty ? selectedSpecialty : "ความชำนาญแพทย์ทั้งหมด"}
         </Button>
-        <DatePicker
-          dateFormat="dd/MM/yyyy"
-          customInput={<DateButton className="example-custom-input" />}
-          minDate={new Date()}
-          selected={
-            selectedDate ? dayjs(selectedDate, "YYYY-MM-DD").toDate() : null
-          }
-          onChange={(date) => setSelectedDate(dayjs(date).format("YYYY-MM-DD"))}
-          filterDate={(date) => {
-            const isoDate = dayjs(date).format("YYYY-MM-DD");
-            const isAvailable = doctors.some(
-              (doctor) =>
-                Array.isArray(doctor.available_dates) &&
-                doctor.available_dates.includes(isoDate)
-            );
-            return isAvailable;
-          }}
-        />
         <div
           role="separator"
           aria-orientation="vertical"

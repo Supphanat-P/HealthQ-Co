@@ -8,7 +8,7 @@ import { Navigate } from "react-router-dom";
 
 const Profile = () => {
   const [selectedTab, setSelectedTab] = useState("1");
-  const {isLogin} = useData();
+  const { isLogin } = useData();
   if (isLogin === false) {
     return (Navigate({ to: "/login" }));
   }

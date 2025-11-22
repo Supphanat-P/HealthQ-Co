@@ -24,7 +24,7 @@ const PatientInfo = ({ onChange } = {}) => {
       return;
     }
 
-    const info = usersInfo.find((u) => u.user_id === currentUser.userId);
+    const info = usersInfo.find((u) => u.user_id === currentUser.user_id);
     if (!info) return;
     if (!firstName) setFirstName(info.first_name || "");
     if (!lastName) setLastName(info.last_name || "");
@@ -40,7 +40,7 @@ const PatientInfo = ({ onChange } = {}) => {
 
   const handleFileChange = (e) => {
     if (e.target.files.length + files.length > 5) {
-      alert("คุณสามารถอัปโหลดไฟล์ได้สูงสุด 5 ไฟล์");
+      toast.error("คุณสามารถอัปโหลดไฟล์ได้สูงสุด 5 ไฟล์");
       return;
     }
     setFiles((prev) => [...prev, ...Array.from(e.target.files)]);
@@ -62,7 +62,6 @@ const PatientInfo = ({ onChange } = {}) => {
                     name="gender"
                     id="gender"
                     className="form-control  shadow-sm"
-                    value={gender ? gender : ""}
                   >
                     <option value="">เพศ</option>
                     <option value="male">ชาย</option>
@@ -93,11 +92,18 @@ const PatientInfo = ({ onChange } = {}) => {
             </div>
 
             <div className="mb-3">
-              <label className="form-label fw-ligh ">เบอร์โทร</label>
+              <label className="form-label fw-ligh">เบอร์โทร</label>
               <input
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                type="text"
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (!isNaN(value) || value === "") {
+                    setPhone(value);
+                  }
+                }}
+                maxLength="10"
+                minLength="10"
+                type="phone"
                 className="form-control  shadow-sm"
                 placeholder="กรอกเบอร์โทรติดต่อ"
               />
@@ -138,7 +144,7 @@ const PatientInfo = ({ onChange } = {}) => {
 
             <label
               htmlFor="fileUpload"
-              className="d-flex flex-column justify-content-center align-items-center border border-2 border-primary rounded-4 p-4 shadow-sm"
+              className="d-flex flex-column justify-content-center align-items-center border border-primary rounded-4 p-4 shadow-sm"
               style={{
                 cursor: "pointer",
                 transition: "0.2s",
@@ -164,15 +170,17 @@ const PatientInfo = ({ onChange } = {}) => {
                 accept=".pdf, .jpg, .jpeg, .png"
                 multiple
               />
-              <button
-                type="button"
-                className="btn btn-sm btn-outline-danger mt-3"
-                onClick={() => {
-                  clearFiles();
-                }}
-              >
-                ล้างไฟล์ที่เลือกทั้งหมด
-              </button>
+              {files.length > 0 && (
+                <button
+                  type="button"
+                  className="btn btn-sm btn-outline-danger mt-3"
+                  onClick={() => {
+                    clearFiles();
+                  }}
+                >
+                  ล้างไฟล์ที่เลือกทั้งหมด
+                </button>
+              )}
             </label>
 
             {files.length > 0 && (

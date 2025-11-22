@@ -5,6 +5,7 @@ import { Star } from "lucide-react";
 import { Stethoscope } from "lucide-react";
 
 const AppointmentDoctor = ({ selectedDoctor }) => {
+  console.log(selectedDoctor)
   return (
     <div className="d-flex ps-4 ">
       <img
@@ -20,12 +21,12 @@ const AppointmentDoctor = ({ selectedDoctor }) => {
         <p className="text-secondary ps-4 d-flex">
           <Star />
           &nbsp;
-          {selectedDoctor?.specialty_name || "กรุณาเลือกแพทย์"}
+          {selectedDoctor?.specialty.specialty_name || "กรุณาเลือกแพทย์"}
         </p>
         <p className="text-secondary ps-4 d-flex">
           <MapPin />
           &nbsp;
-          {selectedDoctor?.hospital_name || "กรุณาเลือกแพทย์"}
+          {selectedDoctor?.hospital?.hospital_name || "กรุณาเลือกแพทย์"}
         </p>
       </div>
     </div>

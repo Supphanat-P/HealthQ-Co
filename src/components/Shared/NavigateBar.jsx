@@ -46,9 +46,6 @@ const NavigateBar = () => {
             <Nav.Link as={NavLink} to="/doctorsearch" className="text-white">
               ค้นหาแพทย์
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/appointment" className="text-white">
-              ทำนัดหมาย
-            </Nav.Link>
           </Nav>
 
           <Nav className="ms-auto align-items-center gap-3">

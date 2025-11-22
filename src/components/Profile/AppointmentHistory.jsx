@@ -10,6 +10,8 @@ import { Badge, Button, Col, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useData } from "../../Context/DataContext";
 import { useState, useEffect } from "react";
+import dayjs from "dayjs"; 
+
 const AppointmentHistory = () => {
   const {
     doctors = [],
@@ -17,7 +19,6 @@ const AppointmentHistory = () => {
     currentUser,
     hospitals = [],
     specialties = [],
-    doctorsSchedule = [],
   } = useData();
 
   const [selectedTab, setSelectedTab] = useState("1");
@@ -29,11 +30,10 @@ const AppointmentHistory = () => {
     navigate("/doctorinfo", { state: { doctor: findDoctor } });
   };
 
-  const rawUser = localStorage.getItem("user");
   const user = currentUser;
 
   const userAppointments = (appointments || []).filter(
-    (app) => String(app.patient_id) === String(user?.userId)
+    (app) => String(app.user_id) === String(user?.user_id)
   );
 
   const getDoctor = (doctorId) => doctors.find((d) => d.doctor_id === doctorId);
@@ -42,52 +42,52 @@ const AppointmentHistory = () => {
   const getSpecialtyByDoctor = (doctor) =>
     specialties.find((s) => s.specialty_id === doctor?.specialty_id);
 
-  const getSlotData = (doctorId, slotId) => {
-    const schedule = (doctorsSchedule || []).find(
-      (s) => s.doctor_id === doctorId
-    );
-    return schedule?.slots?.find((sl) => sl.slot_id === slotId);
-  };
-
-  const enrichedAppointments = (userAppointments || []).map((a) => {
+  const formatAppointments = (userAppointments || []).map((a) => {
     const doctor = getDoctor(a.doctor_id);
     const hospital = getHospitalByDoctor(doctor) || {};
     const specialty = getSpecialtyByDoctor(doctor) || {};
-    const slot = getSlotData(a.doctor_id, a.slot_id);
-    const apptDate = slot?.date || null;
-    const apptStartTime = slot?.start_time || "";
-    const apptEndTime = slot?.end_time || "";
-    const status = slot?.status;
-    const symptoms = a.patient_symptom || "";
+
+    const slotsGroupedByDate = {};
+    if (a.appointment_slots && a.appointment_slots.length > 0) {
+      a.appointment_slots.forEach(slot => {
+        const date = dayjs(slot.slot_datetime).format("YYYY-MM-DD");
+        const time = dayjs(slot.slot_datetime).format("HH:mm");
+        if (!slotsGroupedByDate[date]) {
+          slotsGroupedByDate[date] = [];
+        }
+        slotsGroupedByDate[date].push(time);
+      });
+    }
+
+    const formattedSlots = Object.keys(slotsGroupedByDate).map(date => ({
+      date: date,
+      times: slotsGroupedByDate[date].sort(),
+    }));
+
+    const status = a.status;
+    const symptoms = a.note || "";
+
     return {
       ...a,
       doctorName: doctor?.doctor_name || "ไม่ระบุ",
       hospitalName: hospital.hospital_name || "-",
       specialtyName: specialty.specialty_name || "-",
       status,
-      apptDate,
-      apptStartTime,
-      apptEndTime,
+      formattedSlots,
       symptoms,
-      key: a.appointment_id,
+      key: a.app_id,
     };
   });
 
-  const pendingAppointments = enrichedAppointments.filter(
+  const pendingAppointments = formatAppointments.filter(
     (appointment) => appointment.status === "pending"
   );
-  const comingAppointments = enrichedAppointments.filter(
+  const comingAppointments = formatAppointments.filter(
     (appointment) => appointment.status === "booked"
   );
-  const completedAppointments = enrichedAppointments.filter(
+  const completedAppointments = formatAppointments.filter(
     (appointment) => appointment.status === "completed"
   );
-  const currentAppointments =
-    selectedTab === "coming"
-      ? comingAppointments
-      : selectedTab === "pending"
-      ? pendingAppointments
-      : completedAppointments;
 
   const renderCard = (appointment) => (
     <Col md={6} key={appointment.key}>
@@ -154,30 +154,19 @@ const AppointmentHistory = () => {
           <p className="mb-0 fw-500 text-navy">{appointment.hospitalName}</p>
         </div>
 
-        <div className="row g-2 mb-3">
-          <div className="col-6">
-            <small className="text-muted d-block mb-1">
-              <Calendar size={14} className="me-1 inline-flex" /> วันที่
-            </small>
-            <p className="mb-0 fw-500 text-navy">
-              {appointment.apptDate
-                ? new Date(appointment.apptDate).toLocaleDateString("th-TH", {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                  })
-                : "-"}
-            </p>
-          </div>
-          <div className="col-6">
-            <small className="text-muted d-block mb-1">
-              <Clock size={14} className="me-1 inline-flex" /> เวลา
-            </small>
-            <p className="mb-0 fw-500 text-navy">
-              {appointment.apptStartTime || "-"} -{" "}
-              {appointment.apptEndTime || "-"}
-            </p>
-          </div>
+        <div className="mb-3">
+          <small className="text-muted d-block mb-1">
+            <Calendar size={14} className="me-1 inline-flex" /> วันที่ & เวลา
+          </small>
+          {appointment.formattedSlots && appointment.formattedSlots.length > 0 ? (
+            appointment.formattedSlots.map((slot, index) => (
+              <p key={index} className="mb-0 fw-500 text-navy">
+                {dayjs(slot.date).locale("th").format("D MMMM YYYY")} — {slot.times.join(", ")} น.
+              </p>
+            ))
+          ) : (
+            <p className="mb-0 fw-500 text-muted">ไม่ระบุวันและเวลา</p>
+          )}
         </div>
 
         <div className="alert alert-light rounded-2 p-2 mb-0">
@@ -188,7 +177,6 @@ const AppointmentHistory = () => {
       </div>
     </Col>
   );
-
   return (
     <div className="container my-5">
       <Button
@@ -250,7 +238,7 @@ const AppointmentHistory = () => {
             </Row>
           </div>
         )}
-        {enrichedAppointments.length === 0 && (
+        {formatAppointments.length === 0 && (
           <div className="text-center text-muted mt-5">
             ไม่มีประวัติการนัดหมาย ❌
           </div>

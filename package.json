@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "start:backend": "npm start --prefix backend",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -13,14 +14,18 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/material": "^7.3.5",
+    "@supabase/supabase-js": "^2.39.8",
     "@tailwindcss/vite": "^4.1.17",
+    "bcryptjs": "^3.0.3",
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
     "dayjs": "^1.11.18",
+    "express": "^5.1.0",
     "geolib": "^3.3.4",
     "leaflet": "^1.9.4",
     "leaflet-geosearch": "^4.2.2",
     "lucide-react": "^0.552.0",
+    "nodemailer": "^7.0.10",
     "react": "^19.2.0",
     "react-bootstrap": "^2.10.10",
     "react-datepicker": "^8.7.0",
@@ -33,7 +38,8 @@
     "react-router-dom": "^7.9.4",
     "react-time-picker": "^8.0.2",
     "react-toastify": "^11.0.5",
-    "tailwindcss": "^4.1.17"
+    "tailwindcss": "^4.1.17",
+    "twilio": "^5.10.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",

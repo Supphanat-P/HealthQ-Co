@@ -15,6 +15,7 @@ import Doctorinfo from "./Pages/Home/Doctorinfo";
 import Home from "./Pages/Home/Home";
 import ShowData from "./Pages/Adminstrator/ShowData";
 import AppoitmentData from "./Pages/Adminstrator/AppointmentData";
+import AllDataDisplay from "./Pages/AllDataDisplay"; 
 import Login from "./Pages/Home/Login/Login";
 import NotFound from "./Pages/404";
 import Logout from "./Pages/Home/Login/Logout";
@@ -47,12 +48,12 @@ function AppContent() {
         <Route path="/showdata" element={<ShowData />} />
         <Route path="/admindoctorschedule" element={<AdminDoctorSchedule />} />
         <Route path="/appointments" element={<AppoitmentData />} />
+        <Route path="/alldata" element={<AllDataDisplay />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/locationcompare" element={<LocationCompare />} />
         <Route path="/profile" element={<Profile />} />
-
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

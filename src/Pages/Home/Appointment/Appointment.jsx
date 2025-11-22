@@ -85,8 +85,8 @@ export default function Appointment() {
             patientInfo={patientInfo}
             doctorId={doctor?.doctor_id}
             doctorName={doctor?.doctor_name || "กรุณาเลือกแพทย์"}
-            doctorHospital={doctor?.hospital_name || "กรุณาเลือกโรงพยาบาล"}
-            doctorSpecialty={doctor?.specialty_name || "กรุณาเลือกสาขาเฉพาะทาง"}
+            doctorHospital={doctor?.hospital.hospital_name || "กรุณาเลือกโรงพยาบาล"}
+            doctorSpecialty={doctor?.specialty.specialty_name || "กรุณาเลือกสาขาเฉพาะทาง"}
           />
         </div>
       </div>

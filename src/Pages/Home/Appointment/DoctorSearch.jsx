@@ -7,7 +7,7 @@ import { Button } from "react-bootstrap";
 import dayjs from "dayjs";
 
 const DoctorSearch = () => {
-  const { doctors, specialties, hospitals, doctorsSchedule } =
+  const { doctors, specialties, hospitals } =
     useContext(DataContext);
 
   const location = useLocation();
@@ -28,6 +28,7 @@ const DoctorSearch = () => {
     }
   }, [location]);
 
+  console.log(doctors)
   ///pageination
   const [currpage, setCurrpage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -46,31 +47,22 @@ const DoctorSearch = () => {
     }
     if (selectedHospital) {
       filteredDoctors = filteredDoctors.filter(
-        (doctor) => doctor.hospital_name === selectedHospital
+        (doctor) => doctor.hospital.hospital_name === selectedHospital
       );
     }
 
     if (selectedSpecialty) {
       filteredDoctors = filteredDoctors.filter(
-        (doctor) => doctor.specialty_name === selectedSpecialty
+        (doctor) => doctor.specialty.specialty_name === selectedSpecialty
       );
     }
 
-    if (selectedDate) {
-      const isoDate = dayjs(selectedDate).format("YYYY-MM-DD");
-      filteredDoctors = filteredDoctors.filter(
-        (doctor) =>
-          Array.isArray(doctor.available_dates) &&
-          doctor.available_dates.includes(isoDate)
-      );
-    }
-
-    filteredDoctors = filteredDoctors.sort((a, b) => {
-      const aRec = !!a.recommended;
-      const bRec = !!b.recommended;
-      if (aRec !== bRec) return aRec ? -1 : 1;
-      return 0;
-    });
+    // filteredDoctors = filteredDoctors.sort((a, b) => {
+    //   const aRec = !!a.recommended;
+    //   const bRec = !!b.recommended;
+    //   if (aRec !== bRec) return aRec ? -1 : 1;
+    //   return 0;
+    // });
 
     setFilteredDoctors(filteredDoctors);
     setCurrpage(1);
