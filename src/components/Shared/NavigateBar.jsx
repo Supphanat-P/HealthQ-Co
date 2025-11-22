@@ -1,101 +1,188 @@
-import Container from "react-bootstrap/Container";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
-import Form from "react-bootstrap/Form";
-import FormControl from "react-bootstrap/FormControl";
-import Button from "react-bootstrap/Button"; 
-import React, { useState } from "react"; 
-import { Link, useNavigate, NavLink } from "react-router-dom";
-import { useData } from "../../Context/DataContext";
-import { FaSearch } from "react-icons/fa"; 
+import { useState } from "react";
+import { Search, User, LogIn, UserPlus, LogOut, Menu, X } from "lucide-react";
 
 const NavigateBar = () => {
-  const { isLogin } = useData();
-  const token = localStorage.getItem("token");
+  const [isOpen, setIsOpen] = useState(false);
   const [lang, setLang] = useState("TH");
+  const token = localStorage.getItem("token");
+
+  const navLinks = [
+    { label: "หน้าหลัก", path: "/" },
+    { label: "ค้นหาแพทย์", path: "/doctorsearch" }
+  ];
 
   return (
-    <Navbar expand="lg" className="bg-navy shadow-sm m-2 rounded">
-      <Container>
-        <Navbar.Brand
-          as={Link}
-          to="/"
-          className="text-white fw-bold d-flex align-items-center"
-        >
-          <img
-            src="/Hospital-Logo/Pond.jpg"
-            alt="Logo"
-            style={{
-              width: 40,
-              height: 40,
-              objectFit: "cover",
-              borderRadius: 6,
-            }}
-            className="me-2"
-          />
-          <span className="fs-5">HealthQ</span>
-        </Navbar.Brand>
+    <nav className="bg-navy shadow-lg">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="flex items-center justify-between h-20">
+          <div className="flex items-center space-x-3">
+            <div className="bg-white p-1.5 rounded-xl shadow-md">
+              <img
+                src="/Hospital-Logo/Pond.jpg"
+                alt="Logo"
+                className="w-10 h-10 object-cover rounded-lg"
+              />
+            </div>
+            <span className="text-white text-2xl font-bold tracking-wide">
+              &nbsp; HealthQ
+            </span>
 
-        <Navbar.Toggle aria-controls="main-navbar" />
-        <Navbar.Collapse id="main-navbar">
-          <Nav className="me-auto my-2 my-lg-0" navbarScroll>
-            <Nav.Link as={NavLink} to="/" className="text-white">
-              หน้าหลัก
-            </Nav.Link>
-            <Nav.Link as={NavLink} to="/doctorsearch" className="text-white">
-              ค้นหาแพทย์
-            </Nav.Link>
-          </Nav>
-
-          <Nav className="ms-auto align-items-center gap-3">
+            <div className="hidden lg:flex items-center space-x-8">
+              {navLinks.map((link) => (
+                <a
+                  key={link.path}
+                  href={link.path}
+                  className="text-white no-deco ms-5 hover:text-blue-200 font-medium transition-colors duration-200 hover:scale-105 transform"
+                >
+                  {link.label}
+                </a>
+              ))}
+            </div>
+          </div>
+          <div className="hidden lg:flex items-center space-x-4">
             {!token ? (
-              <>
-                <Nav.Link as={NavLink} to="/login" className="text-white">
-                  เข้าสู่ระบบ
-                </Nav.Link>
-                <Nav.Link as={NavLink} to="/register" className="text-white">
-                  สมัครสมาชิก
-                </Nav.Link>
-              </>
+              <div className="flex items-center space-x-3">
+                <a
+                  href="/login"
+                  className="flex items-center no-deco space-x-2 px-4 py-2 text-white hover:bg-white/10 rounded-xl transition-all duration-200"
+                >
+                  <LogIn className="w-4 h-4" />
+                  &nbsp;
+                  <span className="font-medium">เข้าสู่ระบบ</span>
+                </a>
+                <a
+                  href="/register"
+                  className="me-4 flex items-center no-deco space-x-2 px-4 py-2 text-white hover:bg-white/10 rounded-xl transition-all duration-200"
+                >
+                  <UserPlus className="w-4 h-4" />
+                  <span>สมัครสมาชิก</span>
+                </a>
+              </div>
             ) : (
-              <>
-                <Nav.Link as={NavLink} to="/profile" className="text-white">
-                  โปรไฟล์
-                </Nav.Link>
-                <Nav.Link as={NavLink} to="/logout" className="text-white">
-                  ออกจากระบบ
-                </Nav.Link>
-              </>
+              <div className="flex items-center space-x-3">
+                <a
+                  href="/profile"
+                  className="flex items-center space-x-2 px-4 py-2 text-white hover:bg-white/10 rounded-xl transition-all duration-200"
+                >
+                  <User className="w-4 h-4" />
+                  <span className="font-medium">โปรไฟล์</span>
+                </a>
+                <a
+                  href="/logout"
+                  className="flex items-center space-x-2 px-4 py-2 text-white hover:bg-red-500/20 hover:text-red-200 rounded-xl transition-all duration-200"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span className="font-medium">ออกจากระบบ</span>
+                </a>
+              </div>
             )}
-            {/* ปุ่มเปลี่ยนภาษา */}
-            <div className="flex border border-white rounded-md overflow-hidden">
+
+            <div className="flex border-2 border-white/30 rounded-xl overflow-hidden bg-white/5 backdrop-blur-sm">
               <button
                 onClick={() => setLang("TH")}
-                className={`px-3 py-1 text-sm font-bold transition-colors ${
-                  lang === "TH"
-                    ? "bg-white text-blue-900"
-                    : "text-white hover:bg-white/20"
-                }`}
+                className={`px-4 py-2 text-sm font-bold transition-all duration-200 ${lang === "TH"
+                  ? "bg-white text-blue-900 shadow-md"
+                  : "text-white hover:bg-white/10"
+                  }`}
               >
                 TH
               </button>
-              <div className="w-px bg-white"></div>
+              <div className="w-px bg-white/30"></div>
               <button
                 onClick={() => setLang("EN")}
-                className={`px-3 py-1 text-sm font-bold transition-colors ${
-                  lang === "EN"
-                    ? "bg-white text-blue-900"
-                    : "text-white hover:bg-white/20"
-                }`}
+                className={`px-4 py-2 text-sm font-bold transition-all duration-200 ${lang === "EN"
+                  ? "bg-white text-blue-900 shadow-md"
+                  : "text-white hover:bg-white/10"
+                  }`}
               >
                 EN
               </button>
             </div>
-          </Nav>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
+          </div>
+
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="lg:hidden text-white p-2 hover:bg-white/10 rounded-lg transition-colors"
+          >
+            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
+
+        {isOpen && (
+          <div className="lg:hidden pb-6 pt-2 space-y-3 border-t border-white/10 mt-2">
+            {navLinks.map((link) => (
+              <a
+                key={link.path}
+                href={link.path}
+                className="block text-white hover:bg-white/10 px-4 py-3 rounded-xl font-medium transition-colors"
+              >
+                {link.label}
+              </a>
+            ))}
+
+            <div className="pt-3 border-t border-white/10 space-y-3">
+              {!token ? (
+                <>
+                  <a
+                    href="/login"
+                    className="flex items-center space-x-2 text-white hover:bg-white/10 px-4 py-3 rounded-xl font-medium transition-colors"
+                  >
+                    <LogIn className="w-4 h-4" />
+                    <span>เข้าสู่ระบบ</span>
+                  </a>
+                  <a
+                    href="/register"
+                    className="flex items-center space-x-2 bg-white text-blue-900 hover:bg-blue-50 px-4 py-3 rounded-xl font-semibold transition-colors"
+                  >
+                    <UserPlus className="w-4 h-4" />
+                    <span>สมัครสมาชิก</span>
+                  </a>
+                </>
+              ) : (
+                <>
+                  <a
+                    href="/profile"
+                    className="flex items-center space-x-2 text-white hover:bg-white/10 px-4 py-3 rounded-xl font-medium transition-colors"
+                  >
+                    <User className="w-4 h-4" />
+                    <span>โปรไฟล์</span>
+                  </a>
+                  <a
+                    href="/logout"
+                    className="flex items-center space-x-2 text-white hover:bg-red-500/20 px-4 py-3 rounded-xl font-medium transition-colors"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>ออกจากระบบ</span>
+                  </a>
+                </>
+              )}
+
+              <div className="flex border-2 border-white/30 rounded-xl overflow-hidden bg-white/5">
+                <button
+                  onClick={() => setLang("TH")}
+                  className={`flex-1 py-3 text-sm font-bold transition-all ${lang === "TH"
+                    ? "bg-white text-blue-900"
+                    : "text-white hover:bg-white/10"
+                    }`}
+                >
+                  TH
+                </button>
+                <div className="w-px bg-white/30"></div>
+                <button
+                  onClick={() => setLang("EN")}
+                  className={`flex-1 py-3 text-sm font-bold transition-all ${lang === "EN"
+                    ? "bg-white text-blue-900"
+                    : "text-white hover:bg-white/10"
+                    }`}
+                >
+                  EN
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </nav>
   );
 };
 

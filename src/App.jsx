@@ -15,7 +15,7 @@ import Doctorinfo from "./Pages/Home/Doctorinfo";
 import Home from "./Pages/Home/Home";
 import ShowData from "./Pages/Adminstrator/ShowData";
 import AppoitmentData from "./Pages/Adminstrator/AppointmentData";
-import AllDataDisplay from "./Pages/AllDataDisplay"; 
+import AllDataDisplay from "./Pages/AllDataDisplay";
 import Login from "./Pages/Home/Login/Login";
 import NotFound from "./Pages/404";
 import Logout from "./Pages/Home/Login/Logout";
@@ -26,6 +26,7 @@ import Profile from "./Pages/Profile";
 import Register from "./Pages/Home/Login/Register";
 import { Toaster } from "react-hot-toast";
 import Chatbot from "./components/Chatbot/Chatbot";
+import AdminSidebar from "./components/Admin/AdminSidebar";
 
 function AppContent() {
   const { loading, error } = useData();
@@ -54,6 +55,7 @@ function AppContent() {
         <Route path="/logout" element={<Logout />} />
         <Route path="/locationcompare" element={<LocationCompare />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/adminsidebar" element={<AdminSidebar />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
