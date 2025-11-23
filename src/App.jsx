@@ -27,6 +27,7 @@ import Register from "./Pages/Home/Login/Register";
 import { Toaster } from "react-hot-toast";
 import Chatbot from "./components/Chatbot/Chatbot";
 import AdminSidebar from "./components/Admin/AdminSidebar";
+import AdminDashboard from "./components/Admin/AdminDashboard";
 
 function AppContent() {
   const { loading, error } = useData();
@@ -56,6 +57,7 @@ function AppContent() {
         <Route path="/locationcompare" element={<LocationCompare />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/adminsidebar" element={<AdminSidebar />} />
+        <Route path="/admindashboard" element={<AdminDashboard />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
