@@ -31,7 +31,7 @@ const ProfileNew = () => {
 
         <div className="d-flex gap-4 border-bottom pb-2 mb-4">
           <div
-            onClick={() => setSelectedTab("1")} 
+            onClick={() => setSelectedTab("1")} a
             style={{
               cursor: "pointer",
               borderBottom: selectedTab === "1" ? "3px solid #1f2054" : "",
