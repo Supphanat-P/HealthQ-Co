@@ -1,5 +1,5 @@
 import AdminSidebar from "./AdminSidebar";
-import { Users, Calendar, CheckCircle, Hourglass } from "lucide-react";
+import { Users, Calendar, CheckCircle, Hourglass, XCircle, Clock } from "lucide-react";
 const AdminDashboard = () => {
   const cards = [
     {
@@ -9,7 +9,7 @@ const AdminDashboard = () => {
     },
     {
       title: "ผู้ป่วยทั้งหมด",
-      value: "1,000 คน",
+      value: "100 คน",
       icon: <Users className="text-[#001F54] w-6 h-6  " />,
     },
     {
@@ -18,7 +18,7 @@ const AdminDashboard = () => {
       icon: <Hourglass className="text-[#001F54] w-6 h-6  " />,
     },
     {
-      title: "ยืนยันแล้ว",
+      title: "อนุมัติแล้ว",
       value: "16 นัดหมาย",
       icon: <CheckCircle className="text-[#001F54] w-6 h-6  " />,
     },
@@ -80,8 +80,32 @@ const AdminDashboard = () => {
                     นพ. หงสาวดี แซ่ลี่
                   </p>
                 </div>
-                <span className="px-4 py-1 rounded-full text-xs font-bold bg-green-600 fs-7 text-white">
-                  ยืนยันแล้ว
+                <span className="flex align-items-center px-2 py-1 rounded-full text-xs font-bold bg-green-600 fs-7 text-white">
+                  <CheckCircle size={16} />
+                  อนุมัติแล้ว
+                </span>
+              </div>
+            </div>
+
+
+            <div className="flex align-items-center shadow-sm px-2 rounded-lg border border-[#001F54] w-[840px] h-[120px] mt-3">
+              <img
+                src="/phdoctor.jpg"
+                alt="doctor"
+                className="w-[70px] h-[70px] rounded-full object-cover mr-4"
+              />
+              <div className="flex justify-between items-center w-full ms-3">
+                <div className="flex flex-col justify-center">
+                  <span className="text-navy font-semibold">
+                    นาย สมชาย ใจดี
+                  </span>
+                  <p className="text-gray-900 mt-2 text-sm mb-0">
+                    นพ. หงสาวดี แซ่ลี่
+                  </p>
+                </div>
+                <span className="flex align-items-center gap-1 px-2 py-1 rounded-full text-xs font-bold bg-yellow-400 fs-7 text-black">
+                  <Clock size={16}/>
+                  รออนุมัติ
                 </span>
               </div>
             </div>
@@ -102,29 +126,8 @@ const AdminDashboard = () => {
                     นพ. หงสาวดี แซ่ลี่
                   </p>
                 </div>
-                <span className="px-4 py-1 rounded-full text-xs font-bold bg-yellow-400 fs-7 text-black">
-                  รอการอนุมัติ
-                </span>
-              </div>
-            </div>
-
-
-            <div className="flex items-center shadow-sm px-3 rounded-lg border border-[#001F54] w-[840px] h-[120px] mt-3">
-              <img
-                src="/phdoctor.jpg"
-                alt="doctor"
-                className="w-[70px] h-[70px] rounded-full object-cover mr-4"
-              />
-              <div className="flex justify-between items-center w-full ms-3">
-                <div className="flex flex-col justify-center">
-                  <span className="text-navy font-semibold">
-                    นาย สมชาย ใจดี
-                  </span>
-                  <p className="text-gray-900 mt-2 text-sm mb-0">
-                    นพ. หงสาวดี แซ่ลี่
-                  </p>
-                </div>
-                <span className="px-4 py-1 rounded-full text-xs font-bold bg-red-600 fs-7 text-white">
+                <span className="flex gap-1 align-items-center px-2 py-1 rounded-full text-xs font-bold bg-red-600 fs-7 text-white">
+                <XCircle size={16}/>
                   ยกเลิก
                 </span>
               </div>

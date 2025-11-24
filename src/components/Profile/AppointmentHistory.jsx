@@ -129,7 +129,7 @@ const AppointmentHistory = () => {
             )}
             {appointment.status === "pending" && (
               <span className="inline-flex items-center bg-yellow-500 text-sm font-medium px-3 py-1 rounded-full shadow-sm">
-                <Clock size={16} className="me-1" /> รอการอนุมัติ
+                <Clock size={16} className="me-1" /> รออนุมัติ
               </span>
             )}
             {appointment.status === "completed" && (
@@ -194,7 +194,7 @@ const AppointmentHistory = () => {
         className="me-2 rounded-pill shadow-sm py-2 px-3"
         style={{ transition: "all 0.2s ease-in-out" }}
       >
-        รอการอนุมัติ ({pendingAppointments.length})
+        รออนุมัติ ({pendingAppointments.length})
       </Button>
 
       <Button
@@ -218,7 +218,7 @@ const AppointmentHistory = () => {
         )}
         {selectedTab === "2" && pendingAppointments.length > 0 && (
           <div className="mb-5 ">
-            <h5 className="text-navy fw-bold mb-3">รอการอนุมัติ</h5>
+            <h5 className="text-navy fw-bold mb-3">รออนุมัติ</h5>
             <hr />
             <Row className="g-4">
               {pendingAppointments.map((appointment) =>
