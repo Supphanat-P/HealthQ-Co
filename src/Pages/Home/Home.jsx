@@ -2,6 +2,7 @@ import { Container } from "react-bootstrap";
 import { InputGroup, Form, Button } from "react-bootstrap";
 import { BiSearch } from "react-icons/bi";
 import { BiCalendar, BiSearchAlt, BiPhone } from "react-icons/bi";
+import Myvideo from "./assets/Myvideo.mp4";
 const Home = () => {
   return (
     <>
@@ -221,16 +222,17 @@ const Home = () => {
               >
                 01
               </div>
-
-              <div
-                style={{
-                  width: "180px",
-                  height: "160px",
-                  backgroundColor: "#1F2054",
-                  borderRadius: "20px",
-                  marginTop: "-20px",
-                }}
-              ></div>
+                <div className="flex justify-center items-center h-screen bg-gray-100">
+      <video
+        src={Myvideo}
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="w-80 rounded-xl shadow-lg"
+      />
+    </div>
+          
               <div style={{ marginTop: "20px" }}>
                 <h5 style={{ color: "#1F2054", fontWeight: "700" }}>
                   เลือกโรงพยาบาล
