@@ -6,6 +6,7 @@ import {
   Routes,
   Route,
   Navigate,
+  useLocation, // 1. เพิ่ม useLocation ตรงนี้
 } from "react-router-dom";
 import { DataProvider, useData } from "./Context/DataContext";
 import NavigateBar from "./components/Shared/NavigateBar";
@@ -33,6 +34,19 @@ import AdminPatients from "./components/Admin/AdminPatients";
 
 function AppContent() {
   const { loading, error } = useData();
+  const location = useLocation(); // 2. เรียกใช้ hook เพื่อดึง path ปัจจุบัน
+
+  // 3. กำหนด path ที่ "ไม่ต้องการ" ให้โชว์ Chatbot
+  const hiddenPaths = [
+    "/login",
+    "/register",
+    "/admindashboard",
+    "/adminappointments",
+    "/adminpatients",
+  ];
+
+  // เช็คว่า path ปัจจุบันอยู่ในรายการที่ต้องซ่อนไหม
+  const showChatbot = !hiddenPaths.includes(location.pathname.toLowerCase());
 
   if (loading) return <Loading />;
   if (error)
@@ -43,7 +57,10 @@ function AppContent() {
       <Toaster />
       <LocationCompare />
       <NavigateBar />
-      <Chatbot />
+      
+      {/* 4. แสดงผลแบบมีเงื่อนไข */}
+      {showChatbot && <Chatbot />}
+
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/appointment" element={<Appointment />} />
