@@ -2,6 +2,54 @@ import AdminSidebar from "./AdminSidebar";
 import { Search, ChevronDown, MoreVertical } from "lucide-react";
 
 const AdminAppointments = () => {
+  // Mock Data
+  const appointments = [
+    {
+      id: "001",
+      date: "00/00/0000",
+      time: "09:00 น.",
+      patient: "นายสมชาย ใจดี",
+      phone: "062-979-7123",
+      doctor: "นายหงสาวดี แซ่หลี",
+      dept: "หัวใจ",
+      status: "ยืนยันแล้ว",
+    },
+    {
+      id: "002",
+      date: "00/00/0000",
+      time: "11:00 น.",
+      patient: "นางสมหญิง ใจดี",
+      phone: "062-973-5454",
+      doctor: "นายหงสาวดี แซ่หลี",
+      dept: "หัวใจ",
+      status: "รอที่ยืนยัน",
+    },
+    {
+      id: "003",
+      date: "00/00/0000",
+      time: "14:00 น.",
+      patient: "นายสมใจ ใจดี",
+      phone: "000-000-0000",
+      doctor: "นายหงสาวดี แซ่หลี",
+      dept: "หัวใจ",
+      status: "ยกเลิก",
+    },
+  ];
+
+  // ฟังก์ชันเลือกสีปุ่มตามสถานะ
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "ยืนยันแล้ว":
+        return "bg-green-600 text-white";
+      case "รอที่ยืนยัน":
+        return "bg-yellow-400 text-black";
+      case "ยกเลิก":
+        return "bg-red-600 text-white";
+      default:
+        return "bg-gray-200 text-gray-800";
+    }
+  };
+
   return (
     <div className="flex">
       <AdminSidebar />
@@ -47,82 +95,38 @@ const AdminAppointments = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {/* ยืนยันแล้ว */}
-              <tr className="hover:bg-gray-50 transition-colors">
-                <td className="p-4 font-medium text-gray-700">001</td>
-                <td className="p-4 text-gray-600">
-                  <div>00/00/0000</div>
-                  <div className="text-sm text-gray-400">09:00 น.</div>
-                </td>
-                <td className="p-4">
-                  <div className="font-medium text-gray-800">นายสมชาย ใจดี</div>
-                  <div className="text-sm text-gray-400">062-979-7123</div>
-                </td>
-                <td className="p-4 text-gray-700">นายหงสาวดี แซ่หลี</td>
-                <td className="p-4 text-gray-700">หัวใจ</td>
-                <td className="p-4 text-center">
-                  <span className="px-4 py-1 rounded-full text-xs font-bold bg-green-600 fs-7 text-white">
-                    ยืนยันแล้ว
-                  </span>
-                </td>
-                <td className="p-4 text-center">
-                  <button className="p-2 hover:bg-gray-100 rounded-full text-gray-500">
-                    <MoreVertical size={18} />
-                  </button>
-                </td>
-              </tr>
-
-              {/* รอที่ยืนยัน */}
-              <tr className="hover:bg-gray-50 transition-colors">
-                <td className="p-4 font-medium text-gray-700">002</td>
-                <td className="p-4 text-gray-600">
-                  <div>00/00/0000</div>
-                  <div className="text-sm text-gray-400">11:00 น.</div>
-                </td>
-                <td className="p-4">
-                  <div className="font-medium text-gray-800">
-                    นางสมหญิง ใจดี
-                  </div>
-                  <div className="text-sm text-gray-400">062-973-5454</div>
-                </td>
-                <td className="p-4 text-gray-700">นายหงสาวดี แซ่หลี</td>
-                <td className="p-4 text-gray-700">หัวใจ</td>
-                <td className="p-4 text-center">
-                  <span className="px-4 py-1 rounded-full text-xs font-bold bg-yellow-400 fs-7 text-black">
-                    รอที่ยืนยัน
-                  </span>
-                </td>
-                <td className="p-4 text-center">
-                  <button className="p-2 hover:bg-gray-100 rounded-full text-gray-500">
-                    <MoreVertical size={18} />
-                  </button>
-                </td>
-              </tr>
-
-              {/* ยกเลิก */}
-              <tr className="hover:bg-gray-50 transition-colors">
-                <td className="p-4 font-medium text-gray-700">003</td>
-                <td className="p-4 text-gray-600">
-                  <div>00/00/0000</div>
-                  <div className="text-sm text-gray-400">14:00 น.</div>
-                </td>
-                <td className="p-4">
-                  <div className="font-medium text-gray-800">นายสมใจ ใจดี</div>
-                  <div className="text-sm text-gray-400">000-000-0000</div>
-                </td>
-                <td className="p-4 text-gray-700">นายหงสาวดี แซ่หลี</td>
-                <td className="p-4 text-gray-700">หัวใจ</td>
-                <td className="p-4 text-center">
-                  <span className="px-4 py-1 rounded-full text-xs font-bold bg-red-600 fs-7 text-white">
-                    ยกเลิก
-                  </span>
-                </td>
-                <td className="p-4 text-center">
-                  <button className="p-2 hover:bg-gray-100 rounded-full text-gray-500">
-                    <MoreVertical size={18} />
-                  </button>
-                </td>
-              </tr>
+              {/* map วนลูปแสดงข้อมูล */}
+              {appointments.map((item, index) => (
+                <tr key={index} className="hover:bg-gray-50 transition-colors">
+                  <td className="p-4 font-medium text-gray-700">{item.id}</td>
+                  <td className="p-4 text-gray-600">
+                    <div>{item.date}</div>
+                    <div className="text-sm text-gray-400">{item.time}</div>
+                  </td>
+                  <td className="p-4">
+                    <div className="font-medium text-gray-800">
+                      {item.patient}
+                    </div>
+                    <div className="text-sm text-gray-400">{item.phone}</div>
+                  </td>
+                  <td className="p-4 text-gray-700">{item.doctor}</td>
+                  <td className="p-4 text-gray-700">{item.dept}</td>
+                  <td className="p-4 text-center">
+                    <span
+                      className={`px-4 py-1 rounded-full text-xs font-bold fs-7 ${getStatusColor(
+                        item.status
+                      )}`}
+                    >
+                      {item.status}
+                    </span>
+                  </td>
+                  <td className="p-4 text-center">
+                    <button className="p-2 hover:bg-gray-100 rounded-full text-gray-500">
+                      <MoreVertical size={18} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
