@@ -137,21 +137,24 @@ const Home = () => {
 
           <div className="d-flex m-auto justify-content-center align-items-center">
             <button
-              className="btn bg-sky m-5 d-flex align-items-center gap-2 box-shadow"
+              className="btn bg-sky m-5 d-flex align-items-center justify-content-center gap-2 box-shadow"
+              style={{ width: "275px", height: "70px" }}
             >
               <BiCalendar size={24} color="white" />
               <h3 className="text-white mb-0">จองคิวตรวจ</h3>
             </button>
 
             <button
-              className="btn bg-sky m-5 d-flex align-items-center gap-2 box-shadow"
+              className="btn bg-sky m-5 d-flex align-items-center justify-content-center gap-2 box-shadow"
+              style={{ width: "275px", height: "70px" }}
             >
               <BiSearchAlt size={24} color="white" />
               <h3 className="text-white mb-0">ค้นหาแพทย์</h3>
             </button>
 
             <button
-              className="btn bg-sky m-5 d-flex align-items-center gap-2 box-shadow"
+              className="btn bg-sky m-5 d-flex align-items-center justify-content-center gap-2 box-shadow"
+              style={{ width: "275px", height: "70px" }}
             >
               <BiPhone size={24} color="white" />
               <h3 className="text-white mb-0">ติดต่อเรา</h3>
@@ -162,17 +165,38 @@ const Home = () => {
 
       <div>
         <div
-          className="text-darkblue d-flex justify-content-center align-items-center fs-1"
-          style={{ backgroundColor: "#EEEEFF", margin: "" }}
+          className="d-flex flex-column align-items-center"
+          style={{ backgroundColor: "#EEEEFF", padding: "20px 0" }}
         >
-          วิธีการใช้งาน
+          <div className="text-darkblue fs-1">วิธีการใช้งาน</div>
+
+          <div
+            style={{
+              height: "4px",
+              width: "300px",
+              backgroundImage:
+                "linear-gradient(to right, rgb(0, 45, 115), rgb(56, 111, 170), rgb(141, 211, 255), rgb(141, 211, 255))",
+              marginTop: "10px",
+            }}
+          ></div>
         </div>
 
         <div
-          className="text-darkblue gap-5 py-4 d-flex justify-content-center align-items-center fs-3"
-          style={{ backgroundColor: "#EEEEFF" }}
+          className="d-flex flex-column align-items-center"
+          style={{ backgroundColor: "#EEEEFF", padding: "20px 0" }}
         >
-          เพียง 4 ขั้นตอนง่ายๆ คุณก็สามารถจองนัดหมายกับแพทย์ได้ทันที
+          <div className="text-darkblue fs-3 text-center">
+            เพียง 4 ขั้นตอนง่ายๆ คุณก็สามารถจองนัดหมายกับแพทย์ได้ทันที
+          </div>
+          <div
+            style={{
+              height: "4px",
+              width: "800px",
+              backgroundImage:
+                "linear-gradient(to right, rgb(0, 45, 115), rgb(56, 111, 170), rgb(141, 211, 255), rgb(141, 211, 255))",
+              marginTop: "10px",
+            }}
+          ></div>
         </div>
 
         <div style={{ backgroundColor: "#EEEEFF" }}>
