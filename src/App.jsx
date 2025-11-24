@@ -28,6 +28,7 @@ import { Toaster } from "react-hot-toast";
 import Chatbot from "./components/Chatbot/Chatbot";
 import AdminSidebar from "./components/Admin/AdminSidebar";
 import AdminDashboard from "./components/Admin/AdminDashboard";
+import AdminAppointments from "./components/Admin/AdminAppointments";
 
 function AppContent() {
   const { loading, error } = useData();
@@ -58,6 +59,7 @@ function AppContent() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/adminsidebar" element={<AdminSidebar />} />
         <Route path="/admindashboard" element={<AdminDashboard />} />
+        <Route path="/adminappointments" element={<AdminAppointments />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

@@ -80,7 +80,7 @@ const AdminDashboard = () => {
                     นพ. หงสาวดี แซ่ลี่
                   </p>
                 </div>
-                <span className="bg-green-500 text-white px-3 py-1 rounded">
+                <span className="px-4 py-1 rounded-full text-xs font-bold bg-green-600 fs-7 text-white">
                   ยืนยันแล้ว
                 </span>
               </div>
@@ -102,7 +102,7 @@ const AdminDashboard = () => {
                     นพ. หงสาวดี แซ่ลี่
                   </p>
                 </div>
-                <span className="bg-yellow-600 text-white px-3 py-1 rounded">
+                <span className="px-4 py-1 rounded-full text-xs font-bold bg-yellow-400 fs-7 text-black">
                   รอการอนุมัติ
                 </span>
               </div>
@@ -124,7 +124,7 @@ const AdminDashboard = () => {
                     นพ. หงสาวดี แซ่ลี่
                   </p>
                 </div>
-                <span className="bg-red-500 text-white px-3 py-1 rounded">
+                <span className="px-4 py-1 rounded-full text-xs font-bold bg-red-600 fs-7 text-white">
                   ยกเลิก
                 </span>
               </div>
