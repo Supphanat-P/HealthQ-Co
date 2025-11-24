@@ -61,7 +61,7 @@ function AppContent() {
         <Route path="/adminsidebar" element={<AdminSidebar />} />
         <Route path="/admindashboard" element={<AdminDashboard />} />
         <Route path="/adminappointments" element={<AdminAppointments />} />
-        <Route path="/AdminPatients" element={<AdminPatients />} />
+        <Route path="/adminpatients" element={<AdminPatients />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
