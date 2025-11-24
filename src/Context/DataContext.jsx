@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import dayjs from "dayjs";
-import { supabase } from "../supabaseClient";
+import { supabase } from "../config/supabaseClient";
 import {
   fetchSpecialties,
   fetchDoctors,
@@ -11,7 +11,8 @@ import {
   createAppointment,
   sendOtpForRegistration,
   createUserAccount,
-  login as loginFromFetchData // Renamed to avoid collision
+  login as loginFromFetchData,
+  updateUserInfo
 } from "./FetchData";
 
 const DataContext = createContext(null);
@@ -150,9 +151,10 @@ export const DataProvider = ({ children }) => {
         loading,
         error,
         symptomsListData,
-        createAppointment, 
+        createAppointment,
         sendOtpForRegistration,
-        createUserAccount
+        createUserAccount,
+        updateUserInfo
       }}
     >
       {children}

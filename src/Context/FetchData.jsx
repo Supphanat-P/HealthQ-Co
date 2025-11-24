@@ -1,4 +1,4 @@
-import { supabase } from '../supabaseClient';
+import { supabase } from '../config/supabaseClient';
 import bcrypt from "bcryptjs";
 
 export const fetchDoctors = async () => {
@@ -79,9 +79,7 @@ export const createAppointment = async (user_id, doctor_id, appointment_slots_da
   appointment_slots_data.forEach(slotGroup => {
     const timesArray = Array.isArray(slotGroup.times) ? slotGroup.times : [slotGroup.times];
     timesArray.forEach(time => {
-      // Combine date and time to form a timestamp with time zone (ISO 8601 format)
-      // Assuming 'date' is 'YYYY-MM-DD' and 'time' is 'HH:MM'
-      const slotDateTime = `${slotGroup.date}T${time}:00Z`; // UTC timestamp
+      const slotDateTime = `${slotGroup.date}T${time}:00Z`;
       slotsToInsert.push({
         app_id: app_id,
         slot_datetime: slotDateTime,
@@ -195,4 +193,18 @@ export const login = async (email, password) => {
   } catch (err) {
     throw err;
   }
+};
+
+export const updateUserInfo = async (user_id, data) => {
+  const { data: userData, error: userError } = await supabase
+    .from("users")
+    .update(data)
+    .eq("user_id", user_id)
+    .select()
+    .single();
+
+  if (userError) {
+    throw new Error(userError.message);
+  }
+  return userData;
 };

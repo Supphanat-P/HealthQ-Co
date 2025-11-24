@@ -1,19 +1,25 @@
-import React from "react";
-import { Modal } from "react-bootstrap";
+import React, { useEffect } from "react";
 import { useData } from "../../../Context/DataContext";
 import toast from "react-hot-toast";
 
 const Logout = () => {
-  const waiting = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const { logout } = useData();
 
-  try {
-    logout();
-    toast.success("ออกจากระบบสำเร็จ");
-  } catch (err) {}
-  waiting(600).then(() => {
-    window.location.href = "/";
-  });
+  useEffect(() => {
+    const performLogout = async () => {
+      try {
+        await logout();
+        toast.success("ออกจากระบบสำเร็จ");
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 600);
+      } catch (err) {
+        toast.error("ออกจากระบบไม่สำเร็จ");
+      }
+    };
+
+    performLogout();
+  }, [logout]);
 
   return <></>;
 };
