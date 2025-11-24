@@ -5,7 +5,7 @@ const AdminDashboard = () => {
     {
       title: "นัดหมายวันนี้",
       value: "24 นัดหมาย",
-      icon: <Calendar className="text-[#001F54] w-6 h-6 " />,
+      icon: <Calendar className="text-[#001F54] w-6 h-6" />,
     },
     {
       title: "ผู้ป่วยทั้งหมด",
@@ -33,39 +33,39 @@ const AdminDashboard = () => {
         <h3 className="text-gray-900 m-3 text-xl font-semibold">แดชบอร์ด</h3>
         <p className="text-gray-500 m-3">ภาพรวมการจัดการนัดหมายและผู้ป่วย</p>
 
-      
-      <div className="flex flex-wrap justify-center gap-4 mt-4">
-  {cards.map((card, index) => (
-    <div
-      key={index}
-      className="shadow-lg rounded-xl border-[1px] border-[#001F54] w-[200px] h-[120px] p-4 flex justify-between items-start"
-    >
-    
-      <div className="flex flex-col">
-        <p className="text-[#001F54] text-sm font-semibold">
-          {card.title}
-        </p>
-        <p className="text-gray-900 text-xl font-bold mt-2">
-          {card.value}
-        </p>
-      </div>
 
-     
-      <div className="flex items-start">
-        {card.icon}
-      </div>
-    </div>
-  ))}
-</div>
+        <div className="flex flex-wrap justify-center gap-4 mt-4">
+          {cards.map((card, index) => (
+            <div
+              key={index}
+              className="shadow-sm bg-white rounded-xl border border-[#001F54] w-[200px] h-[120px] p-4 flex justify-between items-start"
+            >
+
+              <div className="flex flex-col">
+                <p className="text-[#001F54] text-sm font-semibold">
+                  {card.title}
+                </p>
+                <p className="text-gray-900 text-xl font-bold mt-2">
+                  {card.value}
+                </p>
+              </div>
 
 
-      
+              <div className="flex items-start">
+                {card.icon}
+              </div>
+            </div>
+          ))}
+        </div>
+
+
+
         <div className="flex justify-center mt-4">
-          <div className="mt-4 p-3 border-[1px] border-[#001F54] rounded-lg bg-light">
+          <div className="mt-4 p-3 border bg-white border-[#001F54] rounded-lg bg-light">
             <h3 className="text-navy text-lg  mb-3">นัดหมายวันนี้</h3>
 
-           
-            <div className="flex items-center shadow px-3 rounded-lg border-[1px] border-[#001F54] w-[840px] h-[120px]">
+
+            <div className="flex items-center shadow-sm px-3 rounded-lg border border-[#001F54] w-[840px] h-[120px]">
               <img
                 src="/phdoctor.jpg"
                 alt="doctor"
@@ -86,8 +86,8 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-           
-            <div className="flex items-center shadow px-3 rounded-lg border-[1px] border-[#001F54] w-[840px] h-[120px] mt-3">
+
+            <div className="flex items-center shadow-sm px-3 rounded-lg border border-[#001F54] w-[840px] h-[120px] mt-3">
               <img
                 src="/phdoctor.jpg"
                 alt="doctor"
@@ -102,14 +102,14 @@ const AdminDashboard = () => {
                     นพ. หงสาวดี แซ่ลี่
                   </p>
                 </div>
-                <span className="bg-yellow-400 text-white px-3 py-1 rounded">
+                <span className="bg-yellow-600 text-white px-3 py-1 rounded">
                   รอการอนุมัติ
                 </span>
               </div>
             </div>
 
-           
-            <div className="flex items-center shadow px-3 rounded-lg border-[1px] border-[#001F54] w-[840px] h-[120px] mt-3">
+
+            <div className="flex items-center shadow-sm px-3 rounded-lg border border-[#001F54] w-[840px] h-[120px] mt-3">
               <img
                 src="/phdoctor.jpg"
                 alt="doctor"

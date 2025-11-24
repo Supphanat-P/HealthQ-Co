@@ -9,7 +9,6 @@ const Home = () => {
         style={{
           position: "relative",
           width: "100%",
-          height: "600px",
           backgroundImage: `url('/Logo.png')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -32,7 +31,6 @@ const Home = () => {
         <div
           className="m-auto d-flex justify-content-start align-items-start"
           style={{
-            height: "600px",
             textAlign: "center",
             position: "relative",
             zIndex: 2,
@@ -110,7 +108,6 @@ const Home = () => {
                   border: "none",
                   width: "55px",
                   height: "55px",
-
                   borderRadius: "50%",
                   display: "flex",
                   justifyContent: "center",
@@ -138,10 +135,9 @@ const Home = () => {
             </div>
           </div>
 
-          <div className="d-flex justify-content-center align-items-center">
+          <div className="d-flex m-auto justify-content-center align-items-center">
             <button
               className="btn bg-sky m-5 d-flex align-items-center gap-2 box-shadow"
-              style={{ width: "275px", height: "70px" }}
             >
               <BiCalendar size={24} color="white" />
               <h3 className="text-white mb-0">จองคิวตรวจ</h3>
@@ -149,7 +145,6 @@ const Home = () => {
 
             <button
               className="btn bg-sky m-5 d-flex align-items-center gap-2 box-shadow"
-              style={{ width: "275px", height: "70px" }}
             >
               <BiSearchAlt size={24} color="white" />
               <h3 className="text-white mb-0">ค้นหาแพทย์</h3>
@@ -157,7 +152,6 @@ const Home = () => {
 
             <button
               className="btn bg-sky m-5 d-flex align-items-center gap-2 box-shadow"
-              style={{ width: "275px", height: "70px" }}
             >
               <BiPhone size={24} color="white" />
               <h3 className="text-white mb-0">ติดต่อเรา</h3>
@@ -183,7 +177,7 @@ const Home = () => {
 
         <div style={{ backgroundColor: "#EEEEFF" }}>
           <Container
-            className="d-flex justify-content-center align-items-center gap-5"
+            className="d-flex justify-content-center m-auto align-items-center gap-5"
             style={{ height: "500px" }}
           >
             <div className="d-flex flex-column align-items-center text-center">

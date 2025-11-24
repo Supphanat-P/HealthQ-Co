@@ -58,7 +58,7 @@ const AppointmentSummary = ({
   };
 
   return (
-    <div className="appointment-summary-sticky sticky top-4 p-4 w-80 space-y-4 bg-white shadow-lg rounded-xl">
+    <div className="appointment-summary-sticky sticky top-4 p-4 ms-5 w-80 space-y-4 bg-white shadow-sm rounded-xl">
       <h5 className="text-lg font-semibold text-navy-600">สรุปรายละเอียดการจอง</h5>
 
       <div>

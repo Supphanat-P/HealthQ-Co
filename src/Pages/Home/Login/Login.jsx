@@ -61,7 +61,7 @@ const Login = () => {
           </button>
           <button
             className="btn bg-white m-auto mb-3 d-flex justify-content-center align-items-center shadow"
-            onClick={() => navigate("/register")} // Navigate to register page
+            onClick={() => navigate("/register")} 
           >
             <p className="text-navy mb-0">สมัครสมาชิก</p>
           </button>

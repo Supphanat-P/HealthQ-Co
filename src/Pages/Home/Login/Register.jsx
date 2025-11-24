@@ -117,13 +117,13 @@ const Register = () => {
 
           {step === "password" && (
             <>
-              <div className="div">
-                <input type="text" value={fName} onChange={(e) => setFName(e.target.value)} className="form-control w-50 mb-3" placeholder="ชื่อ" />
-                <input type="text" value={lName} onChange={(e) => setLName(e.target.value)} className="form-control w-50 mb-3" placeholder="นามสกุล" />
+              <div className="flex gap-2 justify-center">
+                <input type="text" value={fName} onChange={(e) => setFName(e.target.value)} className="form-control w-30! mb-3" placeholder="ชื่อ" />
+                <input type="text" value={lName} onChange={(e) => setLName(e.target.value)} className="form-control w-30! mb-3" placeholder="นามสกุล" />
               </div>
               <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="form-control w-50 mb-3" placeholder="ตั้งรหัสผ่าน" />
               <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="form-control w-50 mb-3" placeholder="ยืนยันรหัสผ่าน" />
-              <button className="btn text-white bg-navy shadow" onClick={confirmRegistration}>ตั้งรหัสผ่าน</button>
+              <button className="btn text-white bg-navy shadow mb-3" onClick={confirmRegistration}>ยืนยัน</button>
             </>
           )}
 
