@@ -9,6 +9,7 @@ import 'react-day-picker/dist/style.css';
 const Calendar = ({ selectedDates = [], onDateSelect }) => {
   const [dates, setDates] = useState(selectedDates);
   const today = new Date();
+  const week = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7);
 
   const handleSelect = (selected) => {
     if (selected.length > 3) {
@@ -36,7 +37,8 @@ const Calendar = ({ selectedDates = [], onDateSelect }) => {
           mode="multiple"
           selected={dates}
           onSelect={handleSelect}
-          disabled={[{ before: today }]}
+          disabled={[{ before: week }]}
+          className="bg-white"
         />
       </div>
     </div>

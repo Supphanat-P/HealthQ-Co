@@ -12,7 +12,7 @@ const NavigateBar = () => {
   ];
 
   return (
-    <nav className="bg-navy shadow-lg">
+    <nav className="bg-navy shadow-sm">
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center space-x-3">
@@ -62,17 +62,21 @@ const NavigateBar = () => {
               <div className="flex items-center space-x-3">
                 <a
                   href="/profile"
-                  className="flex items-center space-x-2 px-4 py-2 text-white hover:bg-white/10 rounded-xl transition-all duration-200"
+                  className="flex no-deco items-center space-x-2 px-4 py-2 text-white hover:bg-white/10 rounded-xl transition-all duration-200"
                 >
                   <User className="w-4 h-4" />
-                  <span className="font-medium">โปรไฟล์</span>
+                  &nbsp;
+
+                  <span className="font-medium no-deco">โปรไฟล์</span>
                 </a>
                 <a
                   href="/logout"
-                  className="flex items-center space-x-2 px-4 py-2 text-white hover:bg-red-500/20 hover:text-red-200 rounded-xl transition-all duration-200"
+                  className="flex no-deco items-center me-3 space-x-2 px-4 py-2 text-white hover:bg-red-500/20 hover:text-red-200 rounded-xl transition-all duration-200"
                 >
                   <LogOut className="w-4 h-4" />
-                  <span className="font-medium">ออกจากระบบ</span>
+                  &nbsp;
+
+                  <span className="font-medium no-deco">ออกจากระบบ</span>
                 </a>
               </div>
             )}
@@ -144,15 +148,15 @@ const NavigateBar = () => {
                     href="/profile"
                     className="flex items-center space-x-2 text-white hover:bg-white/10 px-4 py-3 rounded-xl font-medium transition-colors"
                   >
-                    <User className="w-4 h-4" />
-                    <span>โปรไฟล์</span>
+                    <User className="w-4 h-4 no-deco" />
+                    <span classNam="no-deco">โปรไฟล์</span>
                   </a>
                   <a
                     href="/logout"
                     className="flex items-center space-x-2 text-white hover:bg-red-500/20 px-4 py-3 rounded-xl font-medium transition-colors"
                   >
                     <LogOut className="w-4 h-4" />
-                    <span>ออกจากระบบ</span>
+                    <span className="no-deco">ออกจากระบบ</span>
                   </a>
                 </>
               )}
