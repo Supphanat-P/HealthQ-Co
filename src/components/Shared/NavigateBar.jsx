@@ -24,7 +24,7 @@ const NavigateBar = () => {
               />
             </div>
             <span className="text-white text-2xl font-bold tracking-wide">
-              &nbsp; HealthQ
+              &nbsp; <a href="/" className="no-deco text-white">HealthQ</a>
             </span>
 
             <div className="hidden lg:flex items-center space-x-8">
