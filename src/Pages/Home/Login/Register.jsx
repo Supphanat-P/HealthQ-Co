@@ -72,7 +72,6 @@ const Register = () => {
 
   return (
     <>
-      <Toaster />
       <div className="card h-fit w-fit m-auto shadow mt-5">
         <AppointmentHeader label="สมัครสมาชิก" />
         <div className="m-auto d-flex justify-content-center align-items-center flex-column mt-2" style={{ width: "500px", minHeight: 160 }}>

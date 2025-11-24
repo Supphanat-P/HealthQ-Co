@@ -41,7 +41,6 @@ export default function Appointment() {
 
   return (
     <>
-      <Toaster />
       {!selectedDoctorId && (
         <div className="bg-yellow-100 text-yellow-800 px-4 py-2 rounded mb-4">
           กรุณาเลือกแพทย์ก่อนทำการนัดหมาย

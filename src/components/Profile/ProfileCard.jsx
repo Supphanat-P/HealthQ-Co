@@ -1,35 +1,112 @@
 import { useState } from "react";
 import { useData } from "../../Context/DataContext";
+import { supabase } from "../../config/supabaseClient";
+import toast from "react-hot-toast";
+import { useEffect } from "react";
+import dayjs from "dayjs";
+
 const ProfileCard = () => {
   const [selectedTab, setSelectedTab] = useState("1");
-  const { currentUser, usersInfo } = useData();
-  console.log(currentUser)
-  const findUserId = usersInfo.find((u) => u.user_id === currentUser.user_id);
-  console.log(findUserId);
-
+  const { currentUser, usersInfo, fetchUsersInfo } = useData();
   const [isEdit, setIsEdit] = useState(false);
+  const [form, setForm] = useState(null);
 
-  const [form, setForm] = useState({
-    fullname: "นาย ธีรดน คนธรรมดา",
-    gender: "ชาย",
-    birthdate: "05-01-2549",
-    nationality: "ไทย",
-    citizenId: "1234567890123",
-    blood: "O",
-    height: "170",
-    weight: "52",
-    phone: "",
-    email: "",
-    emergency: "",
-    disease: "ไม่มี",
-    allergyDrug: "ไม่มี",
-    allergyFood: "ไม่มี",
-    medicine: "ไม่มี",
-  });
+  const findUserId = usersInfo.find(
+    (u) => u.user_id === currentUser?.user_id
+  );
+
+  useEffect(() => {
+    if (!findUserId) return;
+
+    setForm({
+      full_name: findUserId.full_name || "",
+      gender: findUserId.gender || "",
+      dob: findUserId.dob || "",
+      nation: findUserId.nation || "",
+      nid: findUserId.nid || "",
+      blood_type: findUserId.blood_type || "",
+      height: findUserId.height || "",
+      weight: findUserId.weight || "",
+      phone: findUserId.phone || "",
+      email: findUserId.email || "",
+      emergency: findUserId.emergency_contact?.phone || "",
+      chronic_conditions: findUserId.chronic_conditions?.join(", ") || "",
+      allergies_med: findUserId.allergies_med?.join(", ") || "",
+      food_allergies: findUserId.food_allergies?.join(", ") || "",
+      regular_med: findUserId.regular_med?.join(", ") || "",
+    });
+  }, [usersInfo, currentUser]);
 
   const handleChange = (key, value) => {
     setForm({ ...form, [key]: value });
   };
+
+  const handleSave = async () => {
+    try {
+      const updateData = {
+        full_name: form.full_name,
+        first_name: form.full_name.split(" ")[0] || "",
+        last_name: form.full_name.split(" ")[1] || "",
+        gender: form.gender,
+
+        dob: form.dob || null,
+
+        nation: form.nation,
+        nid: form.nid,
+        blood_type: form.blood_type,
+
+        height: form.height === "" ? null : Number(form.height),
+        weight: form.weight === "" ? null : Number(form.weight),
+
+        phone: form.phone,
+        email: form.email,
+
+        emergency_contact: {
+          phone: form.emergency || ""
+        },
+
+        chronic_conditions: form.chronic_conditions
+          ? form.chronic_conditions.split(",").map(wow => wow.trim())
+          : [],
+
+        allergies_med: form.allergies_med
+          ? form.allergies_med.split(",").map(wow => wow.trim())
+          : [],
+
+        food_allergies: form.food_allergies
+          ? form.food_allergies.split(",").map(wow => wow.trim())
+          : [],
+
+        regular_med: form.regular_med
+          ? form.regular_med.split(",").map(wow => wow.trim())
+          : [],
+      };
+
+
+      const { error } = await supabase
+        .from("users_info")
+        .update(updateData)
+        .eq("user_id", currentUser.user_id);
+
+      if (error) {
+        console.error(error);
+        toast.error("เกิดข้อผิดพลาดในการบันทึก");
+        return;
+      }
+
+      setIsEdit(false);
+      toast.success("บันทึกข้อมูลสำเร็จ!");
+
+    } catch (err) {
+      console.error(err);
+      toast.error("เกิดข้อผิดพลาด");
+    }
+  };
+
+  console.log(form)
+
+  if (!form) return <div className="text-center mt-4">กำลังโหลด...</div>;
+
 
   return (
     <>
@@ -48,13 +125,10 @@ const ProfileCard = () => {
           ></div>
 
           <div className="ms-3">
-            <div className="fs-3 fw-bold">{findUserId?.full_name ? findUserId?.full_name : "ไม่ระบุ"}</div>
-            <div className="text-gray">{findUserId?.email ? findUserId?.email : "ไม่ระบุ"}</div>
-            <div className="fs-3 fw-bold">{form.fullname}</div>
-            <div className="text-gray">{form.email || "ไม่มีอีเมล"}</div>
+            <div className="fs-3 fw-bold">{form.full_name}</div>
+            <div className="text-gray">{form.email || "ไม่ระบุอีเมล"}</div>
           </div>
 
-          {/* ปุ่มแก้ไข */}
           <div className="ms-auto">
             {!isEdit ? (
               <button
@@ -66,7 +140,7 @@ const ProfileCard = () => {
             ) : (
               <button
                 className="btn btn-success"
-                onClick={() => setIsEdit(false)}
+                onClick={handleSave}
               >
                 บันทึก
               </button>
@@ -75,38 +149,6 @@ const ProfileCard = () => {
         </div>
 
         <div className="d-flex gap-4 border-bottom pb-2 mb-4">
-          <div
-            onClick={() => setSelectedTab("1")}
-            style={{
-              cursor: "pointer",
-              borderBottom: selectedTab === "1" ? "3px solid #1f2054" : "",
-              color: selectedTab === "1" ? "#1f2054" : "black",
-            }}
-          >
-            ข้อมูลส่วนตัว
-          </div>
-
-          <div
-            onClick={() => setSelectedTab("2")}
-            style={{
-              cursor: "pointer",
-              borderBottom: selectedTab === "2" ? "3px solid #1f2054" : "",
-              color: selectedTab === "2" ? "#1f2054" : "black",
-            }}
-          >
-            ประวัติสุขภาพ
-          </div>
-
-          <div
-            onClick={() => setSelectedTab("3")}
-            style={{
-              cursor: "pointer",
-              borderBottom: selectedTab === "3" ? "3px solid #1f2054" : "",
-              color: selectedTab === "3" ? "#1f2054" : "black",
-            }}
-          >
-            ข้อมูลติดต่อ
-          </div>
           {["1", "2", "3"].map((tab) => (
             <div
               key={tab}
@@ -131,114 +173,99 @@ const ProfileCard = () => {
           <div className="row fs-6">
             <div className="col-6">
               <div className="text-black">ชื่อ - นามสกุล</div>
-              <div className="text-navy mb-4">{findUserId?.full_name ? findUserId?.full_name : "ไม่ระบุ"}</div>
-
-              <div className="text-black">เพศ</div>
-              <div className="text-navy mb-4">{findUserId?.gender ? findUserId?.gender : "ไม่ระบุ"}</div>
-
-              <div className="text-black">วันเกิด</div>
-              <div className="text-navy mb-4">{findUserId?.dob ? new Date(findUserId?.dob).toLocaleDateString("th-TH", {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-              }) : "ไม่ระบุ"}</div>
-
-              <div className="text-black">สัญชาติ</div>
-              <div className="text-navy">{findUserId?.nation ? findUserId?.nation : "ไม่ระบุ"}</div>
               {!isEdit ? (
-                <div className="text-navy mb-4">{form.fullname}</div>
+                <div className="text-navy mb-4">{form.full_name ? form.full_name : "ไม่ระบุ"}</div>
               ) : (
                 <input
                   className="form-control mb-4"
-                  value={form.fullname}
-                  onChange={(e) => handleChange("fullname", e.target.value)}
+                  value={form.full_name}
+                  onChange={(e) => handleChange("full_name", e.target.value)}
                 />
               )}
 
               <div className="text-black">เพศ</div>
               {!isEdit ? (
-                <div className="text-navy mb-4">{form.gender}</div>
+                <div className="text-navy mb-4">{form.gender ? form.gender : "ไม่ระบุ"}</div>
               ) : (
-                <input
-                  className="form-control mb-4"
-                  value={form.gender}
-                  onChange={(e) => handleChange("gender", e.target.value)}
-                />
+                <select className="form-select mb-4" value={form.gender} onChange={(e) => handleChange("gender", e.target.value)} >
+                  <option value="">เลือกเพศ</option>
+                  <option value="ชาย">ชาย</option>
+                  <option value="หญิง">หญิง</option>
+                  <option value="อื่นๆ">อื่นๆ</option>
+                </select>
               )}
 
               <div className="text-black">วันเกิด</div>
               {!isEdit ? (
-                <div className="text-navy mb-4">{form.birthdate}</div>
+                <div className="text-navy mb-4">{form.dob ? form.dob : "ไม่ระบุ"}</div>
               ) : (
                 <input
                   className="form-control mb-4"
-                  value={form.birthdate}
-                  onChange={(e) => handleChange("birthdate", e.target.value)}
+                  value={form.dob}
+                  type="date"
+                  min="1900-01-01"
+                  max={dayjs().format("YYYY-MM-DD")}
+                  onChange={(e) => handleChange("dob", e.target.value)}
                 />
               )}
 
               <div className="text-black">สัญชาติ</div>
               {!isEdit ? (
-                <div className="text-navy">{form.nationality}</div>
+                <div className="text-navy mb-4">{form.nation ? form.nation : "ไม่ระบุ"}</div>
               ) : (
                 <input
                   className="form-control mb-4"
-                  value={form.nationality}
-                  onChange={(e) => handleChange("nationality", e.target.value)}
+                  value={form.nation}
+                  onChange={(e) => handleChange("nation", e.target.value)}
                 />
               )}
             </div>
+
             <div className="col-6">
               <div className="text-black">เลขประจำตัวประชาชน</div>
-              <div className="text-navy mb-4">{findUserId?.nId ? findUserId?.nId : "ไม่ระบุ"}</div>
-
-              <div className="text-black">หมู่เลือด</div>
-              <div className="text-navy mb-4">{findUserId?.blood_type ? findUserId?.blood_type : "ไม่ระบุ"}</div>
-
-              <div className="text-black">ส่วนสูง</div>
-              <div className="text-navy mb-4">{findUserId?.height ? findUserId?.height : "ไม่ระบุ"}</div>
-
-              <div className="text-black">น้ำหนัก</div>
-              <div className="text-navy">{findUserId?.weight ? findUserId?.weight : "ไม่ระบุ"}</div>
               {!isEdit ? (
-                <div className="text-navy mb-4">{form.citizenId}</div>
+                <div className="text-navy mb-4">{form.nid ? form.nid : "ไม่ระบุ"}</div>
               ) : (
                 <input
                   className="form-control mb-4"
-                  value={form.citizenId}
-                  onChange={(e) => handleChange("citizenId", e.target.value)}
+                  value={form.nid}
+                  type="number"
+                  maxLength={13}
+                  onChange={(e) => handleChange("nid", e.target.value)}
                 />
               )}
 
               <div className="text-black">หมู่เลือด</div>
               {!isEdit ? (
-                <div className="text-navy mb-4">{form.blood}</div>
+                <div className="text-navy mb-4">{form.blood_type ? form.blood_type : "ไม่ระบุ"}</div>
               ) : (
                 <input
                   className="form-control mb-4"
-                  value={form.blood}
-                  onChange={(e) => handleChange("blood", e.target.value)}
+                  value={form.blood_type}
+                  onChange={(e) => handleChange("blood_type", e.target.value)}
                 />
               )}
 
               <div className="text-black">ส่วนสูง</div>
               {!isEdit ? (
-                <div className="text-navy mb-4">{form.height}</div>
+                <div className="text-navy mb-4">{form.height ? form.height + " cm" : "ไม่ระบุ"}</div>
               ) : (
                 <input
                   className="form-control mb-4"
                   value={form.height}
+                  type="number"
                   onChange={(e) => handleChange("height", e.target.value)}
                 />
               )}
 
               <div className="text-black">น้ำหนัก</div>
               {!isEdit ? (
-                <div className="text-navy">{form.weight}</div>
+                <div className="text-navy mb-4">{form.weight ? form.weight + " kg" : "ไม่ระบุ"}</div>
               ) : (
                 <input
                   className="form-control mb-4"
                   value={form.weight}
+                  type="number"
                   onChange={(e) => handleChange("weight", e.target.value)}
                 />
               )}
@@ -246,77 +273,63 @@ const ProfileCard = () => {
           </div>
         )}
 
+
         {selectedTab === "2" && (
           <div className="row fs-6">
             <div className="col-6">
               <div className="text-black">โรคประจำตัว</div>
-              <div className="text-navy mb-4">{findUserId?.chronic_conditions ? findUserId?.chronic_conditions : "ไม่ระบุ"}</div>
-
-              <div className="text-black">ยาประจำตัว</div>
-              <div className="text-navy mb-4">{findUserId?.regular_med ? findUserId?.regular_med : "ไม่ระบุ"}</div>
               {!isEdit ? (
-                <div className="text-navy mb-4">{form.disease}</div>
+                <div className="text-navy mb-4">{form.chronic_conditions || "ไม่ระบุ"}</div>
               ) : (
                 <input
                   className="form-control mb-4"
-                  value={form.disease}
-                  onChange={(e) => handleChange("disease", e.target.value)}
+                  value={form.chronic_conditions}
+                  onChange={(e) => handleChange("chronic_conditions", e.target.value)}
                 />
               )}
 
               <div className="text-black">ยาประจำตัว</div>
               {!isEdit ? (
-                <div className="text-navy mb-4">{form.medicine}</div>
+                <div className="text-navy mb-4">{form.regular_med || "ไม่ระบุ"}</div>
               ) : (
                 <input
                   className="form-control mb-4"
-                  value={form.medicine}
-                  onChange={(e) => handleChange("medicine", e.target.value)}
+                  value={form.regular_med}
+                  onChange={(e) => handleChange("regular_med", e.target.value)}
                 />
               )}
-            </div>
 
-            <div className="col-6">
               <div className="text-black">ประวัติแพ้ยา</div>
-              <div className="text-navy mb-4">{findUserId?.allergies ? findUserId?.allergies : "ไม่ระบุ"}</div>
-
-              <div className="text-black">ประวัติแพ้อาหาร</div>
-              <div className="text-navy mb-4">{findUserId?.food_allergies ? findUserId?.food_allergies : "ไม่ระบุ"}</div>
               {!isEdit ? (
-                <div className="text-navy mb-4">{form.allergyDrug}</div>
+                <div className="text-navy mb-4">{form.allergies_med || "ไม่ระบุ"}</div>
               ) : (
                 <input
                   className="form-control mb-4"
-                  value={form.allergyDrug}
-                  onChange={(e) => handleChange("allergyDrug", e.target.value)}
+                  value={form.allergies_med}
+                  onChange={(e) => handleChange("allergies_med", e.target.value)}
                 />
               )}
 
               <div className="text-black">ประวัติแพ้อาหาร</div>
               {!isEdit ? (
-                <div className="text-navy mb-4">{form.allergyFood}</div>
+                <div className="text-navy mb-4">{form.food_allergies || "ไม่ระบุ"}</div>
               ) : (
                 <input
                   className="form-control mb-4"
-                  value={form.allergyFood}
-                  onChange={(e) => handleChange("allergyFood", e.target.value)}
+                  value={form.food_allergies}
+                  onChange={(e) => handleChange("food_allergies", e.target.value)}
                 />
               )}
             </div>
           </div>
         )}
 
-        {/* TAB 3: ข้อมูลติดต่อ */}
         {selectedTab === "3" && (
           <div className="row fs-6">
             <div className="col-6">
               <div className="text-black">เบอร์โทรศัพท์</div>
-              <div className="text-navy mb-4">{findUserId?.phone ? findUserId?.phone : "ไม่ระบุ"}</div>
-
-              <div className="text-black">อีเมล</div>
-              <div className="text-navy mb-4">{findUserId?.email ? findUserId?.email : "ไม่ระบุ"}</div>
               {!isEdit ? (
-                <div className="text-navy mb-4">{form.phone || "ไม่มี"}</div>
+                <div className="text-navy mb-4">{form.phone || "ไม่ระบุ"}</div>
               ) : (
                 <input
                   className="form-control mb-4"
@@ -327,7 +340,7 @@ const ProfileCard = () => {
 
               <div className="text-black">อีเมล</div>
               {!isEdit ? (
-                <div className="text-navy mb-4">{form.email || "ไม่มี"}</div>
+                <div className="text-navy mb-4">{form.email || "ไม่ระบุ"}</div>
               ) : (
                 <input
                   className="form-control mb-4"
@@ -339,10 +352,9 @@ const ProfileCard = () => {
 
             <div className="col-6">
               <div className="text-black">เบอร์ติดต่อฉุกเฉิน</div>
-              <div className="text-navy mb-4">{findUserId?.emergency_contact[0].phone ? findUserId?.emergency_contact[0].phone : "ไม่ระบุ"}</div>
               {!isEdit ? (
                 <div className="text-navy mb-4">
-                  {form.emergency || "ไม่มี"}
+                  {form.emergency || "ไม่ระบุ"}
                 </div>
               ) : (
                 <input

@@ -54,7 +54,17 @@ function AppContent() {
 
   return (
     <>
-      <Toaster />
+      <Toaster
+        toastOptions={{
+          duration: 5000,
+          success: {
+            duration: 3000,
+          },
+          error: {
+            duration: 5000,
+          },
+        }}
+      />
       <LocationCompare />
       <NavigateBar />
       

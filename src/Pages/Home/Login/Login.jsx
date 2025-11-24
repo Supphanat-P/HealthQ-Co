@@ -26,7 +26,6 @@ const Login = () => {
 
   return (
     <>
-      <Toaster />
       <div className="card h-fit w-fit m-auto shadow mt-5">
         <AppointmentHeader label="เข้าสู่ระบบ" />
         <div
