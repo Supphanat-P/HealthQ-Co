@@ -33,7 +33,7 @@ const CustomToggle = forwardRef(({ children, onClick }, ref) => (
 ));
 
 const AdminAppointments = () => {
-  const { currentUser, appointments, fetchAndSetData } = useData();
+  const { currentUser, appointments, fetchAndSetData, sendEmailForApprove } = useData();
   const [filterStatusDisplay, setFilterStatusDisplay] = useState("ทั้งหมด");
   const [filterStatus, setFilterStatus] = useState("ทั้งหมด");
   const [searchQuery, setSearchQuery] = useState("");
@@ -59,9 +59,33 @@ const AdminAppointments = () => {
         })
         .eq("app_id", app_id);
 
+      if (!error) {
+        if (newStatus === "booked") {
+          const date = new Date(selectedDate).toLocaleDateString(
+            "th-TH",
+            { day: "numeric", month: "short", year: "numeric" }
+          )
+
+          const time = new Date(selectedDate).toLocaleTimeString("th-TH", {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+          const user = appointments.find((item) => item.app_id === app_id)?.user
+          const doctor = appointments.find((item) => item.app_id === app_id)?.doctor
+          const hospital = doctor.hospital.hospital_name
+          const emailUser = user.email
+          const doctorName = doctor.doctor_name
+
+          await sendEmailForApprove(emailUser, date, time, doctorName, hospital)
+
+          console.log('Userdata', user)
+          console.log('Doctor', doctor)
+        } else if (newStatus === "cancel") {
+
+        }
+      }
+
       if (error) throw error;
-      
-      await fetchAndSetData(); // Refresh data
 
       if (newStatus === "booked") {
 
@@ -76,7 +100,7 @@ const AdminAppointments = () => {
           hour: "2-digit",
           minute: "2-digit",
         });
-        
+
         console.log(date)
         console.log(time)
         const user = appointments.find((item) => item.app_id === app_id)?.user;
@@ -89,8 +113,8 @@ const AdminAppointments = () => {
         console.log('Userdata', user)
         console.log('Doctor', doctor)
       } else if (newStatus === "cancel") {
-
       }
+      await fetchAndSetData();
 
     } catch (error) {
       console.error("Supabase Error:", error.message);

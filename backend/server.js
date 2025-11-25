@@ -44,7 +44,7 @@ app.post("/send-email", async (req, res) => {
 });
 
 app.post("/send-confirm-email", async (req, res) => {
-  const { to, subject, text } = req.body;
+  const { to, subject, content } = req.body;
 
   if (!to) {
     return res
