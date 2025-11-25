@@ -3,7 +3,11 @@ import { Clock, Calendar } from "lucide-react";
 import dayjs from "dayjs";
 import "dayjs/locale/th";
 
-const SelectTime = ({ selectedDates = [], selectedTimes = {}, onTimeChange }) => {
+const SelectTime = ({
+  selectedDates = [],
+  selectedTimes = {},
+  onTimeChange,
+}) => {
   const [localTimes, setLocalTimes] = useState(selectedTimes);
 
   useEffect(() => {
@@ -67,12 +71,20 @@ const SelectTime = ({ selectedDates = [], selectedTimes = {}, onTimeChange }) =>
                   เวลา
                 </label>
                 <input
+                  style={{ colorScheme: "light" }}
                   type="time"
                   value={selectedTime}
                   onChange={(e) => {
                     handleTimeChange(date, e.target.value);
                   }}
-                  className="flex-1 px-4! py-3! text-center text-lg font-semibold border-2 border-gray-200 rounded-lg! focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="flex-1 px-4! py-3! text-center text-lg font-semibold border-2 border-gray-200 rounded-lg! focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all
+                  [&::-webkit-calendar-picker-indicator]:filter
+                  [&::-webkit-calendar-picker-indicator]:invert
+                  [&::-webkit-calendar-picker-indicator]:cursor-pointer
+                  [&::-webkit-calendar-picker-indicator]:p-1.5
+                  [&::-webkit-calendar-picker-indicator]:rounded-xl
+                [&::-webkit-calendar-picker-indicator]:bg-orange-200
+                "
                   required
                 />
               </div>

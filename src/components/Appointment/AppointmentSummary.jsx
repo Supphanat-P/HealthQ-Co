@@ -123,8 +123,8 @@ const AppointmentSummary = ({
           <p>คำขอของคุณถูกส่งแล้ว โปรดรอให้ผู้ดูแลระบบตรวจสอบและอนุมัติข้อมูลนัดหมายนี้</p>
         </Modal.Body>
         <Modal.Footer>
-          <button className="btn btn-secondary" onClick={() => setShowModal(false)}>ปิด</button>
-          <button className="btn btn-navy" onClick={() => navigate("/profile")}>ไปที่การนัดหมายของฉัน</button>
+          <button className="border-0 bg-gray-500 rounded-md! px-3 text-white p-2" onClick={() => setShowModal(false)}>ปิด</button>
+          <button className="border-0 bg-blue-950 rounded-md! px-3 text-white p-2" onClick={() => navigate("/profile")}>ไปที่การนัดหมายของฉัน</button>
         </Modal.Footer>
       </Modal>
     </div>
