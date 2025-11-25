@@ -316,7 +316,8 @@ const AdminAppointments = () => {
                             className="shadow-lg border-0 p-2 rounded-3"
                             style={{ minWidth: "250px", zIndex: 1050 }}
                           >
-                            <Dropdown.Header className="text-xs font-bold text-gray-400 uppercase px-2 py-1">
+                            <Dropdown.Header className="d-flex text-xs font-bold text-green-700! uppercase px-2 py-1">
+                              <CheckCircle size={18}/>&nbsp;
                               อนุมัติโดยเลือกวันที่
                             </Dropdown.Header>
                             {item.appointment_slots.map((slots, idx) => {
@@ -379,8 +380,10 @@ const AdminAppointments = () => {
                               onClick={() =>
                                 handleStatusChange(item.app_id, "pending", null)
                               }
-                              className="text-muted small text-center py-1"
+                              className="d-flex text-yellow-600!
+                               text-muted small text-center py-1"
                             >
+                              <Clock size={16}/>&nbsp;
                               รีเซ็ตสถานะ
                             </Dropdown.Item>
                           </Dropdown.Menu>
