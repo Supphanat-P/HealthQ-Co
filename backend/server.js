@@ -36,9 +36,9 @@ app.post("/send-email", async (req, res) => {
       subject: "Otp Code for Health Queue",
       text,
     });
-    res.json({ success: true, message: "Email sent! " + text });
+    res.json({ success: true });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, error: err.message });
+    res.status(500).json({ success: false, error: "Internal Server Error" });
   }
 });

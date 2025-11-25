@@ -20,7 +20,7 @@ const NavigateBar = ({ lang, setLang }) => {
   ];
 
   return (
-    <nav className="bg-navy shadow-sm">
+    <nav className="bg-white shadow-sm">
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center space-x-3">
@@ -31,8 +31,8 @@ const NavigateBar = ({ lang, setLang }) => {
                 className="w-10 h-10 object-cover rounded-lg"
               />
             </div>
-            <span className="text-white text-2xl font-bold tracking-wide">
-              &nbsp; <a href="/" className="no-deco text-white">HealthQ</a>
+            <span className="text-navy text-2xl font-bold tracking-wide">
+              &nbsp; <a href="/" className="no-deco text-navy">HealthQ</a>
             </span>
 
             <div className="hidden lg:flex items-center space-x-8">
@@ -40,7 +40,7 @@ const NavigateBar = ({ lang, setLang }) => {
                 <a
                   key={link.path}
                   href={link.path}
-                  className="text-white no-deco ms-5 hover:text-blue-200 font-medium transition-colors duration-200 hover:scale-105 transform"
+                  className="text-navy no-deco ms-5 hover:text-blue-200 font-medium transition-colors duration-200 hover:scale-105 transform"
                 >
                   {link.label}
                 </a>
@@ -53,25 +53,25 @@ const NavigateBar = ({ lang, setLang }) => {
               <div className="flex items-center space-x-3">
                 <a
                   href="/login"
-                  className="flex items-center no-deco space-x-2 px-4 py-2 text-white hover:bg-white/10 rounded-xl transition-all duration-200"
+                  className="flex items-center no-deco space-x-2 px-4 py-2 text-navy hover:bg-white/10 rounded-xl transition-all duration-200"
                 >
                   <LogIn className="w-4 h-4" />
-                  <span className="font-medium">{text.login}</span>
+                  <span className="ms-2">{text.login}</span>
                 </a>
 
                 <a
                   href="/register"
-                  className="me-4 flex items-center no-deco space-x-2 px-4 py-2 text-white hover:bg-white/10 rounded-xl transition-all duration-200"
+                  className="me-4 flex items-center no-deco space-x-2 px-4 py-2 text-navy hover:bg-white/10 rounded-xl transition-all duration-200"
                 >
                   <UserPlus className="w-4 h-4" />
-                  <span>{text.register}</span>
+                  <span className="ms-2">{text.register}</span>
                 </a>
               </div>
             ) : (
               <div className="flex items-center space-x-3">
                 <a
                   href="/profile"
-                  className="flex no-deco items-center space-x-2 px-4 py-2 text-white hover:bg-white/10 rounded-xl transition-all duration-200"
+                  className="flex no-deco items-center space-x-2 px-4 py-2 text-navy hover:bg-white/10 rounded-xl transition-all duration-200"
                 >
                   <User className="w-4 h-4" />
                   &nbsp;
@@ -80,7 +80,7 @@ const NavigateBar = ({ lang, setLang }) => {
 
                 <a
                   href="/logout"
-                  className="flex no-deco items-center me-3 space-x-2 px-4 py-2 text-white hover:bg-red-500/20 hover:text-red-200 rounded-xl transition-all duration-200"
+                  className="flex no-deco items-center me-3 space-x-2 px-4 py-2 text-navy hover:bg-red-500/20 hover:text-red-200 rounded-xl transition-all duration-200"
                 >
                   <LogOut className="w-4 h-4" />
                   &nbsp;
@@ -89,12 +89,12 @@ const NavigateBar = ({ lang, setLang }) => {
               </div>
             )}
 
-            <div className="flex border-2 border-white/30 rounded-xl overflow-hidden bg-white/5 backdrop-blur-sm">
+            <div className="flex border-2 border-blue-900 rounded-xl! overflow-hidden bg-white/5">
               <button
                 onClick={() => setLang("TH")}
                 className={`px-4 py-2 text-sm font-bold transition-all duration-200 ${lang === "TH"
-                  ? "bg-white text-blue-900 shadow-md"
-                  : "text-white hover:bg-white/10"
+                  ? "bg-blue-900 text-white shadow-md"
+                  : "text-navy hover:bg-white/10"
                   }`}
               >
                 TH
@@ -103,8 +103,8 @@ const NavigateBar = ({ lang, setLang }) => {
               <button
                 onClick={() => setLang("EN")}
                 className={`px-4 py-2 text-sm font-bold transition-all duration-200 ${lang === "EN"
-                  ? "bg-white text-blue-900 shadow-md"
-                  : "text-white hover:bg-white/10"
+                  ? "bg-blue-900 text-white shadow-md"
+                  : "text-navy hover:bg-white/10"
                   }`}
               >
                 EN
@@ -115,7 +115,7 @@ const NavigateBar = ({ lang, setLang }) => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden text-white p-2 hover:bg-white/10 rounded-lg transition-colors"
+            className="lg:hidden text-navy p-2 hover:bg-white/10 rounded-lg transition-colors"
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -128,7 +128,7 @@ const NavigateBar = ({ lang, setLang }) => {
               <a
                 key={link.path}
                 href={link.path}
-                className="block text-white hover:bg-white/10 px-4 py-3 rounded-xl font-medium transition-colors"
+                className="block text-navy hover:bg-white/10 px-4 py-3 rounded-xl font-medium transition-colors"
               >
                 {link.label}
               </a>
@@ -139,9 +139,10 @@ const NavigateBar = ({ lang, setLang }) => {
                 <>
                   <a
                     href="/login"
-                    className="flex items-center space-x-2 text-white hover:bg-white/10 px-4 py-3 rounded-xl font-medium transition-colors"
+                    className="flex items-center space-x-2 text-navy hover:bg-white/10 px-4 py-3 rounded-xl font-medium transition-colors"
                   >
                     <LogIn className="w-4 h-4" />
+                    &nbsp;
                     <span>{text.login}</span>
                   </a>
 
@@ -150,6 +151,7 @@ const NavigateBar = ({ lang, setLang }) => {
                     className="flex items-center space-x-2 bg-white text-blue-900 hover:bg-blue-50 px-4 py-3 rounded-xl font-semibold transition-colors"
                   >
                     <UserPlus className="w-4 h-4" />
+                    &nbsp;
                     <span>{text.register}</span>
                   </a>
                 </>
@@ -157,7 +159,7 @@ const NavigateBar = ({ lang, setLang }) => {
                 <>
                   <a
                     href="/profile"
-                    className="flex items-center space-x-2 text-white hover:bg-white/10 px-4 py-3 rounded-xl font-medium transition-colors"
+                    className="flex items-center space-x-2 text-navy hover:bg-white/10 px-4 py-3 rounded-xl font-medium transition-colors"
                   >
                     <User className="w-4 h-4" />
                     <span>{text.profile}</span>
@@ -165,7 +167,7 @@ const NavigateBar = ({ lang, setLang }) => {
 
                   <a
                     href="/logout"
-                    className="flex items-center space-x-2 text-white hover:bg-red-500/20 px-4 py-3 rounded-xl font-medium transition-colors"
+                    className="flex items-center space-x-2 text-navy hover:bg-red-500/20 px-4 py-3 rounded-xl font-medium transition-colors"
                   >
                     <LogOut className="w-4 h-4" />
                     <span>{text.logout}</span>
@@ -174,12 +176,12 @@ const NavigateBar = ({ lang, setLang }) => {
               )}
 
               {/* Language Switch Mobile */}
-              <div className="flex border-2 border-white/30 rounded-xl overflow-hidden bg-white/5">
+              <div className="flex border-2 border-blue-400 rounded-xl! overflow-hidden bg-white/5">
                 <button
                   onClick={() => setLang("TH")}
                   className={`flex-1 py-3 text-sm font-bold transition-all ${lang === "TH"
                     ? "bg-white text-blue-900"
-                    : "text-white hover:bg-white/10"
+                    : "text-navy hover:bg-white/10"
                     }`}
                 >
                   TH
@@ -188,8 +190,8 @@ const NavigateBar = ({ lang, setLang }) => {
                 <button
                   onClick={() => setLang("EN")}
                   className={`flex-1 py-3 text-sm font-bold transition-all ${lang === "EN"
-                    ? "bg-white text-blue-900"
-                    : "text-white hover:bg-white/10"
+                    ? "bg-blue-900 text-white"
+                    : "text-navy hover:bg-white/10"
                     }`}
                 >
                   EN

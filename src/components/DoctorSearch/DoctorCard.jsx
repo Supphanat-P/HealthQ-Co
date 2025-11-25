@@ -20,6 +20,7 @@ const DoctorCard = ({ doctor, selectedDate }) => {
       navigate("/appointment", { state: { doctor, selectedDate } });
     }
   };
+
   const handleInfo = () => {
     navigate("/doctorinfo", { state: { doctor } });
   };

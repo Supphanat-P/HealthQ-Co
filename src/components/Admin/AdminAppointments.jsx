@@ -24,45 +24,6 @@ const AdminAppointments = () => {
   const [filterStatusDisplay, setFilterStatusDisplay] = useState("ทั้งหมด");
   if (!currentUser) return window.location.href = "/login";
   if (currentUser.role !== "admin") return window.location.href = "/login";
-  console.log(appointments)
-  const [Mockappointments, setMockAppointments] = useState([
-    {
-      id: "001",
-      date_1: "01/01/2025", time_1: "09:00 น.",
-      date_2: "02/01/2025", time_2: "10:00 น.",
-      date_3: "03/01/2025", time_3: "11:00 น.",
-      patient: "นายสมชาย ใจดี",
-      phone: "0629797123",
-      doctor: "นายหงสาวดี แซ่หลี",
-      dept: "หัวใจ",
-      status: "อนุมัติแล้ว",
-      selectedDate: "01/01/2025 09:00 น.",
-    },
-    {
-      id: "002",
-      date_1: "05/02/2025", time_1: "13:00 น.",
-      date_2: "06/02/2025", time_2: "14:00 น.",
-      date_3: "07/02/2025", time_3: "15:00 น.",
-      patient: "นางสมหญิง ใจดี",
-      phone: "0629735454",
-      doctor: "นายหงสาวดี แซ่หลี",
-      dept: "หัวใจ",
-      status: "รออนุมัติ",
-      selectedDate: null,
-    },
-    {
-      id: "003",
-      date_1: "10/03/2025", time_1: "10:00 น.",
-      date_2: "11/03/2025", time_2: "11:00 น.",
-      date_3: "12/03/2025", time_3: "12:00 น.",
-      patient: "นายสมใจ ใจดี",
-      phone: "0000000000",
-      doctor: "นายหงสาวดี แซ่หลี",
-      dept: "หัวใจ",
-      status: "ยกเลิก",
-      selectedDate: null,
-    },
-  ]);
 
   // State สำหรับการค้นหาและกรองสถานะ
   const [filterStatus, setFilterStatus] = useState("ทั้งหมด");
@@ -144,7 +105,6 @@ const AdminAppointments = () => {
         {/* Header Section*/}
         <div className="bg-white rounded-xl border border-indigo-100 p-4 mb-6 flex flex-col md:flex-row justify-between items-center shadow-sm gap-4">
           <h1 className="text-xl font-bold text-navy">รายการนัดหมาย</h1>
-
           <div className="flex gap-3">
             {/* ช่องค้นหา (Search Input) */}
             <div className="position-relative" style={{ width: "325px" }}>
@@ -186,7 +146,7 @@ const AdminAppointments = () => {
         </div>
 
         {/* --- Table Section */}
-        <div className="bg-white rounded-xl border border-indigo-100 shadow-sm overflow-hidden mt-4" style={{ overflow: "visible" }}>
+        <div className="bg-white rounded-xl border border-indigo-100 shadow-sm mt-4" style={{ overflow: "visible" }}>
           <table className="w-full text-left border-collapse">
 
             {/* Table Head */}
@@ -219,8 +179,8 @@ const AdminAppointments = () => {
                         // กรณีรออนุมัติ: โชว์ทั้ง 3 วันที่เสนอมา
                         <div className="space-y-2">
                           {item.appointment_slots.map((slot, idx) => {
+                            console.log(slot)
                             const dt = new Date(slot.slot_datetime);
-
                             return (
                               <div key={idx} className="d-flex align-items-center gap-2">
                                 <span
@@ -263,7 +223,11 @@ const AdminAppointments = () => {
                           </Dropdown.Toggle>
 
                           {/* เมนูย่อยสำหรับกดอนุมัติ */}
-                          <Dropdown.Menu className="shadow-lg border-0 p-2 rounded-3" style={{ minWidth: '250px', zIndex: 1050 }}>
+                          <Dropdown.Menu
+                            container={document.body}
+                            className="shadow-lg border-0 p-2 rounded-3"
+                            style={{ minWidth: '250px', zIndex: 1050 }}
+                          >
                             <Dropdown.Header className="text-xs font-bold text-gray-400 uppercase px-2 py-1">
                               อนุมัติโดยเลือกวันที่
                             </Dropdown.Header>
@@ -344,7 +308,7 @@ const AdminAppointments = () => {
           </table>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 
