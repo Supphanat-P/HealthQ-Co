@@ -42,3 +42,26 @@ app.post("/send-email", async (req, res) => {
     res.status(500).json({ success: false, error: "Internal Server Error" });
   }
 });
+
+app.post("/send-confirm-email", async (req, res) => {
+  const { to, subject, content } = req.body;
+
+  if (!to) {
+    return res
+      .status(400)
+      .json({ success: false, error: "No recipient (to) provided" });
+  }
+
+  try {
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to,
+      subject: "การจองเเพทย์ของคุณยืนยันเเล้ว",
+      text: "",
+    });
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Error sending confirmation email:", err);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
+  }
+});
