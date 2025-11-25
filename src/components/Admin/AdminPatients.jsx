@@ -7,6 +7,8 @@ import {
   Users,
   LogOut,
   TriangleAlert,
+  Phone,
+  Mail,
 } from "lucide-react";
 import {
   Dialog,
@@ -31,7 +33,6 @@ const AdminPatients = () => {
       gender: "ชาย",
       dob: "15/04/2533",
       nationality: "ไทย",
-      idCard: "1-1234-56789-12-3",
       height: "175",
       weight: "70",
       phone: "0629797123",
@@ -46,7 +47,6 @@ const AdminPatients = () => {
       gender: "หญิง",
       dob: "20/02/2538",
       nationality: "ไทย",
-      idCard: "1-9876-54321-12-3",
       height: "160",
       weight: "48",
       phone: "0629735454",
@@ -61,7 +61,6 @@ const AdminPatients = () => {
       gender: "ชาย",
       dob: "05/12/2540",
       nationality: "ไทย",
-      idCard: "1-5555-55555-55-5",
       height: "180",
       weight: "75",
       phone: "0629797123",
@@ -127,7 +126,7 @@ const AdminPatients = () => {
                     <th className="p-4 text-center">หมู่เลือด</th>
                     <th className="p-4 text-center">จำนวนครั้ง</th>
                     <th className="p-4 text-center">ครั้งล่าสุด</th>
-                    <th className="p-4 text-center">จัดการ</th>
+                    <th className="p-4 text-center">รายละเอียด</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
@@ -206,7 +205,7 @@ const AdminPatients = () => {
             >
               {selectedPatient && (
                 <>
-                  <div className="bg-[#001f3f] px-4 py-4 sm:px-6 flex justify-between items-center">
+                  <div className="bg-[#1f2054] px-4 py-4 sm:px-6 flex justify-between items-center">
                     <DialogTitle
                       as="h3"
                       className="text-lg font-bold text-white flex items-center gap-2"
@@ -253,7 +252,7 @@ const AdminPatients = () => {
                           รหัส: {selectedPatient.id}
                         </p>
 
-                        <div className="grid grid-cols-3 sm:grid-cols-3 gap-x-6 gap-y-4 text-sm">
+                        <div className="grid sm:grid-cols-2 gap-x-6 gap-y-4 text-sm">
                           <div className="space-y-1">
                             <p className="text-gray-500 text-xs uppercase tracking-wide">
                               เพศ
@@ -286,14 +285,6 @@ const AdminPatients = () => {
                               {selectedPatient.bloodType}
                             </p>
                           </div>
-                          <div className="space-y-1 col-span-1 sm:col-span-2">
-                            <p className="text-gray-500 text-xs uppercase tracking-wide">
-                              เลขบัตรประชาชน
-                            </p>
-                            <p className="font-medium text-gray-900 tracking-wider">
-                              {selectedPatient.idCard}
-                            </p>
-                          </div>
 
                           <div>
                             <p className="text-gray-500 text-xs">ส่วนสูง</p>
@@ -321,13 +312,13 @@ const AdminPatients = () => {
                             <div className="flex flex-col gap-1">
                               <p className="text-gray-900 flex items-center gap-2">
                                 <span className="w-4 h-4 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-[10px]">
-                                  📞
+                                  <Phone size={12} />
                                 </span>
                                 {selectedPatient.phone}
                               </p>
                               <p className="text-gray-900 flex items-center gap-2">
                                 <span className="w-4 h-4 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-[10px]">
-                                  ✉️
+                                  <Mail size={12} />
                                 </span>
                                 {selectedPatient.email}
                               </p>
