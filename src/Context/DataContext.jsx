@@ -113,10 +113,20 @@ export const DataProvider = ({ children }) => {
             }))
           );
 
+        const formattedappointmentsData = appointmentsData.map((appointment) => {
+          const user = (usersInfoData || []).find((u) => u.user_id === appointment.user_id);
+          const doctor = (doctorsData || []).find((d) => d.doctor_id === appointment.doctor_id);
+          return {
+            ...appointment,
+            user,
+            doctor,
+          };
+        });
+
         setDoctors(formattedDoctors);
         setSpecialties(specialtiesData || []);
         setHospitals(hospitalsData || []);
-        setAppointments(appointmentsData || []);
+        setAppointments(formattedappointmentsData || []);
         setUsersInfo(usersInfoData || []);
         setSearchData(searchData);
         setSymptomsListData(symptomsWithSpecialties);

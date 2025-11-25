@@ -1,12 +1,13 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import { useState } from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
-  useLocation, // 1. เพิ่ม useLocation ตรงนี้
+  useLocation,
 } from "react-router-dom";
 import { DataProvider, useData } from "./Context/DataContext";
 import NavigateBar from "./components/Shared/NavigateBar";
@@ -34,9 +35,16 @@ import AdminPatients from "./components/Admin/AdminPatients";
 
 function AppContent() {
   const { loading, error } = useData();
-  const location = useLocation(); // 2. เรียกใช้ hook เพื่อดึง path ปัจจุบัน
+  const location = useLocation();
+  const [lang, setLang] = useState(() => {
+    return localStorage.getItem("lang") || "TH";
+  });
 
-  // 3. กำหนด path ที่ "ไม่ต้องการ" ให้โชว์ Chatbot
+  const updateLang = (value) => {
+    setLang(value);
+    localStorage.setItem("lang", value);
+  };
+  
   const hiddenPaths = [
     "/login",
     "/register",
@@ -45,7 +53,6 @@ function AppContent() {
     "/adminpatients",
   ];
 
-  // เช็คว่า path ปัจจุบันอยู่ในรายการที่ต้องซ่อนไหม
   const showChatbot = !hiddenPaths.includes(location.pathname.toLowerCase());
 
   if (loading) return <Loading />;
@@ -66,30 +73,28 @@ function AppContent() {
         }}
       />
       <LocationCompare />
-      <NavigateBar />
-      
-      {/* 4. แสดงผลแบบมีเงื่อนไข */}
+      <NavigateBar lang={lang} setLang={updateLang} />
       {showChatbot && <Chatbot />}
 
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/appointment" element={<Appointment />} />
-        <Route path="/doctorsearch" element={<DoctorSearch />} />
-        <Route path="/doctorinfo" element={<Doctorinfo />} />
-        <Route path="/showdata" element={<ShowData />} />
-        <Route path="/admindoctorschedule" element={<AdminDoctorSchedule />} />
-        <Route path="/appointments" element={<AppoitmentData />} />
-        <Route path="/alldata" element={<AllDataDisplay />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/logout" element={<Logout />} />
-        <Route path="/locationcompare" element={<LocationCompare />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/adminsidebar" element={<AdminSidebar />} />
-        <Route path="/admindashboard" element={<AdminDashboard />} />
-        <Route path="/adminappointments" element={<AdminAppointments />} />
-        <Route path="/adminpatients" element={<AdminPatients />} />
-        <Route path="*" element={<NotFound />} />
+        <Route path="/appointment" element={<Appointment lang={lang} setLang={setLang} />} />
+        <Route path="/doctorsearch" element={<DoctorSearch lang={lang} setLang={setLang} />} />
+        <Route path="/doctorinfo" element={<Doctorinfo lang={lang} setLang={setLang} />} />
+        <Route path="/showdata" element={<ShowData lang={lang} setLang={setLang} />} />
+        <Route path="/admindoctorschedule" element={<AdminDoctorSchedule lang={lang} setLang={setLang} />} />
+        <Route path="/appointments" element={<AppoitmentData lang={lang} setLang={setLang} />} />
+        <Route path="/alldata" element={<AllDataDisplay lang={lang} setLang={setLang} />} />
+        <Route path="/login" element={<Login lang={lang} setLang={setLang} />} />
+        <Route path="/register" element={<Register lang={lang} setLang={setLang} />} />
+        <Route path="/logout" element={<Logout lang={lang} setLang={setLang} />} />
+        <Route path="/locationcompare" element={<LocationCompare lang={lang} setLang={setLang} />} />
+        <Route path="/profile" element={<Profile lang={lang} setLang={setLang} />} />
+        <Route path="/adminsidebar" element={<AdminSidebar lang={lang} setLang={setLang} />} />
+        <Route path="/admindashboard" element={<AdminDashboard lang={lang} setLang={setLang} />} />
+        <Route path="/adminappointments" element={<AdminAppointments lang={lang} setLang={setLang} />} />
+        <Route path="/adminpatients" element={<AdminPatients lang={lang} setLang={setLang} />} />
+        <Route path="*" element={<NotFound lang={lang} setLang={setLang} />} />
       </Routes>
     </>
   );

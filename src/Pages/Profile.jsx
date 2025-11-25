@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useData } from "../Context/DataContext";
 import { Navigate } from "react-router-dom";
 
-const Profile = () => {
+const Profile = ({ lang }) => {
   const [selectedTab, setSelectedTab] = useState("1");
   const { isLogin } = useData();
   if (isLogin === false) {
@@ -14,11 +14,11 @@ const Profile = () => {
   }
   return (
     <>
-      <AppointmentHeader label={"ข้อมูลผู้ใช้"} />
+      <AppointmentHeader label={lang === "TH" ? "ข้อมูลส่วนตัว" : "Personal Info"} lang={lang} />
 
-      <ProfileCard />
+      <ProfileCard lang={lang} />
 
-      <AppointmentHeader label={"ประวัติการนัดหมาย"} />
+      <AppointmentHeader label={"ประวัติการนัดหมาย"} lang={lang} />
       <AppointmentHistory />
     </>
   );

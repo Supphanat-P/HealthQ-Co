@@ -1,9 +1,11 @@
 import { useState, forwardRef } from "react";
 import AdminSidebar from "./AdminSidebar";
-import { Search, MoreVertical, CheckCircle, XCircle, Calendar, Clock } from "lucide-react";
+import { Search, MoreVertical, CheckCircle, XCircle, Calendar, Clock, CircleQuestionMark } from "lucide-react";
 import Dropdown from "react-bootstrap/Dropdown";
-
-// ปุ่ม MoreVertical
+import dayjs from "dayjs";
+import "dayjs/locale/th";
+import { useData } from "../../Context/DataContext";
+import { useEffect } from "react";
 const CustomToggle = forwardRef(({ children, onClick }, ref) => (
   <button
     ref={ref}
@@ -18,7 +20,12 @@ const CustomToggle = forwardRef(({ children, onClick }, ref) => (
 ));
 
 const AdminAppointments = () => {
-  const [appointments, setAppointments] = useState([
+  const { currentUser, appointments } = useData();
+  const [filterStatusDisplay, setFilterStatusDisplay] = useState("ทั้งหมด");
+  if (!currentUser) return window.location.href = "/login";
+  if (currentUser.role !== "admin") return window.location.href = "/login";
+  console.log(appointments)
+  const [Mockappointments, setMockAppointments] = useState([
     {
       id: "001",
       date_1: "01/01/2025", time_1: "09:00 น.",
@@ -29,7 +36,7 @@ const AdminAppointments = () => {
       doctor: "นายหงสาวดี แซ่หลี",
       dept: "หัวใจ",
       status: "อนุมัติแล้ว",
-      selectedDate: "01/01/2025 09:00 น.", 
+      selectedDate: "01/01/2025 09:00 น.",
     },
     {
       id: "002",
@@ -61,10 +68,10 @@ const AdminAppointments = () => {
   const [filterStatus, setFilterStatus] = useState("ทั้งหมด");
   const [searchQuery, setSearchQuery] = useState("");
 
-  
+
   // ฟังก์ชันอัปเดตสถานะและวันที่เมื่อกดเลือกจากเมนู
   const handleStatusChange = (id, newStatus, selectedDate = null) => {
-    setAppointments((prevData) =>
+    setMockAppointments((prevData) =>
       prevData.map((item) =>
         item.id === id
           ? { ...item, status: newStatus, selectedDate: selectedDate }
@@ -78,9 +85,9 @@ const AdminAppointments = () => {
     const matchesStatus = filterStatus === "ทั้งหมด" || item.status === filterStatus;
     const lowerQuery = searchQuery.toLowerCase();
     const matchesSearch =
-      item.patient.toLowerCase().includes(lowerQuery) ||
-      item.id.toLowerCase().includes(lowerQuery) ||
-      item.phone.toLowerCase().includes(lowerQuery);
+      item.user.full_name.toLowerCase().includes(lowerQuery) ||
+      item.app_id.toLowerCase().includes(lowerQuery) ||
+      item.user.phone.toLowerCase().includes(lowerQuery);
     return matchesStatus && matchesSearch;
   });
 
@@ -89,15 +96,15 @@ const AdminAppointments = () => {
     let styles = "";
     let icon = null;
     switch (status) {
-      case "อนุมัติแล้ว":
+      case "booked":
         styles = "bg-green-600 text-white";
         icon = <CheckCircle size={14} />;
         break;
-      case "รออนุมัติ":
+      case "pending":
         styles = "bg-yellow-400 text-black";
         icon = <Clock size={14} />;
         break;
-      case "ยกเลิก":
+      case "cancel":
         styles = "bg-red-600 text-white";
         icon = <XCircle size={14} />;
         break;
@@ -112,6 +119,20 @@ const AdminAppointments = () => {
     );
   };
 
+  // แสดงfilerเป็นภาษาไทย
+  useEffect(() => {
+    const statusMap = {
+      "ทั้งหมด": "ทั้งหมด",
+      booked: "อนุมัติแล้ว",
+      pending: "รออนุมัติ",
+      cancel: "ยกเลิก",
+    };
+
+    setFilterStatusDisplay(statusMap[filterStatus] || "ทั้งหมด");
+  }, [filterStatus]);
+
+
+
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
@@ -119,11 +140,11 @@ const AdminAppointments = () => {
 
       {/* Main Content */}
       <div className="m-5 flex-1 p-6 overflow-auto">
-        
+
         {/* Header Section*/}
         <div className="bg-white rounded-xl border border-indigo-100 p-4 mb-6 flex flex-col md:flex-row justify-between items-center shadow-sm gap-4">
           <h1 className="text-xl font-bold text-navy">รายการนัดหมาย</h1>
-          
+
           <div className="flex gap-3">
             {/* ช่องค้นหา (Search Input) */}
             <div className="position-relative" style={{ width: "325px" }}>
@@ -146,17 +167,17 @@ const AdminAppointments = () => {
                 variant="success"
                 className="text-navy fs-5 rounded-pill flex items-center justify-between px-4 py-2 border rounded-full text-sm font-medium bg-white hover:bg-gray-50"
               >
-                {filterStatus}
+                {filterStatusDisplay}
               </Dropdown.Toggle>
               <Dropdown.Menu>
                 <Dropdown.Item onClick={() => setFilterStatus("ทั้งหมด")}>ทั้งหมด</Dropdown.Item>
-                <Dropdown.Item className="d-flex align-items-center gap-2 text-success" onClick={() => setFilterStatus("อนุมัติแล้ว")}>
+                <Dropdown.Item className="d-flex align-items-center gap-2 text-success" onClick={() => setFilterStatus("booked")}>
                   <CheckCircle size={16} /> อนุมัติแล้ว
                 </Dropdown.Item>
-                <Dropdown.Item className="d-flex align-items-center gap-2 text-warning" onClick={() => setFilterStatus("รออนุมัติ")}>
+                <Dropdown.Item className="d-flex align-items-center gap-2 text-warning" onClick={() => setFilterStatus("pending")}>
                   <Clock size={16} /> รออนุมัติ
                 </Dropdown.Item>
-                <Dropdown.Item className="d-flex align-items-center gap-2 text-danger" onClick={() => setFilterStatus("ยกเลิก")}>
+                <Dropdown.Item className="d-flex align-items-center gap-2 text-danger" onClick={() => setFilterStatus("cancel")}>
                   <XCircle size={16} /> ยกเลิก
                 </Dropdown.Item>
               </Dropdown.Menu>
@@ -167,11 +188,11 @@ const AdminAppointments = () => {
         {/* --- Table Section */}
         <div className="bg-white rounded-xl border border-indigo-100 shadow-sm overflow-hidden mt-4" style={{ overflow: "visible" }}>
           <table className="w-full text-left border-collapse">
-            
+
             {/* Table Head */}
             <thead className="bg-gray-50 border-b">
               <tr className="text-navy font-semibold fs-5">
-                <th className="p-4">รหัส</th>
+                <th className="p-4 max-w-10!">รหัส</th>
                 <th className="p-4">วันที่/เวลา (ที่เสนอ)</th>
                 <th className="p-4">ผู้ป่วย</th>
                 <th className="p-4">แพทย์</th>
@@ -185,8 +206,8 @@ const AdminAppointments = () => {
               {filteredAppointments.length > 0 ? (
                 filteredAppointments.map((item, index) => (
                   <tr key={index} className="hover:bg-gray-50 transition-colors">
-                    <td className="p-4 font-medium text-gray-700">{item.id}</td>
-                    
+                    <td className="p-4 font-light text-gray-700 truncate! max-w-50! h-fit">{item.app_id}</td>
+
                     {/* วันที่นัดหมาย */}
                     <td className="p-4 text-gray-600">
                       {item.status === "อนุมัติแล้ว" && item.selectedDate ? (
@@ -197,33 +218,42 @@ const AdminAppointments = () => {
                       ) : (
                         // กรณีรออนุมัติ: โชว์ทั้ง 3 วันที่เสนอมา
                         <div className="space-y-2">
-                          {[
-                            { d: item.date_1, t: item.time_1, i: 1 },
-                            { d: item.date_2, t: item.time_2, i: 2 },
-                            { d: item.date_3, t: item.time_3, i: 3 },
-                          ].map((dt) => (
-                            <div key={dt.i} className="d-flex align-items-center gap-2">
-                              <span className="badge bg-secondary rounded-circle d-flex align-items-center justify-content-center" style={{ width: 20, height: 20 }}>{dt.i}</span>
-                              {dt.d} <span className="text-gray-400 text-sm">({dt.t})</span>
-                            </div>
-                          ))}
+                          {item.appointment_slots.map((slot, idx) => {
+                            const dt = new Date(slot.slot_datetime);
+
+                            return (
+                              <div key={idx} className="d-flex align-items-center gap-2">
+                                <span
+                                  className="badge bg-secondary rounded-circle d-flex align-items-center justify-content-center"
+                                  style={{ width: 20, height: 20 }}
+                                >
+                                  {idx + 1}
+                                </span>
+
+                                {dt.toLocaleDateString("th-TH")}
+                                <span className="text-gray-400 text-sm">
+                                  ({dt.toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" })})
+                                </span>
+                              </div>
+                            );
+                          })}
                         </div>
                       )}
                     </td>
 
                     <td className="p-4">
-                      <div className="font-medium text-gray-800">{item.patient}</div>
-                      <div className="text-sm text-gray-400">{item.phone}</div>
+                      <div className="font-medium text-gray-800">{item.user.full_name}</div>
+                      <div className="text-sm text-gray-400">{item.user.phone}</div>
                     </td>
-                    <td className="p-4 text-gray-700">{item.doctor}</td>
-                    
+                    <td className="p-4 text-gray-700">{item.doctor.doctor_name}</td>
+
                     {/* สถานะ (ใช้ฟังก์ชัน renderStatusBadge) */}
                     <td className="p-4 text-center align-middle">
                       <div className="d-flex justify-content-center">
                         {renderStatusBadge(item.status)}
                       </div>
                     </td>
-                    
+
                     {/* ปุ่มจัดการ (Dropdown) */}
                     <td className="p-4 text-center align-middle">
                       <div className="d-flex justify-content-center">
@@ -239,8 +269,8 @@ const AdminAppointments = () => {
                             </Dropdown.Header>
 
                             {/* ตัวเลือกวันที่ 1 */}
-                            <Dropdown.Item 
-                              onClick={() => handleStatusChange(item.id, "อนุมัติแล้ว", `${item.date_1} ${item.time_1}`)}
+                            <Dropdown.Item
+                              onClick={() => handleStatusChange(item.app_id, "อนุมัติแล้ว", `${item.date_1} ${item.time_1}`)}
                               className="d-flex align-items-center gap-3 py-2 rounded hover:bg-gray-50"
                             >
                               <div className="bg-blue-100 text-blue-600 w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs">1</div>
@@ -252,7 +282,7 @@ const AdminAppointments = () => {
                             </Dropdown.Item>
 
                             {/* ตัวเลือกวันที่ 2 */}
-                            <Dropdown.Item 
+                            <Dropdown.Item
                               onClick={() => handleStatusChange(item.id, "อนุมัติแล้ว", `${item.date_2} ${item.time_2}`)}
                               className="d-flex align-items-center gap-3 py-2 rounded hover:bg-gray-50"
                             >
@@ -265,7 +295,7 @@ const AdminAppointments = () => {
                             </Dropdown.Item>
 
                             {/* ตัวเลือกวันที่ 3 */}
-                            <Dropdown.Item 
+                            <Dropdown.Item
                               onClick={() => handleStatusChange(item.id, "อนุมัติแล้ว", `${item.date_3} ${item.time_3}`)}
                               className="d-flex align-items-center gap-3 py-2 rounded hover:bg-gray-50"
                             >
@@ -278,17 +308,21 @@ const AdminAppointments = () => {
                             </Dropdown.Item>
 
                             <Dropdown.Divider className="my-2" />
-                            
+                            <Dropdown.Item
+                              className="d-flex align-items-center gap-2 text-info py-2 rounded hover:bg-red-50"
+                            >
+                              <CircleQuestionMark size={16} /> เสนอวันที่อื่น
+                            </Dropdown.Item>
                             {/* ตัวเลือกยกเลิก */}
-                            <Dropdown.Item 
-                              onClick={() => handleStatusChange(item.id, "ยกเลิก", null)}
+                            <Dropdown.Item
+                              onClick={() => handleStatusChange(item.app_id, "ยกเลิก", null)}
                               className="d-flex align-items-center gap-2 text-danger py-2 rounded hover:bg-red-50"
                             >
                               <XCircle size={16} /> ปฏิเสธ/ยกเลิก
                             </Dropdown.Item>
 
                             {/* ตัวเลือกรีเซ็ต */}
-                            <Dropdown.Item 
+                            <Dropdown.Item
                               onClick={() => handleStatusChange(item.id, "รออนุมัติ", null)}
                               className="text-muted small text-center py-1"
                             >
