@@ -9,6 +9,8 @@ import "./Register.css";
 
 const Register = () => {
   const navigate = useNavigate();
+  const { currentUser } = useData();
+  if (currentUser) return navigate("/");
   const { sendOtpForRegistration, createUserAccount } = useData();
 
   const [identifier, setIdentifier] = useState("");

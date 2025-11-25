@@ -1,14 +1,22 @@
 import { useState } from "react";
 import { Search, User, LogIn, UserPlus, LogOut, Menu, X } from "lucide-react";
 
-const NavigateBar = () => {
+const NavigateBar = ({ lang, setLang }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [lang, setLang] = useState("TH");
   const token = localStorage.getItem("token");
 
+  const text = {
+    home: lang === "TH" ? "หน้าหลัก" : "Home",
+    doctorSearch: lang === "TH" ? "ค้นหาแพทย์" : "Find Doctor",
+    login: lang === "TH" ? "เข้าสู่ระบบ" : "Login",
+    register: lang === "TH" ? "สมัครสมาชิก" : "Register",
+    profile: lang === "TH" ? "โปรไฟล์" : "Profile",
+    logout: lang === "TH" ? "ออกจากระบบ" : "Logout",
+  };
+
   const navLinks = [
-    { label: "หน้าหลัก", path: "/" },
-    { label: "ค้นหาแพทย์", path: "/doctorsearch" }
+    { label: text.home, path: "/" },
+    { label: text.doctorSearch, path: "/doctorsearch" },
   ];
 
   return (
@@ -39,6 +47,7 @@ const NavigateBar = () => {
               ))}
             </div>
           </div>
+
           <div className="hidden lg:flex items-center space-x-4">
             {!token ? (
               <div className="flex items-center space-x-3">
@@ -47,15 +56,15 @@ const NavigateBar = () => {
                   className="flex items-center no-deco space-x-2 px-4 py-2 text-white hover:bg-white/10 rounded-xl transition-all duration-200"
                 >
                   <LogIn className="w-4 h-4" />
-                  &nbsp;
-                  <span className="font-medium">เข้าสู่ระบบ</span>
+                  <span className="font-medium">{text.login}</span>
                 </a>
+
                 <a
                   href="/register"
                   className="me-4 flex items-center no-deco space-x-2 px-4 py-2 text-white hover:bg-white/10 rounded-xl transition-all duration-200"
                 >
                   <UserPlus className="w-4 h-4" />
-                  <span>สมัครสมาชิก</span>
+                  <span>{text.register}</span>
                 </a>
               </div>
             ) : (
@@ -66,17 +75,16 @@ const NavigateBar = () => {
                 >
                   <User className="w-4 h-4" />
                   &nbsp;
-
-                  <span className="font-medium no-deco">โปรไฟล์</span>
+                  <span className="font-medium">{text.profile}</span>
                 </a>
+
                 <a
                   href="/logout"
                   className="flex no-deco items-center me-3 space-x-2 px-4 py-2 text-white hover:bg-red-500/20 hover:text-red-200 rounded-xl transition-all duration-200"
                 >
                   <LogOut className="w-4 h-4" />
                   &nbsp;
-
-                  <span className="font-medium no-deco">ออกจากระบบ</span>
+                  <span className="font-medium">{text.logout}</span>
                 </a>
               </div>
             )}
@@ -104,6 +112,7 @@ const NavigateBar = () => {
             </div>
           </div>
 
+          {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="lg:hidden text-white p-2 hover:bg-white/10 rounded-lg transition-colors"
@@ -112,6 +121,7 @@ const NavigateBar = () => {
           </button>
         </div>
 
+        {/* Mobile Menu */}
         {isOpen && (
           <div className="lg:hidden pb-6 pt-2 space-y-3 border-t border-white/10 mt-2">
             {navLinks.map((link) => (
@@ -132,14 +142,15 @@ const NavigateBar = () => {
                     className="flex items-center space-x-2 text-white hover:bg-white/10 px-4 py-3 rounded-xl font-medium transition-colors"
                   >
                     <LogIn className="w-4 h-4" />
-                    <span>เข้าสู่ระบบ</span>
+                    <span>{text.login}</span>
                   </a>
+
                   <a
                     href="/register"
                     className="flex items-center space-x-2 bg-white text-blue-900 hover:bg-blue-50 px-4 py-3 rounded-xl font-semibold transition-colors"
                   >
                     <UserPlus className="w-4 h-4" />
-                    <span>สมัครสมาชิก</span>
+                    <span>{text.register}</span>
                   </a>
                 </>
               ) : (
@@ -148,19 +159,21 @@ const NavigateBar = () => {
                     href="/profile"
                     className="flex items-center space-x-2 text-white hover:bg-white/10 px-4 py-3 rounded-xl font-medium transition-colors"
                   >
-                    <User className="w-4 h-4 no-deco" />
-                    <span classNam="no-deco">โปรไฟล์</span>
+                    <User className="w-4 h-4" />
+                    <span>{text.profile}</span>
                   </a>
+
                   <a
                     href="/logout"
                     className="flex items-center space-x-2 text-white hover:bg-red-500/20 px-4 py-3 rounded-xl font-medium transition-colors"
                   >
                     <LogOut className="w-4 h-4" />
-                    <span className="no-deco">ออกจากระบบ</span>
+                    <span>{text.logout}</span>
                   </a>
                 </>
               )}
 
+              {/* Language Switch Mobile */}
               <div className="flex border-2 border-white/30 rounded-xl overflow-hidden bg-white/5">
                 <button
                   onClick={() => setLang("TH")}

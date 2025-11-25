@@ -1,7 +1,11 @@
 import { LayoutDashboard, Calendar, Users, Heart } from "lucide-react";
 import { NavLink } from "react-router-dom";
-
+import { useData } from "../../Context/DataContext";
 const AdminSidebar = () => {
+  const { currentUser } = useData();
+  if (!currentUser) return window.location.href = "/login";
+  if (currentUser.role !== "admin") return window.location.href = "/login";
+
   const navItems = [
     {
       id: "dashboard",
@@ -24,7 +28,7 @@ const AdminSidebar = () => {
   ];
 
   return (
-    <div className="bg-white h-screen w-72 p-4 flex flex-col shadow-xl border border-gray-100">
+    <div className="bg-white w-72 p-4 flex flex-col shadow-xl border border-gray-100 min-h-screen! h-100">
       <div className="mb-8 pb-6">
         <div className="flex items-center justify-center mb-3">
           <div className="bg-linear-to-br from-blue-900 to-blue-950 p-3 rounded-2xl shadow-lg">
@@ -48,33 +52,29 @@ const AdminSidebar = () => {
                 <NavLink
                   to={item.path}
                   className={({ isActive }) =>
-                    `w-full flex items-center mt-2 no-deco p-4 rounded-2xl transition-all duration-300 ease-out ${
-                      isActive
-                        ? "bg-linear-to-r from-blue-900 to-blue-950 text-white shadow-lg"
-                        : "text-gray-600 hover:bg-blue-50 hover:text-blue-900"
+                    `w-full flex items-center mt-2 no-deco p-4 rounded-2xl transition-all duration-300 ease-out ${isActive
+                      ? "bg-linear-to-r from-blue-900 to-blue-950 text-white shadow-lg"
+                      : "text-gray-600 hover:bg-blue-50 hover:text-blue-900"
                     }`
                   }
                 >
                   {({ isActive }) => (
                     <>
                       <div
-                        className={`p-2.5 rounded-xl mr-4 transition-all duration-300 ${
-                          isActive
-                            ? "bg-white/20 shadow-md"
-                            : "bg-gray-100 hover:bg-blue-100"
-                        }`}
+                        className={`p-2.5 rounded-xl mr-4 transition-all duration-300 ${isActive
+                          ? "bg-white/20 shadow-md"
+                          : "bg-gray-100 hover:bg-blue-100"
+                          }`}
                       >
                         <Icon
-                          className={`w-5 h-5 ${
-                            isActive ? "text-white" : "text-blue-900"
-                          }`}
+                          className={`w-5 h-5 ${isActive ? "text-white" : "text-blue-900"
+                            }`}
                         />
                       </div>
                       &nbsp;
                       <span
-                        className={`font-medium text-navy ${
-                          isActive ? "text-white font-semibold" : ""
-                        }`}
+                        className={`font-medium text-navy ${isActive ? "text-white font-semibold" : ""
+                          }`}
                       >
                         {item.label}
                       </span>

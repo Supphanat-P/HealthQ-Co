@@ -15,11 +15,14 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 import AdminSidebar from "./AdminSidebar";
+import { useData } from "../../Context/DataContext";
 
 const AdminPatients = () => {
   const [open, setOpen] = useState(false); // ควบคุมการเปิดปิด Modal
   const [selectedPatient, setSelectedPatient] = useState(null); // เก็บข้อมูลคนไข้ที่เลือก
-
+  const { currentUser } = useData();
+  if (!currentUser) return window.location.href = "/login";
+  if (currentUser.role !== "admin") return window.location.href = "/login";
   // Mock Data
   const patients = [
     {

@@ -10,9 +10,9 @@ import { Badge, Button, Col, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useData } from "../../Context/DataContext";
 import { useState, useEffect } from "react";
-import dayjs from "dayjs"; 
+import dayjs from "dayjs";
 
-const AppointmentHistory = () => {
+const AppointmentHistory = ({ lang }) => {
   const {
     doctors = [],
     appointments = [],

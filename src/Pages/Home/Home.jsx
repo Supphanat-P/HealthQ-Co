@@ -1,450 +1,143 @@
-import { Container } from "react-bootstrap";
-import { InputGroup, Form, Button } from "react-bootstrap";
-import { BiSearch } from "react-icons/bi";
-import { BiCalendar, BiSearchAlt, BiPhone } from "react-icons/bi";
-import Myvideo from "./assets/Myvideo.mp4";
-const Home = () => {
+import React from 'react';
+import { Search, Calendar, Phone } from 'lucide-react';
+
+export default function Home() {
   return (
     <>
-      <div
-        style={{
-          position: "relative",
-          width: "100%",
-          backgroundImage: `url('/Logo.png')`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }}
-      >
-        <div
-          className="gradient-logo"
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            zIndex: 1,
-            opacity: 0.5,
-          }}
-        />
+      {/* Hero Section with Background */}
+      <div className="relative w-full min-h-[600px]! bg-linear-to-r from-blue-950 to-blue-500 overflow-hidden">
+        {/* Decorative circles */}
+        <div className="absolute w-[500px] h-[500px] rounded-full! bg-blue-400/10 -top-24 -right-24 blur-3xl" />
+        <div className="absolute w-[400px] h-[400px] rounded-full! bg-blue-300/10 -bottom-36 -left-24 blur-3xl" />
 
-        <div
-          className="m-auto d-flex justify-content-start align-items-start"
-          style={{
-            textAlign: "center",
-            position: "relative",
-            zIndex: 2,
-            padding: "0 20px",
-          }}
-        >
-          <div
-            className="d-flex flex-column justify-content-center align-items-center text-white"
-            style={{
-              height: "600px",
-              textAlign: "center",
-            }}
-          >
-            <div
-              className="move-left"
-              style={{
-                fontSize: "64px",
-                fontWeight: "500",
-                lineHeight: "1.2",
-              }}
-            >
+        <div className="relative z-10 flex items-center justify-center min-h-[600px] px-5!">
+          <div className="flex flex-col items-center text-center text-white">
+            <h1 className="text-6xl font-bold leading-tight mb-5 drop-shadow-2xl">
               WE CARE ABOUT <br /> YOUR HEALTH
-            </div>
+            </h1>
 
-            <div
-              className="move-left fs-4"
-              style={{
-                marginTop: "20px",
-                lineHeight: "1.5",
-                maxWidth: "800px",
-                color: "rgba(255, 255, 255, 0.7)",
-              }}
-            >
+            <p className="text-2xl mt-5! leading-relaxed max-w-3xl! text-white/90 drop-shadow-lg">
               every day is a new opportunity for you to do <br /> something for
               your health.
-            </div>
+            </p>
 
-            <div className="move-left d-flex flex-column justify-content-center align-items-center">
-              <button
-                className="btn bg-sky d-grid gap-2 shadow"
-                style={{
-                  width: "275px",
-                  height: "70px",
-                  borderRadius: "50px",
-                  marginTop: "30px",
-                  alignSelf: "center",
-                }}
-              >
-                <h3 className="text-white text-center mt-2">นัดหมายแพทย์</h3>
-              </button>
-            </div>
+            <button className="w-[275px] h-[70px] rounded-full! mt-10! bg-white text-blue-800 text-2xl font-semibold shadow-2xl hover:shadow-blue-500/50 hover:-translate-y-1 transition-all duration-300">
+              นัดหมายแพทย์
+            </button>
           </div>
         </div>
       </div>
 
-      <div
-        className="d-flex justify-content-center"
-        style={{ backgroundColor: "#EEEEFF", padding: "50px" }}
-      >
-        <div>
-          <div className="m-5 d-flex justify-content-center">
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                width: "500px",
-                height: "55px",
-                backgroundColor: "#ffffff",
-                borderRadius: "50px",
-              }}
-            >
-              <button
-                style={{
-                  backgroundColor: "#1a1f57",
-                  border: "none",
-                  width: "55px",
-                  height: "55px",
-                  borderRadius: "50%",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  cursor: "pointer",
-                  margin: "0",
-                }}
-              >
-                <BiSearch size={22} color="white" />
+      {/* Search and Quick Actions Section */}
+      <div className="bg-linear-to-b from-blue-50 to-white py-16! px-5!">
+        <div className="max-w-6xl! mx-auto">
+          {/* Search Bar */}
+          <div className="flex justify-center mb-12!">
+            <div className="flex items-center w-full max-w-2xl h-16 bg-white rounded-full! shadow-xl shadow-blue-200/50 hover:shadow-2xl hover:shadow-blue-300/50 hover:-translate-y-0.5 transition-all duration-300">
+              <button className="w-16 h-16 rounded-full! bg-linear-to-br from-blue-800 to-blue-900 flex items-center justify-center shadow-lg shadow-blue-500/40">
+                <Search size={24} className="text-white" />
               </button>
               <input
                 type="text"
                 placeholder="ค้นหาโรงพยาบาล ชื่อแพทย์ ความชำนาญ"
-                style={{
-                  flex: 1,
-                  height: "100%",
-                  border: "none",
-                  outline: "none",
-                  paddingLeft: "20px",
-                  fontSize: "16px",
-                  color: "#1a1f57",
-                  borderRadius: "50px",
-                }}
+                className="flex-1 h-full! border-none outline-none px-5 text-base text-blue-900 rounded-r-full! bg-transparent"
               />
             </div>
           </div>
 
-          <div className="d-flex m-auto justify-content-center align-items-center">
-            <button
-              className="btn bg-sky m-5 d-flex align-items-center justify-content-center gap-2 box-shadow"
-              style={{ width: "275px", height: "70px" }}
-            >
-              <BiCalendar size={24} color="white" />
-              <h3 className="text-white mb-0">จองคิวตรวจ</h3>
+          {/* Quick Action Buttons */}
+          <div className="flex flex-wrap justify-center items-center gap-4">
+            <button className="bg-linear-to-br from-cyan-600 to-blue-700 rounded-2xl! px-10! py-5! flex items-center! gap-3 shadow-lg shadow-cyan-500/30 hover:shadow-xl hover:shadow-cyan-600/40 hover:-translate-y-2 transition-all duration-300 min-w-[200px]">
+              <Search size={28} className="text-white" />
+              <span className="text-white text-xl font-semibold">
+                <a href="/doctorsearch" className="text-white no-deco">
+                  ค้นหาแพทย์
+                </a>
+              </span>
             </button>
-
-            <button
-              className="btn bg-sky m-5 d-flex align-items-center justify-content-center gap-2 box-shadow"
-              style={{ width: "275px", height: "70px" }}
-            >
-              <BiSearchAlt size={24} color="white" />
-              <h3 className="text-white mb-0">ค้นหาแพทย์</h3>
-            </button>
-
-            <button
-              className="btn bg-sky m-5 d-flex align-items-center justify-content-center gap-2 box-shadow"
-              style={{ width: "275px", height: "70px" }}
-            >
-              <BiPhone size={24} color="white" />
-              <h3 className="text-white mb-0">ติดต่อเรา</h3>
+            <button className="bg-linear-to-br from-blue-600 to-cyan-500 rounded-2xl! px-10! py-5! flex items-center! gap-3 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-600/40 hover:-translate-y-2 transition-all duration-300 min-w-[200px]">
+              <Phone size={28} className="text-white" />
+              <span className="text-white text-xl font-semibold">ติดต่อเรา</span>
             </button>
           </div>
         </div>
       </div>
 
-      <div>
-        <div
-          className="d-flex flex-column align-items-center"
-          style={{ backgroundColor: "#EEEEFF", padding: "20px 0" }}
-        >
-          <div className="text-darkblue fs-1">วิธีการใช้งาน</div>
-
-          <div
-            style={{
-              height: "4px",
-              width: "300px",
-              backgroundImage:
-                "linear-gradient(to right, rgb(0, 45, 115), rgb(56, 111, 170), rgb(141, 211, 255), rgb(141, 211, 255))",
-              marginTop: "10px",
-            }}
-          ></div>
-        </div>
-
-        <div
-          className="d-flex flex-column align-items-center"
-          style={{ backgroundColor: "#EEEEFF", padding: "20px 0" }}
-        >
-          <div className="text-darkblue fs-3 text-center">
+      {/* How to Use Section */}
+      <div className="bg-linear-to-b from-white to-blue-50 py-20! px-5!">
+        <div className="text-center mb-16!">
+          <h2 className="text-5xl font-bold text-blue-900 mb-5">
+            วิธีการใช้งาน
+          </h2>
+          <p className="text-2xl text-blue-700/80 max-w-3xl mx-auto">
             เพียง 4 ขั้นตอนง่ายๆ คุณก็สามารถจองนัดหมายกับแพทย์ได้ทันที
-          </div>
-          <div
-            style={{
-              height: "4px",
-              width: "800px",
-              backgroundImage:
-                "linear-gradient(to right, rgb(0, 45, 115), rgb(56, 111, 170), rgb(141, 211, 255), rgb(141, 211, 255))",
-              marginTop: "10px",
-            }}
-          ></div>
+          </p>
         </div>
 
-        <div style={{ backgroundColor: "#EEEEFF" }}>
-          <Container
-            className="d-flex justify-content-center m-auto align-items-center gap-5"
-            style={{ height: "500px" }}
-          >
-            <div className="d-flex flex-column align-items-center text-center">
-              <div
-                className="rounded-circle d-flex justify-content-center align-items-center"
-                style={{
-                  width: "60px",
-                  height: "60px",
-                  backgroundColor: "#1F2054",
-                  color: "white",
-                  fontWeight: "700",
-                  fontSize: "20px",
-                  position: "relative",
-                  top: "10px",
-                  left: "-120px",
-                }}
-              >
-                01
+        <div className="flex flex-wrap justify-center items-start gap-12!  max-w-7xl! mx-auto!">
+          {[
+            { num: "1", title: "เลือกโรงพยาบาล", desc: "เลือกโรงพยาบาลที่ต้องการจากรายชื่อของเรา", bgColor: "from-blue-800 to-blue-900", borderColor: "border-blue-800/30", cardBg: "bg-linear-to-br from-blue-800/10 to-blue-800/5" },
+            { num: "2", title: "เลือกแพทย์", desc: "เลือกแพทย์ที่ต้องการจากรายชื่อแพทย์ผู้เชี่ยวชาญของเรา", bgColor: "from-cyan-600 to-blue-700", borderColor: "border-cyan-600/30", cardBg: "bg-linear-to-br from-cyan-600/10 to-cyan-600/5" },
+            { num: "3", title: "เลือกวันและเวลา", desc: "เลือกวันที่และเวลาที่สะดวกสำหรับคุณจากตารางที่ว่าง", bgColor: "from-blue-600 to-cyan-500", borderColor: "border-blue-600/30", cardBg: "bg-linear-to-br from-blue-600/10 to-blue-600/5" },
+            { num: "4", title: "ยืนยันนัดหมาย", desc: "ยืนยันการนัดหมายและรับการแจ้งเตือนก่อนถึงเวลานัด", bgColor: "from-blue-700 to-blue-800", borderColor: "border-blue-700/30", cardBg: "bg-linear-to-br from-blue-700/10 to-blue-700/5" },
+          ].map((step, index) => (
+            <div key={index} className="flex flex-col items-center text-center max-w-[280px] relative">
+              {/* Step Number Badge */}
+              <div className={`w-[70px] h-[70px] bg-linear-to-br ${step.bgColor} rounded-full! flex items-center justify-center text-white font-bold text-2xl shadow-lg relative z-10! -mb-9!`}>
+                {step.num}
               </div>
-                <div className="flex justify-center items-center h-screen bg-gray-100">
-      <video
-        src={Myvideo}
-        autoPlay
-        loop
-        muted
-        playsInline
-        className="w-80 rounded-xl shadow-lg"
-      />
-    </div>
-          
-              <div style={{ marginTop: "20px" }}>
-                <h5 style={{ color: "#1F2054", fontWeight: "700" }}>
-                  เลือกโรงพยาบาล
+
+              {/* Card */}
+              <div className={`w-full h-[200px] ${step.cardBg} rounded-3xl! border-3 ${step.borderColor} shadow-xl! hover:shadow-2xl hover:-translate-y-3 transition-all duration-300 flex items-center justify-center`}>
+                <div className="text-6xl opacity-30 font-bold text-blue-800">
+                  {step.num}
+                </div>
+              </div>
+
+              {/* Text */}
+              <div className="mt-6!">
+                <h5 className="text-blue-900 font-bold text-xl mb-2">
+                  {step.title}
                 </h5>
-                <p
-                  style={{
-                    color: "#1F2054",
-                    marginBottom: "0",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  เลือกโรงพยาบาลที่ต้องการจากรายชื่อของเรา
+                <p className="text-blue-700/70 text-sm leading-relaxed">
+                  {step.desc}
                 </p>
               </div>
             </div>
-
-            <div className="d-flex flex-column align-items-center text-center">
-              <div
-                className="rounded-circle d-flex justify-content-center align-items-center"
-                style={{
-                  width: "60px",
-                  height: "60px",
-                  backgroundColor: "#1F2054",
-                  color: "white",
-                  fontWeight: "700",
-                  fontSize: "20px",
-                  position: "relative",
-                  top: "10px",
-                  left: "-120px",
-                }}
-              >
-                02
-              </div>
-
-              <div
-                style={{
-                  width: "180px",
-                  height: "160px",
-                  backgroundColor: "#1F2054",
-                  borderRadius: "20px",
-                  marginTop: "-20px",
-                }}
-              ></div>
-              <div style={{ marginTop: "20px" }}>
-                <h5 style={{ color: "#1F2054", fontWeight: "700" }}>
-                  เลือกแพทย์
-                </h5>
-                <p
-                  style={{
-                    color: "#1F2054",
-                    marginBottom: "0",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  เลือกแพทย์ที่ต้องจากรายชื่อแพทย์ผู้เชี่ยวชาญของเรา
-                </p>
-              </div>
-            </div>
-
-            <div className="d-flex flex-column align-items-center text-center">
-              <div
-                className="rounded-circle d-flex justify-content-center align-items-center"
-                style={{
-                  width: "60px",
-                  height: "60px",
-                  backgroundColor: "#1F2054",
-                  color: "white",
-                  fontWeight: "700",
-                  fontSize: "20px",
-                  position: "relative",
-                  top: "10px",
-                  left: "-120px",
-                }}
-              >
-                03
-              </div>
-
-              <div
-                style={{
-                  width: "180px",
-                  height: "160px",
-                  backgroundColor: "#1F2054",
-                  borderRadius: "20px",
-                  marginTop: "-20px",
-                }}
-              ></div>
-              <div style={{ marginTop: "20px" }}>
-                <h5 style={{ color: "#1F2054", fontWeight: "700" }}>
-                  เลือกวันและเวลา
-                </h5>
-                <p
-                  style={{
-                    color: "#1F2054",
-                    marginBottom: "0",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  เลือกวันที่และเวลาที่สะดวกสำหรับคุณจากตารางที่ว่าง
-                </p>
-              </div>
-            </div>
-
-            <div className="d-flex flex-column align-items-center text-center">
-              <div
-                className="rounded-circle d-flex justify-content-center align-items-center"
-                style={{
-                  width: "60px",
-                  height: "60px",
-                  backgroundColor: "#1F2054",
-                  color: "white",
-                  fontWeight: "700",
-                  fontSize: "20px",
-                  position: "relative",
-                  top: "10px",
-                  left: "-120px",
-                }}
-              >
-                04
-              </div>
-
-              <div
-                style={{
-                  width: "180px",
-                  height: "160px",
-                  backgroundColor: "#1F2054",
-                  borderRadius: "20px",
-                  marginTop: "-20px",
-                }}
-              ></div>
-              <div style={{ marginTop: "20px" }}>
-                <h5 style={{ color: "#1F2054", fontWeight: "700" }}>
-                  ยืนยันนัดหมาย
-                </h5>
-                <p
-                  style={{
-                    color: "#1F2054",
-                    marginBottom: "0",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  ยืนยันการนัดหมายและรับการแจ้งเตือนก่อนถึงเวลานัด
-                </p>
-              </div>
-            </div>
-          </Container>
+          ))}
         </div>
       </div>
 
-      <div
-        className="bg-sky m-auto d-flex flex-column"
-        style={{ height: "300px", position: "relative" }}
-      >
-        <div className="text-white move-left mt-5 fs-2">Health Queue</div>
+      {/* ความชำนาญ */}
+      <div>
 
-        <div
-          className="d-flex justify-content-start align-items-center gap-5"
-          style={{ marginTop: "50px" }}
-        >
-          <button
-            className="invisible-button  fs-4"
-            style={{ marginLeft: "240px" }}
-          >
-            About Us
-          </button>
-          <button
-            className="invisible-button  fs-4"
-            style={{ marginLeft: "240px" }}
-          >
-            Services
-          </button>
-          <button
-            className="invisible-button  fs-4"
-            style={{ marginLeft: "240px" }}
-          >
-            Help & Support
-          </button>
-          <button
-            className="invisible-button  fs-4"
-            style={{ marginLeft: "240px" }}
-          >
-            Social Media
-          </button>
-        </div>
+      </div>
 
-        <div
-          style={{
-            position: "absolute",
-            bottom: "40px",
-            left: "50%",
-            transform: "translateX(-50%)",
-            width: "1600px",
-            height: "2px",
-            backgroundColor: "white",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            bottom: "15px",
-            left: "50%",
-            transform: "translateX(-50%)",
-            width: "1600px",
-            color: "white",
-            fontSize: "14px",
-            textAlign: "left",
-            paddingLeft: "0px",
-          }}
-        >
-          © 2025 Health Queue
+      {/* Footer */}
+      <div className="bg-linear-to-br from-blue-900 via-blue-800 to-blue-900 py-16! px-5! relative">
+        <div className="max-w-7xl! mx-auto">
+          <h2 className="text-white text-4xl font-bold mb-10! text-center">
+            Health Queue
+          </h2>
+
+          <div className="flex flex-wrap justify-center items-center gap-12! mb-10!">
+            {["About Us", "Services", "Help & Support", "Social Media"].map((item, index) => (
+              <button
+                key={index}
+                className="bg-transparent border-none text-white text-lg px-5! py-2 border-b-2 border-transparent hover:border-white hover:-translate-y-0.5 transition-all duration-300"
+              >
+                {item}
+              </button>
+            ))}
+          </div>
+
+          <div className="w-full h-px bg-white/30 my-8!" />
+
+          <div className="text-white/80 text-sm text-center">
+            © 2025 Health Queue
+          </div>
         </div>
       </div>
     </>
   );
-};
-export default Home;
+}
