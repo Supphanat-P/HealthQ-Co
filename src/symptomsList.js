@@ -18,7 +18,6 @@ export function buildSymptomsIntro({
     ? specialties.map((s) => `- ${s.specialty_name}`).join("\n")
     : "- ไม่มีข้อมูลแผนกในขณะนี้";
 
-
   const symptomList = symptomsListData.length
     ? symptomsListData
         .map(

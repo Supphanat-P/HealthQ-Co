@@ -5,10 +5,11 @@ import { useData } from "../../../Context/DataContext";
 import toast, { Toaster } from "react-hot-toast";
 
 const Login = () => {
-  const { login } = useData();
+  const { login, currentUser } = useData();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  if (currentUser) return navigate("/");
 
   const handleLogin = async () => {
     if (!identifier || !password) {
@@ -18,7 +19,7 @@ const Login = () => {
     try {
       await login(identifier, password);
       toast.success("เข้าสู่ระบบสำเร็จ");
-      navigate("/"); 
+      navigate("/");
     } catch (err) {
       toast.error(err.message || "เกิดข้อผิดพลาดในการเข้าสู่ระบบ");
     }
@@ -60,7 +61,7 @@ const Login = () => {
           </button>
           <button
             className="btn bg-white m-auto mb-3 d-flex justify-content-center align-items-center shadow"
-            onClick={() => navigate("/register")} 
+            onClick={() => navigate("/register")}
           >
             <p className="text-navy mb-0">สมัครสมาชิก</p>
           </button>
