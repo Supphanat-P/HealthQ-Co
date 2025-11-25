@@ -42,3 +42,26 @@ app.post("/send-email", async (req, res) => {
     res.status(500).json({ success: false, error: "Internal Server Error" });
   }
 });
+
+app.post("/send-confirm-email", async (req, res) => {
+  const { to, subject, text } = req.body;
+
+  if (!to) {
+    return res
+      .status(400)
+      .json({ success: false, error: "No recipient (to) provided" });
+  }
+
+  try {
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to,
+      subject: subject,
+      text,
+    });
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
+  }
+});

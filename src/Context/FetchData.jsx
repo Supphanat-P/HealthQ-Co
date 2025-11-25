@@ -110,7 +110,7 @@ export const sendOtpForRegistration = async (identifier, otp) => {
     return;
   }
 
-  try {
+  try {    
     const res = await fetch("http://localhost:3001/send-email", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -122,9 +122,13 @@ export const sendOtpForRegistration = async (identifier, otp) => {
     });
 
     const data = await res.json();
-    alert(data.success ? "Email Sent!" : "Failed: " + data.error);
+    if (data.success) {
+      toast.success("Email Sent!");
+    } else {
+      toast.error("Failed: " + data.error);
+    }
   } catch (err) {
-    alert("Error: " + err.message);
+    toast.error("Error: " + err.message);
   }
 };
 

@@ -17,6 +17,7 @@ import "dayjs/locale/th";
 import { useData } from "../../Context/DataContext";
 import { supabase } from "../../config/supabaseClient";
 import AdminSidebar from "./AdminSidebar";
+import { sendOtpForRegistration } from "../../Context/FetchData";
 
 const CustomToggle = forwardRef(({ children, onClick }, ref) => (
   <button
@@ -32,7 +33,7 @@ const CustomToggle = forwardRef(({ children, onClick }, ref) => (
 ));
 
 const AdminAppointments = () => {
-  const { currentUser, appointments } = useData();
+  const { currentUser, appointments, fetchAndSetData } = useData();
   const [filterStatusDisplay, setFilterStatusDisplay] = useState("ทั้งหมด");
   const [filterStatus, setFilterStatus] = useState("ทั้งหมด");
   const [searchQuery, setSearchQuery] = useState("");
@@ -59,7 +60,38 @@ const AdminAppointments = () => {
         .eq("app_id", app_id);
 
       if (error) throw error;
-      window.location.reload();
+      
+      await fetchAndSetData(); // Refresh data
+
+      if (newStatus === "booked") {
+
+        console.log(selectedDate)
+
+        const date = new Date(selectedDate).toLocaleDateString(
+          "th-TH",
+          { day: "numeric", month: "short", year: "numeric" }
+        )
+
+        const time = new Date(selectedDate).toLocaleTimeString("th-TH", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        
+        console.log(date)
+        console.log(time)
+        const user = appointments.find((item) => item.app_id === app_id)?.user;
+        const doctor = appointments.find((item) => item.app_id === app_id)?.doctor;
+
+        const userEmail = user.email
+        const doctorName = doctor.doctor_name
+        const hospitalName = doctor.hospital.hospital_name
+
+        console.log('Userdata', user)
+        console.log('Doctor', doctor)
+      } else if (newStatus === "cancel") {
+
+      }
+
     } catch (error) {
       console.error("Supabase Error:", error.message);
       alert("เกิดข้อผิดพลาด: " + error.message);
@@ -73,17 +105,16 @@ const AdminAppointments = () => {
     setShowModal(true);
   };
 
-  const handleSaveCustomDate = () => {
+  const handleSaveCustomDate = async () => {
     if (!customDate || !customTime) {
       alert("กรุณาเลือกทั้งวันที่และเวลา");
       return;
     }
     const dateTimeString = `${customDate}T${customTime}:00`;
     const dateObject = new Date(dateTimeString);
-    handleStatusChange(selectedApp.app_id, "booked", dateObject.toISOString());
+    await handleStatusChange(selectedApp.app_id, "booked", dateObject.toISOString());
     setShowModal(false);
   };
-
   const filteredAppointments = appointments.filter((item) => {
     const matchesStatus =
       filterStatus === "ทั้งหมด" || item.status === filterStatus;
