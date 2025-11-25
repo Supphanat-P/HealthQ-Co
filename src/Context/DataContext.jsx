@@ -12,7 +12,8 @@ import {
   sendOtpForRegistration,
   createUserAccount,
   login as loginFromFetchData,
-  updateUserInfo
+  updateUserInfo,
+   sendEmailForApprove
 } from "./FetchData";
 
 const DataContext = createContext(null);
@@ -164,7 +165,8 @@ export const DataProvider = ({ children }) => {
         createAppointment,
         sendOtpForRegistration,
         createUserAccount,
-        updateUserInfo
+        updateUserInfo,
+         sendEmailForApprove
       }}
     >
       {children}

@@ -32,7 +32,7 @@ const CustomToggle = forwardRef(({ children, onClick }, ref) => (
 ));
 
 const AdminAppointments = () => {
-  const { currentUser, appointments } = useData();
+  const { currentUser, appointments,sendEmailForApprove } = useData();
   const [filterStatusDisplay, setFilterStatusDisplay] = useState("ทั้งหมด");
   const [filterStatus, setFilterStatus] = useState("ทั้งหมด");
   const [searchQuery, setSearchQuery] = useState("");
@@ -58,8 +58,34 @@ const AdminAppointments = () => {
         })
         .eq("app_id", app_id);
 
+        if(!error){
+          if(newStatus === "booked"){
+            const date = new Date(selectedDate).toLocaleDateString(
+            "th-TH",
+            { day: "numeric", month: "short", year: "numeric" }
+          )
+
+          const time = new Date(selectedDate).toLocaleTimeString("th-TH", {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+            const user = appointments.find((item) => item.app_id === app_id)?.user
+            const doctor = appointments.find((item) => item.app_id === app_id)?.doctor
+            const hospital = doctor.hospital.hospital_name
+            const emailUser = user.email
+            const doctorName = doctor.doctor_name
+            
+            await sendEmailForApprove(emailUser,date,time,doctorName,hospital)
+            
+            console.log('Userdata', user)
+            console.log('Doctor', doctor)
+          }else if (newStatus === "cancel"){
+
+          }
+        }
+
       if (error) throw error;
-      window.location.reload();
+      // window.location.reload();
     } catch (error) {
       console.error("Supabase Error:", error.message);
       alert("เกิดข้อผิดพลาด: " + error.message);
