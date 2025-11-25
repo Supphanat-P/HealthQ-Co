@@ -6,14 +6,14 @@ import { BiChevronRight } from "react-icons/bi";
 
 const Home = () => {
   const medicalServices = [
-    { id: 1, letter: 'ห', text: 'หู คอ จมูก'},
-    { id: 2, letter: 'ต', text: 'ตา'},
-    { id: 3, letter: 'ท', text: 'ทันตกรรม'},
-    { id: 4, letter: 'ส', text: 'สุขภาพสตรี'},
-    { id: 5, letter: 'ผ', text: 'ผิวหนัง'},
-    { id: 6, letter: 'ห', text: 'หัวใจ'},
-    { id: 7, letter: 'ศ', text: 'ศัลยกรรม'},
-    { id: 8, letter: 'อ', text: 'อายุรกรรม'},
+    { id: 1, letter: "ห", text: "หู คอ จมูก" },
+    { id: 2, letter: "ต", text: "ตา" },
+    { id: 3, letter: "ท", text: "ทันตกรรม" },
+    { id: 4, letter: "ส", text: "สุขภาพสตรี" },
+    { id: 5, letter: "ผ", text: "ผิวหนัง" },
+    { id: 6, letter: "ห", text: "หัวใจ" },
+    { id: 7, letter: "ศ", text: "ศัลยกรรม" },
+    { id: 8, letter: "อ", text: "อายุรกรรม" },
   ];
   return (
     <>
@@ -172,72 +172,74 @@ const Home = () => {
               <h3 className="text-white mb-0">ติดต่อเรา</h3>
             </button>
           </div>
-         <div className="m-5">
-  <div className="d-flex text-navy justify-content-start align-items-center fs-2">
-    ความชำนาญ
-  </div>
-  <div className="d-flex justify-content-start align-items-center mt-2">
-    <span
-      className="fs-5 d-flex align-items-center"
-      style={{
-        color: "#1D4ED8",
-        cursor: "pointer",
-        display: "flex",
-        alignItems: "center",
-      }}
-    >
-      ดูทั้งหมด
-      <BiChevronRight
-        size={24}
-        className="icon-hover"
-        style={{ marginLeft: "5px", transition: "0.3s" }}
-      />
-    </span>
-  </div>
-  <div className="row mt-4">
-    {medicalServices.map((service) => (
-      <div key={service.id} className="col-md-3 col-sm-4 col-6 mb-3">
-        <div 
-          className="card h-100 d-flex flex-column align-items-center justify-content-center rounded-3 p-3"
-          style={{ 
-            backgroundColor: '#ffffffff', 
-            borderRadius: '10px',
-            border: '2px solid #eeebebab',
-            cursor: 'pointer',
-            transition: 'transform 0.3s ease, box-shadow 0.3s ease'
-          }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.transform = 'translateY(-5px)';
-            e.currentTarget.style.boxShadow = '0 10px 20px rgba(0, 0, 0, 0.1)';
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.transform = 'translateY(0)';
-            e.currentTarget.style.boxShadow = 'none';
-          }}
-        >
-          <div 
-            className="d-flex justify-content-center align-items-center rounded-circle text-white fw-bold mb-3"
-            style={{ 
-              width: '40px', 
-              height: '40px', 
-              backgroundColor: '#1f2054',
-              fontSize: '20px'
-            }}
-          >
-            {service.letter}
-          </div>
-          <div className="text-center">
-            <p className="mb-0 fw-bold">{service.text}</p>
-            <p className="mb-0">{service.thaiText}</p>
+
+          <div className="m-5">
+            <div className="d-flex text-navy justify-content-start align-items-center fs-2">
+              ความชำนาญ
+            </div>
+            <div className="d-flex justify-content-start align-items-center mt-2">
+              <span
+                className="fs-5 d-flex align-items-center"
+                style={{
+                  color: "#1D4ED8",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                ดูทั้งหมด
+                <BiChevronRight
+                  size={24}
+                  className="icon-hover"
+                  style={{ marginLeft: "5px", transition: "0.3s" }}
+                />
+              </span>
+            </div>
+            <div className="row mt-4">
+              {medicalServices.map((service) => (
+                <div key={service.id} className="col-md-3 col-sm-4 col-6 mb-3">
+                  <div
+                    className="card h-100 d-flex flex-column align-items-center justify-content-center rounded-3 p-3"
+                    style={{
+                      backgroundColor: "#ffffffff",
+                      borderRadius: "10px",
+                      border: "2px solid #eeebebab",
+                      cursor: "pointer",
+                      transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                    }}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.transform = "translateY(-5px)";
+                      e.currentTarget.style.boxShadow =
+                        "0 10px 20px rgba(0, 0, 0, 0.1)";
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.transform = "translateY(0)";
+                      e.currentTarget.style.boxShadow = "none";
+                    }}
+                  >
+                    <div
+                      className="d-flex justify-content-center align-items-center rounded-circle text-white fw-bold mb-3"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        backgroundColor: "#1f2054",
+                        fontSize: "20px",
+                      }}
+                    >
+                      {service.letter}
+                    </div>
+                    <div className="text-center">
+                      <p className="mb-0 fw-bold">{service.text}</p>
+                      <p className="mb-0">{service.thaiText}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    ))}
-  </div>
-</div>
-        </div>
-      </div>
-      
+
       <div>
         <div
           className="d-flex flex-column align-items-center"
@@ -267,8 +269,6 @@ const Home = () => {
             style={{
               height: "4px",
               width: "800px",
-              backgroundImage:
-                "linear-gradient(to right, rgb(0, 45, 115), rgb(56, 111, 170), rgb(141, 211, 255), rgb(141, 211, 255))",
               marginTop: "10px",
             }}
           ></div>
