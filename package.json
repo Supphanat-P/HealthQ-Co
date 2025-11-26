@@ -23,6 +23,7 @@
     "dayjs": "^1.11.18",
     "express": "^5.1.0",
     "geolib": "^3.3.4",
+    "hugeicons-react": "^0.3.0",
     "leaflet": "^1.9.4",
     "leaflet-geosearch": "^4.2.2",
     "lucide-react": "^0.552.0",
