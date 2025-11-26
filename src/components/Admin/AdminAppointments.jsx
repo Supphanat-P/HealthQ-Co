@@ -239,11 +239,11 @@ const AdminAppointments = () => {
       <AdminSidebar />
       <div className="m-5 flex-1 p-6 overflow-auto">
         <div className="bg-white rounded-xl border border-indigo-100 p-4 mb-6 flex flex-col md:flex-row justify-between items-center shadow-sm gap-4">
-          <h1 className="text-xl font-bold text-navy">รายการนัดหมาย</h1>
+          <h2 className="text-xl font-bold text-navy">รายการนัดหมาย</h2>
           <div className="flex gap-3">
             <div className="position-relative" style={{ width: "325px" }}>
-              <div className="position-absolute top-50 start-0 translate-middle-y ms-3 pe-none">
-                <Search size={18} color="#001f3f" />
+              <div className="position-absolute pb-1! top-50 start-0 translate-middle-y ms-3 pe-none">
+                <Search size={20} color="#001f3f" />
               </div>
               <input
                 type="text"
@@ -390,7 +390,8 @@ const AdminAppointments = () => {
                             className="shadow-lg border-0 p-2 rounded-3"
                             style={{ minWidth: "250px", zIndex: 1050 }}
                           >
-                            <Dropdown.Header className="text-xs font-bold text-gray-400 uppercase px-2 py-1">
+                            <Dropdown.Header className="d-flex text-xs font-bold text-green-700! uppercase px-2 py-1">
+                              <CheckCircle size={18}/>&nbsp;
                               อนุมัติโดยเลือกวันที่
                             </Dropdown.Header>
                             {item.appointment_slots.map((slots, idx) => {
@@ -453,8 +454,10 @@ const AdminAppointments = () => {
                               onClick={() =>
                                 handleStatusChange(item.app_id, "pending", null)
                               }
-                              className="text-muted small text-center py-1"
+                              className="d-flex text-yellow-600!
+                               text-muted small text-center py-1"
                             >
+                              <Clock size={16}/>&nbsp;
                               รีเซ็ตสถานะ
                             </Dropdown.Item>
                           </Dropdown.Menu>
@@ -495,13 +498,13 @@ const AdminAppointments = () => {
             {/* Body */}
             <div className="p-6 space-y-5">
               <div className="bg-blue-50/50 p-3 rounded-lg border border-blue-100 text-sm text-gray-700 space-y-1">
-                <p className="fs-5">
+                <p className="fs-4">
                   ผู้ป่วย:{" "}
                   <span className="font-semibold text-[#001f3f]">
                     {selectedApp?.user.full_name}
                   </span>
                 </p>
-                <p className="fs-5">
+                <p className="fs-4">
                   แพทย์:{" "}
                   <span className="font-semibold text-[#001f3f]">
                     {selectedApp?.doctor.doctor_name}

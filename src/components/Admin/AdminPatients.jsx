@@ -97,12 +97,12 @@ const AdminPatients = () => {
         <div className="flex-1 overflow-auto p-6">
           {/* Header */}
           <div className="bg-white rounded-xl border border-indigo-100 p-4 mb-6 flex flex-col md:flex-row justify-between items-center shadow-sm gap-4 sticky top-0 z-10">
-            <h1 className="text-xl  font-bold text-navy">รายการผู้ใช้บริการ</h1>
+            <h2 className="text-xl  font-bold text-navy">รายการผู้ใช้บริการ</h2>
 
             {/* Search Box */}
             <div className="position-relative" style={{ width: "325px" }}>
               <div className="position-absolute top-50 start-0 translate-middle-y ms-3 pe-none">
-                <Search size={18} color="#001f3f" />
+                <Search size={20} color="#001f3f" />
               </div>
               <input
                 type="text"
