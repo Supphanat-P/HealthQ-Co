@@ -279,9 +279,9 @@ const ProfileCard = ({ lang }) => {
                 >
                   <option value="">{text.selectGender}</option>
 
-                  <option value="male">{genderMap.male[lang === "TH" ? "th" : "en"]}</option>
-                  <option value="female">{genderMap.female[lang === "TH" ? "th" : "en"]}</option>
-                  <option value="other">{genderMap.other[lang === "TH" ? "th" : "en"]}</option>
+                  <option value="ชาย">{genderMap.male[lang === "TH" ? "th" : "en"]}</option>
+                  <option value="หญิง">{genderMap.female[lang === "TH" ? "th" : "en"]}</option>
+                  <option value="อื่นๆ">{genderMap.other[lang === "TH" ? "th" : "en"]}</option>
                 </select>
               )}
 

@@ -112,75 +112,90 @@ export const createAppointment = async (
   return { appointment: appointmentData[0], slots: slotData };
 };
 
-export const sendOtpForRegistration = async (identifier, otp) => {
-  if (!identifier) {
-    toast.error("กรุณากรอกอีเมล");
-    return;
-  }
-
+export async function sendOtpForRegistration(to, otp) {
   try {
-    const res = await fetch("https://healthq-public.onrender.com/send-email", {
+    const res = await fetch("http://localhost:578/send-otp-email", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        to: identifier,
-        text: otp,
-      }),
+      body: JSON.stringify({ to, text: otp })
     });
 
     const data = await res.json();
-    if (data.success) {
-      toast.success("Email Sent!");
-    } else {
-      toast.error("Failed: " + data.error);
+
+    if (!res.ok) {
+      return { success: false, message: data.message || "Server error" };
     }
+
+    return { success: true };
   } catch (err) {
-    toast.error("Error: " + err.message);
+    return { success: false, message: err.message };
   }
-};
+}
 
-export const sendEmailForApprove = async (
-  identifier,
+
+export const sendEmailForApprove = async ({
+  to,
+  subject,
+  patientName,
+  doctorName,
+  hospitalName,
   date,
-  time,
-  doctor,
-  hospital
-) => {
-  if (!identifier) {
-    toast.error("กรุณากรอกอีเมล");
-    return;
-  }
-
+  time
+}) => {
   try {
-    const res = await fetch("https://healthq-public.onrender.com/send-confirm-email", {
+    const res = await fetch("http://localhost:578/send-approve-email", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        to: identifier,
-        subject: "การจองแพทย์ของคุณยืนยันแล้ว",
+        to,
+        subject,
         details: {
-          title: "การจองแพทย์ของคุณยืนยันแล้ว",
-          patientName: identifier,
-          doctorName: doctor,
-          hospitalName: hospital,
-          date: date,
-          time: time,
+          title: subject,
+          patientName,
+          doctorName,
+          hospitalName,
+          date,
+          time,
         },
       }),
     });
 
     const data = await res.json();
-    if (data.success) {
-      toast.success("Email Sent!");
-    } else {
-      toast.error("Failed: " + data.error);
+
+    if (!res.ok) {
+      return { success: false, message: data.message || "Server error" };
     }
+
+    return { success: data.success };
   } catch (err) {
-    toast.error("Error: " + err.message);
+    return { success: false, message: err.message };
   }
 };
 
+export const sendEmailForCancel = async ({ to, subject }) => {
+  try {
+    const res = await fetch("http://localhost:578/send-cancel-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        to,
+        details: {
+          title: subject,
+        },
+      }),
+    });
 
+    const data = await res.json();
+
+    if (!res.ok) {
+      return { success: false, message: data.message || "Server error" };
+    }
+
+    return { success: data.success };
+  } catch (err) {
+    return { success: false, message: err.message };
+  }
+};
 
 export const createUserAccount = async (identifier, password, fName, lName) => {
   if (!identifier || !password || !fName || !lName) {
