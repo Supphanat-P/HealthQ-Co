@@ -307,7 +307,7 @@ const ProfileCard = ({ lang }) => {
                   className="form-control mb-4"
                   type="date"
                   min="1900-01-01"
-                  max={dayjs().format("YYYY-MM-DD")}
+                  max={dayjs().format("DD-MM-YYYY")}
                   value={form.dob}
                   onChange={(e) => handleChange("dob", e.target.value)}
                 />
@@ -497,9 +497,17 @@ const ProfileCard = ({ lang }) => {
                 </div>
               ) : (
                 <input
+                  type="tel"
+                  maxLength={10}
                   className="form-control mb-4"
                   value={form.phone}
-                  onChange={(e) => handleChange("phone", e.target.value)}
+                  pattern="[0-9]{10}"
+                  title="กรุณากรอกตัวเลข 10 หลักเท่านั้น"
+                  onChange={(e) => {
+                    //ลบอักขระที่ไม่ใช่ตัวเลขออกทันที
+                    const cleanedValue = e.target.value.replace(/\D/g, "");
+                    handleChange("phone", cleanedValue);
+                  }}
                 />
               )}
 
@@ -527,9 +535,16 @@ const ProfileCard = ({ lang }) => {
                 </div>
               ) : (
                 <input
+                  type="tel" 
+                  maxLength={10}
                   className="form-control mb-4"
                   value={form.emergency}
-                  onChange={(e) => handleChange("emergency", e.target.value)}
+                  pattern="[0-9]{10}" 
+                  title="กรุณากรอกตัวเลข 10 หลักเท่านั้น" 
+                  onChange={(e) => {
+                    const cleanedValue = e.target.value.replace(/\D/g, "");
+                    handleChange("emergency", cleanedValue);
+                  }}
                 />
               )}
             </div>
