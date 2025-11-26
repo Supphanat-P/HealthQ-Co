@@ -33,40 +33,8 @@ const CustomToggle = forwardRef(({ children, onClick }, ref) => (
   </button>
 ));
 
-// --- Function to send confirmation email ---
-const sendConfirmationEmail = async (details) => {
-  try {
-    const response = await fetch(
-      "https://healthq-public.onrender.com/send-confirm-email",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          to: details.to,
-          subject: details.subject,
-          details: {
-            title: details.subject,
-            patientName: details.patientName,
-            doctorName: details.doctorName,
-            hospitalName: details.hospitalName,
-            date: details.date,
-            time: details.time,
-          },
-        }),
-      }
-    );
-
-    return await response.json();
-  } catch (error) {
-    console.error("Error sending confirmation email:", error);
-    return { success: false, error: error.message };
-  }
-};
-
 const AdminAppointments = () => {
-  const { currentUser, appointments, fetchAndSetData } = useData();
+  const { currentUser, appointments, fetchAndSetData, sendEmailForApprove, sendEmailForCancel } = useData();
   const [filterStatusDisplay, setFilterStatusDisplay] = useState("ทั้งหมด");
   const [filterStatus, setFilterStatus] = useState("ทั้งหมด");
   const [searchQuery, setSearchQuery] = useState("");
@@ -99,12 +67,12 @@ const AdminAppointments = () => {
       await fetchAndSetData();
 
       // 2. If booked, find the new data and send email
+      const appointment = appointments.find((item) => item.app_id === app_id);
+      if (!appointment || !appointment.user || !appointment.doctor) {
+        console.error("Could not find appointment details to send email.");
+        return;
+      }
       if (newStatus === "booked") {
-        const appointment = appointments.find((item) => item.app_id === app_id);
-        if (!appointment || !appointment.user || !appointment.doctor) {
-          console.error("Could not find appointment details to send email.");
-          return;
-        }
 
         const date = new Date(selectedDate).toLocaleDateString("th-TH", {
           day: "numeric",
@@ -120,7 +88,7 @@ const AdminAppointments = () => {
 
         // Send the confirmation email
 
-        const emailResult = await sendConfirmationEmail({
+        const emailResult = await sendEmailForApprove({
           to: appointment.user.email,
 
           subject: "ยืนยันการนัดหมาย (Appointment Confirmed)",
@@ -142,8 +110,18 @@ const AdminAppointments = () => {
           toast.error("ไม่สามารถส่งอีเมลยืนยันได้");
         }
       } else if (newStatus === "cancel") {
-        // Optionally, send a cancellation email here in the future
+        const emailResult = await sendEmailForCancel({
+          to: appointment.user.email,
+          subject: "การจองแพทย์ของคุณถูกยกเลิกแล้ว"
+        });
+
+        if (emailResult.success) {
+          toast.success("ส่งอีเมลแจ้งยกเลิกสำเร็จ");
+        } else {
+          toast.error("ส่งอีเมลแจ้งยกเลิกไม่สำเร็จ");
+        }
       }
+
     } catch (error) {
       console.error("Supabase Error:", error.message);
 
@@ -255,7 +233,9 @@ const AdminAppointments = () => {
                 {filterStatusDisplay}
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                <Dropdown.Item onClick={() => setFilterStatus("ทั้งหมด")}>
+                <Dropdown.Item
+                  onClick={() => setFilterStatus("ทั้งหมด")}
+                >
                   ทั้งหมด
                 </Dropdown.Item>
                 <Dropdown.Item

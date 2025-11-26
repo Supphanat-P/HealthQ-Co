@@ -110,7 +110,7 @@ const PopupModal = ({
                       >
                         <div className="Hospital-Icon shadow">
                           <img
-                            src={`/Hospitals/${closestHospital.hospital.imgPath}`}
+                            src={`${import.meta.env.BASE_URL}Hospitals/${closestHospital.hospital.imgPath}`}
                             width={"30px"}
                             height={"30px"}
                             style={{ objectFit: "contain" }}
@@ -129,8 +129,8 @@ const PopupModal = ({
                               {closestHospital.distance < 1000
                                 ? `${closestHospital.distance} เมตร จากตำแหน่งของคุณ`
                                 : `${(closestHospital.distance / 1000).toFixed(
-                                    2
-                                  )} กิโลเมตร จากตำแหน่งของคุณ`}
+                                  2
+                                )} กิโลเมตร จากตำแหน่งของคุณ`}
                             </div>
                           )}
                         </div>
@@ -170,7 +170,7 @@ const PopupModal = ({
                       >
                         <div className="Hospital-Icon shadow">
                           <img
-                            src={`/Hospitals/${hospital.imgPath}`}
+                            src={`${import.meta.env.BASE_URL}Hospitals/${hospital.imgPath}`}
                             width={"30px"}
                             height={"30px"}
                             style={{ objectFit: "contain" }}

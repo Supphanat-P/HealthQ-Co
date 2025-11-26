@@ -50,10 +50,8 @@ export default function Home() {
             <button className="bg-linear-to-br from-cyan-600 to-blue-700 rounded-2xl! px-10! py-5! flex items-center! gap-3 shadow-lg shadow-cyan-500/30 hover:shadow-xl hover:shadow-cyan-600/40 hover:-translate-y-2 transition-all duration-300 min-w-[200px]">
               <Search size={28} className="text-white" />
               <span className="text-white text-xl font-semibold">
-                <Link to="/doctorsearch">
-                  <button className="bg-blue-600 text-white px-4 py-2 rounded">
-                    ค้นหาแพทย์
-                  </button>
+                <Link to="/doctorsearch" className="no-deco">
+                  <span className="text-white no-deco text-xl font-semibold">ค้นหาแพทย์</span>
                 </Link>
               </span>
             </button>

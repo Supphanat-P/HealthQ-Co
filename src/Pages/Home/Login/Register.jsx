@@ -8,7 +8,7 @@ import React from "react";
 
 const Register = () => {
   const navigate = useNavigate();
-  const { currentUser } = useData();
+  const { currentUser, usersInfo } = useData();
   if (currentUser) return navigate("/");
   const { sendOtpForRegistration, createUserAccount } = useData();
 
@@ -23,18 +23,32 @@ const Register = () => {
   const [lName, setLName] = useState("");
 
   const sendOtp = async () => {
+    const existUser = usersInfo.find((u) => u.email === identifier);
+    if (existUser) {
+      toast.error("อีเมลนี้มีผู้ใช้แล้ว");
+      return;
+    }
     if (!identifier) {
       toast.error("กรุณากรอกอีเมล");
       return;
     }
     try {
       setIsSending(true);
+
       const randomOtp = Math.floor(100000 + Math.random() * 900000).toString();
       setOtp(randomOtp);
-      await sendOtpForRegistration(identifier, randomOtp);
+
+      const result = await sendOtpForRegistration(identifier, randomOtp);
+      console.log("OTP Result:", result);
+
+      if (!result.success) {
+        throw new Error(result.message || "ส่ง OTP ล้มเหลว");
+      }
+
       toast.success("ส่งรหัส OTP สำเร็จ");
       setStep("otp");
     } catch (err) {
+      console.error("OTP Error:", err);
       toast.error(err.message);
     } finally {
       setIsSending(false);
@@ -73,7 +87,7 @@ const Register = () => {
     <div className="w-[500px] h-fit mx-auto shadow-xl mt-5! bg-white rounded-lg! overflow-hidden">
       <AppointmentHeader label="สมัครสมาชิก" />
 
-      <div className="mx-auto text-center mb-5! px-8!">
+      <div className="mx-auto text-center mb-5! mt-9! px-8!">
         {step === "input" && (
           <>
             <input
@@ -85,7 +99,7 @@ const Register = () => {
             />
             <br />
             <button
-              className="w-60 bg-linear-to-br from-blue-900 to-blue-800 text-white px-6! py-2 rounded-lg! shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 mb-2"
+              className="w-60 bg-linear-to-br from-blue-900 to-blue-800 text-white px-6! py-2! rounded-lg! shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 mb-2!"
               onClick={sendOtp}
               disabled={isSending}
             >
@@ -93,7 +107,7 @@ const Register = () => {
             </button>
             <br />
             <button
-              className="w-60 mb-4 px-4! py-2 border border-gray-300 rounded-lg! focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-transparent"
+              className="w-60 mb-4! px-4! py-2! border border-gray-300 rounded-lg! focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-transparent"
               onClick={() => navigate("/login")}
             >
               เข้าสู่ระบบ

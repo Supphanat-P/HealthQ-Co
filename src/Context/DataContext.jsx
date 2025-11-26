@@ -13,7 +13,8 @@ import {
   createUserAccount,
   login as loginFromFetchData,
   updateUserInfo,
-  sendEmailForApprove
+  sendEmailForApprove,
+  sendEmailForCancel
 } from "./FetchData";
 import toast from "react-hot-toast";
 
@@ -136,7 +137,8 @@ export const DataProvider = ({ children }) => {
         createUserAccount,
         updateUserInfo,
         fetchAndSetData,
-        sendEmailForApprove
+        sendEmailForApprove,
+        sendEmailForCancel
       }}
     >
       {children}
