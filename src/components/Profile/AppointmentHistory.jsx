@@ -12,7 +12,7 @@ import "dayjs/locale/th";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import { supabase } from "../../config/supabaseClient";
-import { useData } from "../../context/DataContext";
+import { useData } from "../../Context/DataContext";
 import { useNavigate } from "react-router-dom";
 
 dayjs.extend(utc);
@@ -330,12 +330,11 @@ const AppointmentHistory = () => {
   return (
     <div className="min-h-screen bg-white py-10 px-4">
       <div className="max-w-7xl mx-auto">
-        <h3 className="font-bold text-3xl text-center text-[#1f2054] mb-8">ประวัติการนัดหมายของฉัน</h3>
 
         <div className="flex flex-wrap justify-center gap-2 mb-8">
           {[
-            { id: "1", label: `นัดหมายที่กำลังจะมาถึง (${comingAppointments.length})` },
             { id: "2", label: `รออนุมัติ (${pendingAppointments.length})` },
+            { id: "1", label: `นัดหมายที่กำลังจะมาถึง (${comingAppointments.length})` },
             { id: "3", label: `เสร็จสิ้น (${completedAppointments.length})` },
           ].map((tab) => (
             <button
