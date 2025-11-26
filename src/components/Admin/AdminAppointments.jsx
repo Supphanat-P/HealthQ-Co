@@ -36,24 +36,27 @@ const CustomToggle = forwardRef(({ children, onClick }, ref) => (
 // --- Function to send confirmation email ---
 const sendConfirmationEmail = async (details) => {
   try {
-    const response = await fetch("https://healthq-public.onrender.com/send-confirm-email", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        to: details.to,
-        subject: details.subject,
-        details: {
-          title: details.subject,
-          patientName: details.patientName,
-          doctorName: details.doctorName,
-          hospitalName: details.hospitalName,
-          date: details.date,
-          time: details.time,
+    const response = await fetch(
+      "https://healthq-public.onrender.com/send-confirm-email",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      }),
-    });
+        body: JSON.stringify({
+          to: details.to,
+          subject: details.subject,
+          details: {
+            title: details.subject,
+            patientName: details.patientName,
+            doctorName: details.doctorName,
+            hospitalName: details.hospitalName,
+            date: details.date,
+            time: details.time,
+          },
+        }),
+      }
+    );
 
     return await response.json();
   } catch (error) {
@@ -252,9 +255,7 @@ const AdminAppointments = () => {
                 {filterStatusDisplay}
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                <Dropdown.Item
-                onClick={() => setFilterStatus("ทั้งหมด")}
-                >
+                <Dropdown.Item onClick={() => setFilterStatus("ทั้งหมด")}>
                   ทั้งหมด
                 </Dropdown.Item>
                 <Dropdown.Item
