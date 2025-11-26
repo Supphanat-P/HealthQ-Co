@@ -1,5 +1,6 @@
 import { supabase } from "../config/supabaseClient";
 import bcrypt from "bcryptjs";
+import toast from "react-hot-toast";
 
 export const fetchDoctors = async () => {
   const { data, error } = await supabase
@@ -129,9 +130,13 @@ export const sendOtpForRegistration = async (identifier, otp) => {
     });
 
     const data = await res.json();
-    alert(data.success ? "Email Sent!" : "Failed: " + data.error);
+    if (data.success) {
+      toast.success("Email Sent!");
+    } else {
+      toast.error("Failed: " + data.error);
+    }
   } catch (err) {
-    alert("Error: " + err.message);
+    toast.error("Error: " + err.message);
   }
 };
 
@@ -141,7 +146,6 @@ export const sendEmailForApprove = async (
   time,
   doctor,
   hospital,
-  
 ) => {
   if (!identifier) {
     toast.error("กรุณากรอกอีเมล");
@@ -153,16 +157,20 @@ export const sendEmailForApprove = async (
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        to: "identifier",
+        to: identifier,
         subject: "การจองเเพทย์ของคุณยืนยันเเล้ว",
-        text: `การจองเเพทย์ของคุณยืนยันเเล้ว ไปพบ เเพทย์${doctor} วันที่${date} เวลา${time} ที่${hospital}`,
+        text: `การจองเเพทย์ของคุณยืนยันเเล้ว ไปพบ เเพทย์ ${doctor} วันที่ ${date} เวลา ${time} ที่ ${hospital}`,
       }),
     });
 
     const data = await res.json();
-    alert(data.success ? "Email Sent!" : "Failed: " + data.error);
+    if (data.success) {
+      toast.success("Email Sent!");
+    } else {
+      toast.error("Failed: " + data.error);
+    }
   } catch (err) {
-    alert("Error: " + err.message);
+    toast.error("Error: " + err.message);
   }
 };
 

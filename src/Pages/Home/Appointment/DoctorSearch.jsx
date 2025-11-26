@@ -28,7 +28,6 @@ const DoctorSearch = () => {
     }
   }, [location]);
 
-  console.log(doctors)
   ///pageination
   const [currpage, setCurrpage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -37,10 +36,8 @@ const DoctorSearch = () => {
   ///Map
   useEffect(() => {
     let filteredDoctors = (doctors || []).slice();
-    console.log(selectedSpecialty, selectedHospital, selectedDate);
 
     if (selectedDoctor) {
-      console.log("Filtering by doctor:", selectedDoctor);
       filteredDoctors = filteredDoctors.filter(
         (doctor) => doctor.doctor_id === selectedDoctor
       );
@@ -66,7 +63,6 @@ const DoctorSearch = () => {
 
     setFilteredDoctors(filteredDoctors);
     setCurrpage(1);
-    console.log("Filtered Doctors:", filteredDoctors);
   }, [
     doctors,
     selectedSpecialty,
