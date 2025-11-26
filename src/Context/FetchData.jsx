@@ -119,13 +119,12 @@ export const sendOtpForRegistration = async (identifier, otp) => {
   }
 
   try {
-    const res = await fetch("http://localhost:3001/send-email", {
+    const res = await fetch("https://healthq-public.onrender.com/send-email", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         to: identifier,
-        subject: "Otp code for registration",
-        text: "รหัส OTP ของคุณคือ " + otp,
+        text: otp,
       }),
     });
 
@@ -145,7 +144,7 @@ export const sendEmailForApprove = async (
   date,
   time,
   doctor,
-  hospital,
+  hospital
 ) => {
   if (!identifier) {
     toast.error("กรุณากรอกอีเมล");
@@ -153,13 +152,20 @@ export const sendEmailForApprove = async (
   }
 
   try {
-    const res = await fetch("http://localhost:3001/send-confirm-email", {
+    const res = await fetch("https://healthq-public.onrender.com/send-confirm-email", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         to: identifier,
-        subject: "การจองเเพทย์ของคุณยืนยันเเล้ว",
-        text: `การจองเเพทย์ของคุณยืนยันเเล้ว ไปพบ เเพทย์ ${doctor} วันที่ ${date} เวลา ${time} ที่ ${hospital}`,
+        subject: "การจองแพทย์ของคุณยืนยันแล้ว",
+        details: {
+          title: "การจองแพทย์ของคุณยืนยันแล้ว",
+          patientName: identifier,
+          doctorName: doctor,
+          hospitalName: hospital,
+          date: date,
+          time: time,
+        },
       }),
     });
 
@@ -173,6 +179,8 @@ export const sendEmailForApprove = async (
     toast.error("Error: " + err.message);
   }
 };
+
+
 
 export const createUserAccount = async (identifier, password, fName, lName) => {
   if (!identifier || !password || !fName || !lName) {

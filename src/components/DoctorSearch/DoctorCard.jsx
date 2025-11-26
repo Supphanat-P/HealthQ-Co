@@ -7,6 +7,7 @@ import { FaHospital } from "react-icons/fa6";
 import { FaStar } from "react-icons/fa";
 import { FaUserDoctor } from "react-icons/fa6";
 import toast, { Toaster } from "react-hot-toast";
+import { useEffect } from "react";
 
 const DoctorCard = ({ doctor, selectedDate }) => {
   const { isLogin } = useData();
@@ -32,7 +33,7 @@ const DoctorCard = ({ doctor, selectedDate }) => {
 
         <div className="hospital-badge w-100 bg-none">
           <img
-            src={`/Hospitals/${doctor.hospital.imgPath}`}
+            src={`${import.meta.env.BASE_URL}Hospitals/${doctor.hospital.imgPath}`}
             alt={doctor.hospital.hospital_name || "hospital"}
             className="hospital-logo p-2"
             style={{ width: "50px", height: "50px" }}

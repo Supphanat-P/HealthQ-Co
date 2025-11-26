@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { useState } from "react";
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Routes,
   Route,
   Navigate,
@@ -99,11 +99,10 @@ function AppContent() {
 function App() {
   return (
     <DataProvider>
-      <Router>
-        <AppContent />
-      </Router>
+      <AppContent />
     </DataProvider>
   );
 }
 
 export default App;
+

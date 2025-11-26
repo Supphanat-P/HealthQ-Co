@@ -62,7 +62,6 @@ const Login = () => {
           สมัครสมาชิก
         </button>
         <a
-          href="#"
           className="text-blue-800 hover:text-blue-900 hover:underline transition-all duration-200 mt-5 inline-block"
         >
           ลืมรหัสผ่าน

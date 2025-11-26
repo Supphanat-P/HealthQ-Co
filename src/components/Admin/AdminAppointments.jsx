@@ -1,4 +1,5 @@
 import { useState, forwardRef, useEffect } from "react";
+import { Navigate } from "react-router-dom";
 import {
   Search,
   MoreVertical,
@@ -33,7 +34,7 @@ const CustomToggle = forwardRef(({ children, onClick }, ref) => (
 // --- Function to send confirmation email ---
 const sendConfirmationEmail = async (details) => {
   try {
-    const response = await fetch("http://localhost:3001/send-confirm-email", {
+    const response = await fetch("https://healthq-public.onrender.com/send-confirm-email", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -72,8 +73,8 @@ const AdminAppointments = () => {
   const [customDate, setCustomDate] = useState("");
   const [customTime, setCustomTime] = useState("");
 
-  if (!currentUser) return (window.location.href = "/login");
-  if (currentUser.role !== "admin") return (window.location.href = "/login");
+  if (!currentUser) return <Navigate to="/login" replace />;
+  if (currentUser.role !== "admin") return <Navigate to="/login" replace />;
 
   // --- ฟังก์ชันอัปเดตสถานะ ---
   const handleStatusChange = async (app_id, newStatus, selectedDate = null) => {
@@ -87,83 +88,80 @@ const AdminAppointments = () => {
         })
         .eq("app_id", app_id);
 
-            if (error) throw error;
-            toast.success("สถานะอัปเดตเรียบร้อย");
-      
-            // 1. Refresh data immediately after DB update
-            await fetchAndSetData();
-      
-            // 2. If booked, find the new data and send email
-            if (newStatus === "booked") {
-              const appointment = appointments.find((item) => item.app_id === app_id);
-              if (!appointment || !appointment.user || !appointment.doctor) {
-                  console.error("Could not find appointment details to send email.");
-                  return
-              };
-      
-              const date = new Date(selectedDate).toLocaleDateString("th-TH", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              });
-      
-                      const time = new Date(selectedDate).toLocaleTimeString("th-TH", {
-      
-                        hour: "2-digit",
-      
-                        minute: "2-digit",
-      
-                      });
-      
-              
-      
-                      // Send the confirmation email
-      
-                      const emailResult = await sendConfirmationEmail({
-      
-                        to: appointment.user.email,
-      
-                        subject: "ยืนยันการนัดหมาย (Appointment Confirmed)",
-      
-                        patientName: appointment.user.full_name,
-      
-                        doctorName: appointment.doctor.doctor_name,
-      
-                        hospitalName: appointment.doctor.hospital.hospital_name,
-      
-                        date: date,
-      
-                        time: `${time} น.`,
-      
-                      });
-      
-              
-      
-                      if (emailResult.success) {
-      
-                        toast.success("ส่งอีเมลยืนยันเรียบร้อยแล้ว");
-      
-                      } else {
-      
-                        toast.error("ไม่สามารถส่งอีเมลยืนยันได้");
-      
-                      }
-      
-              
-      
-                    } else if (newStatus === "cancel") {
-      
-                      // Optionally, send a cancellation email here in the future
-      
-                    }
-      
-                  } catch (error) {
-      
-                    console.error("Supabase Error:", error.message);
-      
-                    toast.error("เกิดข้อผิดพลาด: " + error.message);
-      
-                  }
+      if (error) throw error;
+      toast.success("สถานะอัปเดตเรียบร้อย");
+
+      // 1. Refresh data immediately after DB update
+      await fetchAndSetData();
+
+      // 2. If booked, find the new data and send email
+      if (newStatus === "booked") {
+        const appointment = appointments.find((item) => item.app_id === app_id);
+        if (!appointment || !appointment.user || !appointment.doctor) {
+          console.error("Could not find appointment details to send email.");
+          return
+        };
+
+        const date = new Date(selectedDate).toLocaleDateString("th-TH", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        });
+
+        const time = new Date(selectedDate).toLocaleTimeString("th-TH", {
+
+          hour: "2-digit",
+
+          minute: "2-digit",
+
+        });
+
+
+        const emailResult = await sendConfirmationEmail({
+
+          to: appointment.user.email,
+
+          subject: "ยืนยันการนัดหมาย (Appointment Confirmed)",
+
+          patientName: appointment.user.full_name,
+
+          doctorName: appointment.doctor.doctor_name,
+
+          hospitalName: appointment.doctor.hospital.hospital_name,
+
+          date: date,
+
+          time: `${time} น.`,
+
+        });
+
+
+
+        if (emailResult.success) {
+
+          toast.success("ส่งอีเมลยืนยันเรียบร้อยแล้ว");
+
+        } else {
+
+          toast.error("ไม่สามารถส่งอีเมลยืนยันได้");
+
+        }
+
+
+
+      } else if (newStatus === "cancel") {
+
+        // Optionally, send a cancellation email here in the future
+
+      }
+
+    } catch (error) {
+
+      console.error("Supabase Error:", error.message);
+
+      toast.error("เกิดข้อผิดพลาด: " + error.message);
+
+    }
   };
 
   const handleOpenProposeModal = (item) => {
@@ -391,7 +389,7 @@ const AdminAppointments = () => {
                             style={{ minWidth: "250px", zIndex: 1050 }}
                           >
                             <Dropdown.Header className="d-flex text-xs font-bold text-green-700! uppercase px-2 py-1">
-                              <CheckCircle size={18}/>&nbsp;
+                              <CheckCircle size={18} />&nbsp;
                               อนุมัติโดยเลือกวันที่
                             </Dropdown.Header>
                             {item.appointment_slots.map((slots, idx) => {
@@ -457,7 +455,7 @@ const AdminAppointments = () => {
                               className="d-flex text-yellow-600!
                                text-muted small text-center py-1"
                             >
-                              <Clock size={16}/>&nbsp;
+                              <Clock size={16} />&nbsp;
                               รีเซ็ตสถานะ
                             </Dropdown.Item>
                           </Dropdown.Menu>

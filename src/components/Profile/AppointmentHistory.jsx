@@ -28,8 +28,8 @@ const STATUS = {
 };
 
 const AppointmentHistory = () => {
-  const { doctors, appointments, currentUser, hospitals, specialties, fetchAndSetData } = useData();
-
+  const { doctors, appointments, usersInfo, currentUser, hospitals, specialties, fetchAndSetData } = useData();
+  console.log(usersInfo)
   const [selectedTab, setSelectedTab] = useState("1");
   const [showModal, setShowModal] = useState(false);
   const [modalAppointment, setModalAppointment] = useState(null);
@@ -297,11 +297,11 @@ const AppointmentHistory = () => {
               </div>
             )}
           </div>
-
-          <div className="flex border-t">
+          <hr />
+          <div className="flex m-2 gap-2">
             <button
               onClick={closeModal}
-              className="w-1/2 py-3 text-sm bg-gray-200 text-gray-800 rounded-full!"
+              className="w-1/2! py-3! text-sm bg-gray-200 text-gray-800 rounded-full!"
             >
               ยกเลิก
             </button>
@@ -309,7 +309,7 @@ const AppointmentHistory = () => {
             <button
               disabled={isSubmitting}
               onClick={handleConfirm}
-              className={`w-1/2 py-3 text-sm text-white rounded-full! ${isCancel ? "bg-red-600 hover:bg-red-700" : "bg-blue-600 hover:bg-blue-700"} ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
+              className={`w-1/2! py-3! text-sm text-white rounded-full! ${isCancel ? "bg-red-600 hover:bg-red-700" : "bg-blue-600 hover:bg-blue-700"} ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               {isSubmitting ? "กำลังดำเนินการ..." : isCancel ? "ยืนยันยกเลิก" : "ยืนยันเลื่อนนัด"}
             </button>

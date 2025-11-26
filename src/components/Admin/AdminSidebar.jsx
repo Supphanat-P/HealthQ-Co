@@ -1,10 +1,12 @@
 import { LayoutDashboard, Calendar, Users, Heart } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useData } from "../../Context/DataContext";
+import { Navigate } from "react-router-dom";
+
 const AdminSidebar = () => {
   const { currentUser } = useData();
-  if (!currentUser) return window.location.href = "/login";
-  if (currentUser.role !== "admin") return window.location.href = "/login";
+  if (!currentUser) return <Navigate to="/login" replace />;
+  if (currentUser.role !== "admin") return <Navigate to="/login" replace />;
 
   const navItems = [
     {
