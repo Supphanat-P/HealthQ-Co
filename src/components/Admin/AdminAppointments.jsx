@@ -9,6 +9,8 @@ import {
   CircleQuestionMark,
   Save,
   X,
+  Check,
+  CalendarCheck,
 } from "lucide-react";
 import Dropdown from "react-bootstrap/Dropdown";
 import "dayjs/locale/th";
@@ -59,7 +61,6 @@ const sendConfirmationEmail = async (details) => {
   }
 };
 
-
 const AdminAppointments = () => {
   const { currentUser, appointments, fetchAndSetData } = useData();
   const [filterStatusDisplay, setFilterStatusDisplay] = useState("ทั้งหมด");
@@ -87,83 +88,63 @@ const AdminAppointments = () => {
         })
         .eq("app_id", app_id);
 
-            if (error) throw error;
-            toast.success("สถานะอัปเดตเรียบร้อย");
-      
-            // 1. Refresh data immediately after DB update
-            await fetchAndSetData();
-      
-            // 2. If booked, find the new data and send email
-            if (newStatus === "booked") {
-              const appointment = appointments.find((item) => item.app_id === app_id);
-              if (!appointment || !appointment.user || !appointment.doctor) {
-                  console.error("Could not find appointment details to send email.");
-                  return
-              };
-      
-              const date = new Date(selectedDate).toLocaleDateString("th-TH", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              });
-      
-                      const time = new Date(selectedDate).toLocaleTimeString("th-TH", {
-      
-                        hour: "2-digit",
-      
-                        minute: "2-digit",
-      
-                      });
-      
-              
-      
-                      // Send the confirmation email
-      
-                      const emailResult = await sendConfirmationEmail({
-      
-                        to: appointment.user.email,
-      
-                        subject: "ยืนยันการนัดหมาย (Appointment Confirmed)",
-      
-                        patientName: appointment.user.full_name,
-      
-                        doctorName: appointment.doctor.doctor_name,
-      
-                        hospitalName: appointment.doctor.hospital.hospital_name,
-      
-                        date: date,
-      
-                        time: `${time} น.`,
-      
-                      });
-      
-              
-      
-                      if (emailResult.success) {
-      
-                        toast.success("ส่งอีเมลยืนยันเรียบร้อยแล้ว");
-      
-                      } else {
-      
-                        toast.error("ไม่สามารถส่งอีเมลยืนยันได้");
-      
-                      }
-      
-              
-      
-                    } else if (newStatus === "cancel") {
-      
-                      // Optionally, send a cancellation email here in the future
-      
-                    }
-      
-                  } catch (error) {
-      
-                    console.error("Supabase Error:", error.message);
-      
-                    toast.error("เกิดข้อผิดพลาด: " + error.message);
-      
-                  }
+      if (error) throw error;
+      toast.success("สถานะอัปเดตเรียบร้อย");
+
+      // 1. Refresh data immediately after DB update
+      await fetchAndSetData();
+
+      // 2. If booked, find the new data and send email
+      if (newStatus === "booked") {
+        const appointment = appointments.find((item) => item.app_id === app_id);
+        if (!appointment || !appointment.user || !appointment.doctor) {
+          console.error("Could not find appointment details to send email.");
+          return;
+        }
+
+        const date = new Date(selectedDate).toLocaleDateString("th-TH", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        });
+
+        const time = new Date(selectedDate).toLocaleTimeString("th-TH", {
+          hour: "2-digit",
+
+          minute: "2-digit",
+        });
+
+        // Send the confirmation email
+
+        const emailResult = await sendConfirmationEmail({
+          to: appointment.user.email,
+
+          subject: "ยืนยันการนัดหมาย (Appointment Confirmed)",
+
+          patientName: appointment.user.full_name,
+
+          doctorName: appointment.doctor.doctor_name,
+
+          hospitalName: appointment.doctor.hospital.hospital_name,
+
+          date: date,
+
+          time: `${time} น.`,
+        });
+
+        if (emailResult.success) {
+          toast.success("ส่งอีเมลยืนยันเรียบร้อยแล้ว");
+        } else {
+          toast.error("ไม่สามารถส่งอีเมลยืนยันได้");
+        }
+      } else if (newStatus === "cancel") {
+        // Optionally, send a cancellation email here in the future
+      }
+    } catch (error) {
+      console.error("Supabase Error:", error.message);
+
+      toast.error("เกิดข้อผิดพลาด: " + error.message);
+    }
   };
 
   const handleOpenProposeModal = (item) => {
@@ -180,7 +161,11 @@ const AdminAppointments = () => {
     }
     const dateTimeString = `${customDate}T${customTime}:00`;
     const dateObject = new Date(dateTimeString);
-    await handleStatusChange(selectedApp.app_id, "booked", dateObject.toISOString());
+    await handleStatusChange(
+      selectedApp.app_id,
+      "booked",
+      dateObject.toISOString()
+    );
     setShowModal(false);
   };
 
@@ -200,12 +185,16 @@ const AdminAppointments = () => {
       icon = null;
     switch (status) {
       case "booked":
-        styles = "bg-green-600 text-white";
-        icon = <CheckCircle size={14} />;
+        styles = "bg-blue-700 text-white";
+        icon = <CalendarCheck size={14} />;
         break;
       case "pending":
         styles = "bg-yellow-400 text-black";
         icon = <Clock size={14} />;
+        break;
+      case "completed":
+        styles = "bg-green-600 text-white";
+        icon = <CheckCircle size={14} />;
         break;
       case "cancel":
         styles = "bg-red-600 text-white";
@@ -228,13 +217,13 @@ const AdminAppointments = () => {
       ทั้งหมด: "ทั้งหมด",
       booked: "อนุมัติแล้ว",
       pending: "รออนุมัติ",
+      completed: "นัดหมายเสร็จสิ้น",
       cancel: "ยกเลิก",
     };
     setFilterStatusDisplay(statusMap[filterStatus] || "ทั้งหมด");
   }, [filterStatus]);
 
   return (
-
     <div className="flex h-screen bg-gray-50 relative">
       <AdminSidebar />
       <div className="m-5 flex-1 p-6 overflow-auto">
@@ -257,25 +246,33 @@ const AdminAppointments = () => {
               <Dropdown.Toggle
                 style={{ width: "160px" }}
                 variant="success"
-                className="text-navy fs-5 rounded-pill flex items-center justify-between px-4 py-2 border rounded-full text-sm font-medium bg-white hover:bg-gray-50"
+                className="text-navy fs-5 w-50! pl-4! rounded-pill flex px-4 py-2 border rounded-full text-sm font-medium bg-white hover:bg-gray-50"
               >
                 {filterStatusDisplay}
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                <Dropdown.Item onClick={() => setFilterStatus("ทั้งหมด")}>
+                <Dropdown.Item
+                onClick={() => setFilterStatus("ทั้งหมด")}
+                >
                   ทั้งหมด
                 </Dropdown.Item>
                 <Dropdown.Item
-                  className="d-flex align-items-center gap-2 text-success"
+                  className="d-flex align-items-center gap-2 text-primary"
                   onClick={() => setFilterStatus("booked")}
                 >
-                  <CheckCircle size={16} /> อนุมัติแล้ว
+                  <CalendarCheck size={16} /> อนุมัติแล้ว
                 </Dropdown.Item>
                 <Dropdown.Item
                   className="d-flex align-items-center gap-2 text-warning"
                   onClick={() => setFilterStatus("pending")}
                 >
                   <Clock size={16} /> รออนุมัติ
+                </Dropdown.Item>
+                <Dropdown.Item
+                  className="d-flex align-items-center gap-2 text-success"
+                  onClick={() => setFilterStatus("completed")}
+                >
+                  <CheckCircle size={16} /> นัดหมายเสร็จสิ้น
                 </Dropdown.Item>
                 <Dropdown.Item
                   className="d-flex align-items-center gap-2 text-danger"
@@ -390,9 +387,9 @@ const AdminAppointments = () => {
                             className="shadow-lg border-0 p-2 rounded-3"
                             style={{ minWidth: "250px", zIndex: 1050 }}
                           >
-                            <Dropdown.Header className="d-flex text-xs font-bold text-green-700! uppercase px-2 py-1">
-                              <CheckCircle size={18}/>&nbsp;
-                              อนุมัติโดยเลือกวันที่
+                            <Dropdown.Header className="d-flex text-xs font-bold text-blue-700! uppercase px-2 py-1">
+                              <Calendar size={18} />
+                              &nbsp; อนุมัติโดยเลือกวันที่
                             </Dropdown.Header>
                             {item.appointment_slots.map((slots, idx) => {
                               const dt = new Date(slots.slot_datetime);
@@ -408,18 +405,18 @@ const AdminAppointments = () => {
                                   }
                                   className="d-flex align-items-center gap-3 py-2 rounded hover:bg-gray-50 cursor-pointer"
                                 >
-                                  <div className="bg-blue-100 text-blue-600 w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs shrink-0">
+                                  <div className="bg-blue-100 text-blue-600 w-6 h-6 rounded-full flex items-center justify-center font-bold fs-5! shrink-0">
                                     {idx + 1}
                                   </div>
-                                  <div className="d-flex flex-column lh-1">
-                                    <span className="text-sm font-medium text-navy">
+                                  <div className="d-flex flex-column  lh-1">
+                                    <span className="fs-5! font-medium text-navy">
                                       {dt.toLocaleDateString("th-TH", {
                                         day: "numeric",
                                         month: "short",
                                         year: "numeric",
                                       })}
                                     </span>
-                                    <span className="text-xs text-gray-500 mt-1">
+                                    <span className="text-ss text-gray-500 mt-1">
                                       เวลา{" "}
                                       {dt.toLocaleTimeString("th-TH", {
                                         hour: "2-digit",
@@ -428,10 +425,6 @@ const AdminAppointments = () => {
                                       น.
                                     </span>
                                   </div>
-                                  <CheckCircle
-                                    size={16}
-                                    className="ms-auto text-gray-300"
-                                  />
                                 </Dropdown.Item>
                               );
                             })}
@@ -454,11 +447,24 @@ const AdminAppointments = () => {
                               onClick={() =>
                                 handleStatusChange(item.app_id, "pending", null)
                               }
-                              className="d-flex text-yellow-600!
-                               text-muted small text-center py-1"
+                              className="d-flex text-yellow-600! d-flex align-items-center gap-2 text-info py-2 rounded hover:bg-red-50"
                             >
-                              <Clock size={16}/>&nbsp;
-                              รีเซ็ตสถานะ
+                              <Clock size={16} />
+                              &nbsp; รีเซ็ตสถานะ
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() =>
+                                handleStatusChange(
+                                  item.app_id,
+                                  "completed",
+                                  null
+                                )
+                              }
+                              className="d-flex text-green-800!
+                               d-flex align-items-center gap-2 text-info py-2 rounded hover:bg-red-50"
+                            >
+                              <CheckCircle size={16} />
+                              &nbsp; นัดหมายเสร็จสิ้น
                             </Dropdown.Item>
                           </Dropdown.Menu>
                         </Dropdown>
@@ -498,13 +504,13 @@ const AdminAppointments = () => {
             {/* Body */}
             <div className="p-6 space-y-5">
               <div className="bg-blue-50/50 p-3 rounded-lg border border-blue-100 text-sm text-gray-700 space-y-1">
-                <p className="fs-4">
+                <p className="fs-5">
                   ผู้ป่วย:{" "}
                   <span className="font-semibold text-[#001f3f]">
                     {selectedApp?.user.full_name}
                   </span>
                 </p>
-                <p className="fs-4">
+                <p className="fs-5">
                   แพทย์:{" "}
                   <span className="font-semibold text-[#001f3f]">
                     {selectedApp?.doctor.doctor_name}
@@ -514,7 +520,7 @@ const AdminAppointments = () => {
 
               <div className="space-y-4">
                 <div className="px-32! text-center">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block fs-5 font-medium text-gray-700 mb-1">
                     เลือกวันที่
                   </label>
                   <input
@@ -531,7 +537,7 @@ const AdminAppointments = () => {
                   />
                 </div>
                 <div className="px-36! text-center">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block fs-5 font-medium text-gray-700 mb-1">
                     เลือกเวลา
                   </label>
                   <input

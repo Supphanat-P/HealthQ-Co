@@ -23,7 +23,7 @@ const Calendar = ({ selectedDates = [], onDateSelect }) => {
 
   return (
     <div className="flex flex-col space-y-2">
-      <h5 className="text-lg font-semibold text-navy-600 mb-2">เลือกวันที่</h5>
+      <h5 className="text-lg font-semibold text-navy-600 mb-2">เลือกวันที่ (เลือกได้สูงสุด3วัน)</h5>
       <div className="border border-gray-300 rounded p-2">
         <DayPicker
           navLayout="around"
