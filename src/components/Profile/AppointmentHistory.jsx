@@ -28,8 +28,7 @@ const STATUS = {
 };
 
 const AppointmentHistory = () => {
-  const { doctors, appointments: initialAppointments, currentUser, hospitals, specialties, fetchAndSetData } = useData();
-  const [appointments, setAppointments] = useState(initialAppointments);
+  const { doctors, appointments, currentUser, hospitals, specialties, fetchAndSetData } = useData();
 
   const [selectedTab, setSelectedTab] = useState("1");
   const [showModal, setShowModal] = useState(false);
@@ -44,6 +43,8 @@ const AppointmentHistory = () => {
 
   const today = new Date();
   const week = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7);
+
+  console.log(appointments)
 
   const userAppointments = useMemo(() => {
     return (appointments || []).filter((a) => String(a.user_id) === String(user?.user_id));
@@ -333,14 +334,18 @@ const AppointmentHistory = () => {
             <button
               key={tab.id}
               onClick={() => setSelectedTab(tab.id)}
-              className={`py-2! px-5! rounded-full! text-sm font-semibold border shadow-md! transition ${selectedTab === tab.id
-                ? tab.id === "1"
-                  ? "bg-blue-600 text-white border-blue-600"
-                  : tab.id === "2"
-                    ? "bg-yellow-500 text-black border-yellow-500"
-                    : "bg-green-600 text-white border-green-600"
-                : "bg-white hover:bg-gray-100"
-                }`}
+              className={`py-2! px-5! rounded-full! text-sm font-semibold border shadow-md transition
+              ${selectedTab === tab.id
+                  ? tab.id === "1"
+                    ? "bg-blue-600 text-white border-blue-600"
+                    : tab.id === "2"
+                      ? "bg-yellow-500 text-black border-yellow-500"
+                      : tab.id === "3"
+                        ? "bg-green-600 text-white border-green-600"
+                        : tab.id === "4"
+                          ? "bg-red-600 text-white border-red-600"
+                          : "bg-gray-500 text-white border-gray-500"
+                  : "bg-white text-gray-600"}`}
             >
               {tab.label}
             </button>
@@ -369,7 +374,7 @@ const AppointmentHistory = () => {
       </div>
 
       <ActionModal />
-    </div>
+    </div >
   );
 };
 

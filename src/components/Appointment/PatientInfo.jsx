@@ -62,7 +62,7 @@ const PatientInfo = ({ onChange } = {}) => {
                     id="gender"
                     className="form-control  shadow-sm"
                   >
-                    <option value="">เพศ</option>
+                    <option value={gender ? gender : ""}>{gender ? gender : "เลือกเพศ"}</option>
                     <option value="male">ชาย</option>
                     <option value="female">หญิง</option>
                   </select>

@@ -64,6 +64,7 @@ const createHtmlTemplate = (title, bodyContent) => {
   `;
 };
 
+//เมล otp
 app.post("/send-email", async (req, res) => {
   const { to, text } = req.body;
 
@@ -102,6 +103,7 @@ app.post("/send-email", async (req, res) => {
   }
 });
 
+///เมลอนุมัติ
 app.post("/send-confirm-email", async (req, res) => {
   const { to, subject, details } = req.body;
 
@@ -136,6 +138,65 @@ app.post("/send-confirm-email", async (req, res) => {
     </div>
     <p style="font-size: 14px; color: #666;">
       If you have any questions or need to reschedule, please contact us through the application.
+    </p>
+  `;
+
+  const html = createHtmlTemplate(title || subject, bodyContent);
+
+  try {
+    await transporter.sendMail({
+      from: `HealthQ <${process.env.EMAIL_USER}>`,
+      to,
+      subject,
+      html,
+    });
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Email sending error:", err);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
+  }
+});
+
+/// เมลปฏิเสธ
+app.post("/send-cancel-email", async (req, res) => {
+  const { to, subject, details } = req.body;
+
+  if (!to || !details) {
+    return res
+      .status(400)
+      .json({ success: false, error: "Missing required fields: to, details" });
+  }
+
+  const { title, patientName, doctorName, hospitalName, date, time } = details;
+
+  const bodyContent = `
+    <p style="margin: 0 0 20px; font-size: 16px; color: #333; line-height: 1.5;">
+      Dear ${patientName || "Patient"},
+    </p>
+
+    <p style="margin: 0 0 25px; font-size: 16px; color: #333; line-height: 1.5;">
+      We regret to inform you that your appointment has been <strong style="color:#d9534f;">cancelled</strong>.  
+      Please review the details below.
+    </p>
+
+    <div style="background-color: #f9f9f9; border-left: 4px solid #d9534f; padding: 15px 20px; margin-bottom: 25px;">
+      <p style="margin: 8px 0; font-size: 16px;"><strong>Doctor:</strong> ${
+        doctorName || "N/A"
+      }</p>
+      <p style="margin: 8px 0; font-size: 16px;"><strong>Hospital:</strong> ${
+        hospitalName || "N/A"
+      }</p>
+      <p style="margin: 8px 0; font-size: 16px;"><strong>Date:</strong> ${
+        date || "N/A"
+      }</p>
+      <p style="margin: 8px 0; font-size: 16px;"><strong>Time:</strong> ${
+        time || "N/A"
+      }</p>
+    </div>
+
+    <p style="font-size: 14px; color: #666;">
+      If you wish to book another appointment or need assistance,  
+      please contact us through the application.
     </p>
   `;
 
