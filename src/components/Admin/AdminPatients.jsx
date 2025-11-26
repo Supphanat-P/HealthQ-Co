@@ -1,15 +1,4 @@
-import { useState } from "react";
-import {
-  Search,
-  User,
-  LayoutDashboard,
-  Settings,
-  Users,
-  LogOut,
-  TriangleAlert,
-  Phone,
-  Mail,
-} from "lucide-react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogBackdrop,
@@ -18,74 +7,38 @@ import {
 } from "@headlessui/react";
 import AdminSidebar from "./AdminSidebar";
 import { useData } from "../../Context/DataContext";
-import { Navigate } from "react-router-dom";
+import { Mail, Phone, Search, User } from "lucide-react";
 
 const AdminPatients = () => {
-  const [open, setOpen] = useState(false); // ควบคุมการเปิดปิด Modal
-  const [selectedPatient, setSelectedPatient] = useState(null); // เก็บข้อมูลคนไข้ที่เลือก
-  const { currentUser } = useData();
+  const [open, setOpen] = useState(false);
+  const [selectedPatient, setSelectedPatient] = useState(null);
+  const { currentUser, usersInfo } = useData();
 
-  if (!currentUser) return <Navigate to="/login" replace />;
-  if (currentUser.role !== "admin") return <Navigate to="/login" replace />;
-
-  // Mock Data
-  const patients = [
-    {
-      id: "001",
-      name: "นายสมชาย ใจดี",
-      gender: "ชาย",
-      dob: "15/04/2533",
-      nationality: "ไทย",
-      height: "175",
-      weight: "70",
-      phone: "0629797123",
-      email: "somchai@gmail.com",
-      bloodType: "O+",
-      visitCount: "5 ครั้ง",
-      lastVisit: "10/11/2568",
-    },
-    {
-      id: "002",
-      name: "นางสาวสมหญิง ใจดี",
-      gender: "หญิง",
-      dob: "20/02/2538",
-      nationality: "ไทย",
-      height: "160",
-      weight: "48",
-      phone: "0629735454",
-      email: "somying@gmail.com",
-      bloodType: "O+",
-      visitCount: "2 ครั้ง",
-      lastVisit: "01/11/2568",
-    },
-    {
-      id: "003",
-      name: "นายสมใจ ใจดี",
-      gender: "ชาย",
-      dob: "05/12/2540",
-      nationality: "ไทย",
-      height: "180",
-      weight: "75",
-      phone: "0629797123",
-      email: "somjai@gmail.com",
-      bloodType: "B",
-      visitCount: "0 ครั้ง",
-      lastVisit: "-",
-    },
-  ];
-
+  // 1. STATE สำหรับเก็บข้อมูลที่ใช้ในตาราง/ค้นหา
+  const [patients, setPatients] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
 
+  // 2. useEffect สำหรับโหลดข้อมูลจาก Context
+  useEffect(() => {
+    if (usersInfo && usersInfo.length > 0) {
+      setPatients(usersInfo); // โหลดข้อมูลเมื่อ usersInfo มา
+    }
+  }, [usersInfo]);
+
+  if (!currentUser) return (window.location.href = "/login");
+  if (currentUser.role !== "admin") return (window.location.href = "/login");
+
+  // 3. ฟังก์ชัน Filter
   const filteredPatients = patients.filter((patient) => {
     const lowerQuery = searchQuery.toLowerCase();
+    // ใช้ user_id และ full_name ตามโครงสร้างข้อมูลจริง
     return (
-      patient.name.toLowerCase().includes(lowerQuery) ||
-      patient.id.toLowerCase().includes(lowerQuery) ||
-      patient.phone.toLowerCase().includes(lowerQuery)
+      patient.full_name?.toLowerCase().includes(lowerQuery) ||
+      patient.user_id?.toLowerCase().includes(lowerQuery) ||
+      patient.phone?.toLowerCase().includes(lowerQuery)
     );
   });
 
-  // ฟังก์ชันเปิด Modal พร้อมเซตข้อมูล
   const handleOpenModal = (patient) => {
     setSelectedPatient(patient);
     setOpen(true);
@@ -94,15 +47,12 @@ const AdminPatients = () => {
   return (
     <div className="flex h-screen bg-gray-50">
       <AdminSidebar />
-
-      {/* Main Content */}
       <div className="m-5 flex-1 p-6 overflow-auto">
         <div className="flex-1 overflow-auto p-6">
-          {/* Header */}
+          {/* Header และ Search Box */}
           <div className="bg-white rounded-xl border border-indigo-100 p-4 mb-6 flex flex-col md:flex-row justify-between items-center shadow-sm gap-4 sticky top-0 z-10">
-            <h2 className="text-xl  font-bold text-navy">รายการผู้ใช้บริการ</h2>
+            <h2 className="text-xl font-bold text-navy">รายการผู้ใช้บริการ</h2>
 
-            {/* Search Box */}
             <div className="position-relative" style={{ width: "325px" }}>
               <div className="position-absolute top-50 start-0 translate-middle-y ms-3 pe-none">
                 <Search size={20} color="#001f3f" />
@@ -133,36 +83,44 @@ const AdminPatients = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
+                  {/* ใช้ filteredPatients ในการแสดงผล */}
                   {filteredPatients.length > 0 ? (
                     filteredPatients.map((patient, index) => (
                       <tr
                         key={index}
-                        className="hover:bg-blue-50/50 transition-colors font-medium text-gray-700"
+                        className="hover:bg-blue-50/50 transition-colors text-gray-700"
                       >
-                        <td className="p-4">{patient.id}</td>
+                        <td className="p-4 font-light">
+                          {patient.user_id.slice(0, 22)}...
+                        </td>
                         <td className="p-4">
-                          <div className="font-bold text-gray-900">
-                            {patient.name}
-                          </div>
-                          <div className="text-xs text-gray-500 mt-0.5">
-                            ID: {patient.idCard}
+                          <div className="font-simibold  text-gray-900">
+                            {patient.full_name}
                           </div>
                         </td>
                         <td className="p-4">
-                          <div className="text-gray-900">{patient.phone}</div>
-                          <div className="text-sm text-gray-500">
-                            {patient.email}
+                          <div className="text-gray-900">
+                            {(patient.phone || "").replace(
+                              /(\d{3})(\d{3})(\d{4})/,
+                              "$1-$2-$3"
+                            )}
                           </div>
+                          <div className="text-gray-500">{patient.email}</div>
                         </td>
                         <td className="p-4 text-center">
                           <span className="inline-block px-2 py-1 rounded-md bg-red-50 text-red-700 text-xs font-bold border border-red-100">
-                            {patient.bloodType}
+                            {patient.blood_type || "-"}
+                            {/* ใช้ - หากข้อมูลนี้ยังไม่มี */}
                           </span>
                         </td>
-                        <td className="p-4 text-center">
-                          {patient.visitCount}
+                        <td className="p-4 font-simibold text-center">
+                          {patient.visitCount || 0}
+                          {/* ใช้ 0 หากข้อมูลนี้ยังไม่มี */}
                         </td>
-                        <td className="p-4 text-center">{patient.lastVisit}</td>
+                        <td className="p-4 font-simibold text-center">
+                          {patient.lastVisit || "-"}
+                          {/* ใช้ - หากข้อมูลนี้ยังไม่มี */}
+                        </td>
                         <td className="p-4 text-center">
                           <button
                             onClick={() => handleOpenModal(patient)}
@@ -193,13 +151,12 @@ const AdminPatients = () => {
         </div>
       </div>
 
-      {/* Modal Dialog รายละเอียดผู้ป่วย */}
+      {/* Modal Dialog รายละเอียดผู้ป่วย (ไม่ต้องแก้ไข) */}
       <Dialog open={open} onClose={setOpen} className="relative z-50">
         <DialogBackdrop
           transition
           className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"
         />
-
         <div className="fixed inset-0 w-screen overflow-y-auto z-50">
           <div className="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
             <DialogPanel
@@ -236,92 +193,92 @@ const AdminPatients = () => {
                       </svg>
                     </button>
                   </div>
-
                   <div className="bg-white px-4 pt-5 pb-4 sm:p-6">
                     <div className="flex flex-col items-center sm:flex-row sm:items-start gap-6">
-                      {/* Avatar */}
-                      <div className="shrink-0">
-                        <div className="h-24 w-24 rounded-full bg-gray-100 flex items-center justify-center border-4 border-gray-50 shadow-inner">
-                          <User className="h-12 w-12 text-gray-400" />
-                        </div>
-                        <div className="mt-2 text-center"></div>
-                      </div>
-
-                      <div className="flex-1 w-full">
-                        <h4 className="text-xl font-bold text-[#001f3f] mb-1">
-                          {selectedPatient.name}
+                      <div className="flex-1! w-full!">
+                        <h4 className="text-3xl! font-bold! bg-linear-to-r! from-blue-600! to-blue-800! bg-clip-text! text-transparent! mb-2!">
+                          {selectedPatient.full_name}
                         </h4>
-                        <p className="text-sm text-gray-500 mb-4 flex items-center gap-2">
-                          รหัส: {selectedPatient.id}
+                        <p className="text-base! text-blue-600! font-semibold! mb-6! flex! items-center! gap-2!">
+                          <span className="inline-block! w-2! h-2! bg-blue-400! rounded-full!"></span>
+                          รหัส: {selectedPatient.user_id}
                         </p>
-
-                        <div className="grid sm:grid-cols-2 gap-x-6 gap-y-4 text-sm">
-                          <div className="space-y-1">
-                            <p className="text-gray-500 text-xs uppercase tracking-wide">
+                        <div className="grid! sm:grid-cols-2! gap-x-6! gap-y-4!">
+                          {/* Gender */}
+                          <div className="bg-white! p-4! rounded-lg! shadow-md! hover:shadow-lg! transition-shadow! border! border-gray-100!">
+                            <p className="text-gray-500! text-xs! font-bold! uppercase! tracking-wider! mb-2!">
                               เพศ
                             </p>
-                            <p className="font-medium text-gray-900">
+                            <p className="font-bold! text-lg! text-gray-900!">
                               {selectedPatient.gender}
                             </p>
                           </div>
-                          <div className="space-y-1">
-                            <p className="text-gray-500 text-xs uppercase tracking-wide">
+                          {/* DOB */}
+                          <div className="bg-white! p-4! rounded-lg! shadow-md! hover:shadow-lg! transition-shadow! border! border-gray-100!">
+                            <p className="text-gray-500! text-xs! font-bold! uppercase! tracking-wider! mb-2!">
                               วันเกิด
                             </p>
-                            <p className="font-medium text-gray-900">
+                            <p className="font-bold! text-lg! text-gray-900!">
                               {selectedPatient.dob}
                             </p>
                           </div>
-                          <div className="space-y-1">
-                            <p className="text-gray-500 text-xs uppercase tracking-wide">
+                          {/* Nationality */}
+                          <div className="bg-white! p-4! rounded-lg! shadow-md! hover:shadow-lg! transition-shadow! border! border-gray-100!">
+                            <p className="text-gray-500! text-xs! font-bold! uppercase! tracking-wider! mb-2!">
                               สัญชาติ
                             </p>
-                            <p className="font-medium text-gray-900">
-                              {selectedPatient.nationality}
+                            <p className="font-bold! text-lg! text-gray-900!">
+                              {selectedPatient.nation}
                             </p>
                           </div>
-                          <div className="space-y-1">
-                            <p className="text-gray-500 text-xs uppercase tracking-wide">
+                          {/* Blood Type */}
+                          <div className="bg-linear-to-br! from-red-50! to-red-100! p-4! rounded-lg! shadow-md! hover:shadow-lg! transition-shadow! border! border-red-200!">
+                            <p className="text-red-600! text-xs! font-bold! uppercase! tracking-wider! mb-2!">
                               หมู่เลือด
                             </p>
-                            <p className="font-medium text-gray-900">
-                              {selectedPatient.bloodType}
+                            <p className="font-bold! text-2xl! text-red-600!">
+                              {selectedPatient.blood_type}
                             </p>
                           </div>
-
-                          <div>
-                            <p className="text-gray-500 text-xs">ส่วนสูง</p>
-                            <p className="font-semibold text-[#001f3f]">
-                              {selectedPatient.height}{" "}
-                              <span className="text-xs font-normal text-gray-500">
+                          {/* Height */}
+                          <div className="bg-linear-to-br! from-emerald-50! to-emerald-100! p-4! rounded-lg! shadow-md! hover:shadow-lg! transition-shadow! border! border-emerald-200!">
+                            <p className="text-emerald-600! text-xs! font-bold! uppercase! tracking-wider! mb-2!">
+                              ส่วนสูง
+                            </p>
+                            <p className="font-bold! text-lg! text-emerald-700!">
+                              {selectedPatient.height}
+                              <span className="text-xs! font-normal! text-emerald-600! ml-1!">
                                 ซม.
                               </span>
                             </p>
-                            <div>
-                              <p className="text-gray-500 text-xs">น้ำหนัก</p>
-                              <p className="font-semibold text-[#001f3f]">
-                                {selectedPatient.weight}{" "}
-                                <span className="text-xs font-normal text-gray-500">
-                                  กก.
-                                </span>
-                              </p>
-                            </div>
                           </div>
-
-                          <div className="space-y-1 col-span-1 sm:col-span-2 pt-2 border-t border-gray-100">
-                            <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">
+                          {/* Weight */}
+                          <div className="bg-linear-to-br! from-purple-50! to-purple-100! p-4! rounded-lg! shadow-md! hover:shadow-lg! transition-shadow! border! border-purple-200!">
+                            <p className="text-purple-600! text-xs! font-bold! uppercase! tracking-wider! mb-2!">
+                              น้ำหนัก
+                            </p>
+                            <p className="font-bold! text-lg! text-purple-700!">
+                              {selectedPatient.weight}
+                              <span className="text-xs! font-normal! text-purple-600! ml-1!">
+                                กก.
+                              </span>
+                            </p>
+                          </div>
+                          {/* Contact Info */}
+                          <div className="sm:col-span-2! bg-linear-to-r! from-blue-50! to-cyan-50! p-5! rounded-lg! shadow-md! hover:shadow-lg! transition-shadow! border! border-blue-200!">
+                            <p className="text-blue-700! text-xs! font-bold! uppercase! tracking-wider! mb-4!">
                               ข้อมูลติดต่อ
                             </p>
-                            <div className="flex flex-col gap-1">
-                              <p className="text-gray-900 flex items-center gap-2">
-                                <span className="w-4 h-4 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-[10px]">
-                                  <Phone size={12} />
+                            <div className="flex! flex-col! gap-3!">
+                              <p className="text-gray-900! flex! items-center! gap-3! font-medium!">
+                                <span className="w-9! h-9! rounded-full! bg-blue-500! text-white! flex! items-center! justify-center! shrink-0! shadow-md!">
+                                  <Phone size={16} />
                                 </span>
                                 {selectedPatient.phone}
                               </p>
-                              <p className="text-gray-900 flex items-center gap-2">
-                                <span className="w-4 h-4 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-[10px]">
-                                  <Mail size={12} />
+                              <p className="text-gray-900! flex! items-center! gap-3! font-medium!">
+                                <span className="w-9! h-9! rounded-full! bg-blue-500! text-white! flex! items-center! justify-center! shrink-0! shadow-md!">
+                                  <Mail size={16} />
                                 </span>
                                 {selectedPatient.email}
                               </p>
@@ -335,7 +292,7 @@ const AdminPatients = () => {
                     <button
                       type="button"
                       onClick={() => setOpen(false)}
-                      className="rounded-pill inline-flex w-full justify-center rounded-lg bg-[#1f2054] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#1f2054] sm:ml-3 sm:w-auto transition-colors"
+                      className="inline-flex w-full justify-center rounded-xl! bg-[#1f2054] px-4.5! py-2.5! text-sm font-semibold text-white shadow-sm hover:bg-[#1f2054] sm:ml-3 sm:w-auto transition-colors"
                     >
                       ปิดหน้าต่าง
                     </button>
