@@ -34,7 +34,7 @@ import AdminAppointments from "./components/Admin/AdminAppointments";
 import AdminPatients from "./components/Admin/AdminPatients";
 
 function AppContent() {
-  const { loading, error } = useData();
+  const { error } = useData();
   const location = useLocation();
   const [lang, setLang] = useState(() => {
     return localStorage.getItem("lang") || "TH";
@@ -44,7 +44,7 @@ function AppContent() {
     setLang(value);
     localStorage.setItem("lang", value);
   };
-  
+
   const hiddenPaths = [
     "/login",
     "/register",
@@ -55,23 +55,19 @@ function AppContent() {
 
   const showChatbot = !hiddenPaths.includes(location.pathname.toLowerCase());
 
-  if (loading) return <Loading />;
   if (error)
     return <div className="text-center text-danger mt-5">❌ {error}</div>;
 
   return (
     <>
       <Toaster
+        position="top-center"
+        limit={1}
         toastOptions={{
-          duration: 5000,
-          success: {
-            duration: 3000,
-          },
-          error: {
-            duration: 5000,
-          },
+          duration: 1000,
         }}
       />
+
       <LocationCompare />
       <NavigateBar lang={lang} setLang={updateLang} />
       {showChatbot && <Chatbot />}

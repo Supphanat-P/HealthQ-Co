@@ -36,7 +36,6 @@ export default function Appointment() {
       time: selectedTimes[date] || null,
     }));
     setMapDatesTimes(mapped);
-    console.log("Mapped Dates & Times:", mapped);
   }, [selectedDates, selectedTimes]);
 
   return (

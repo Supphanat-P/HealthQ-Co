@@ -31,7 +31,6 @@ const PatientInfo = ({ onChange } = {}) => {
     if (!gender) setGender(info.gender || "");
     if (!phone) setPhone(info.phone || "");
     if (!email) setEmail(info.email || "");
-    console.log(info);
   }, [isLogin, currentUser, usersInfo]);
 
   useEffect(() => {

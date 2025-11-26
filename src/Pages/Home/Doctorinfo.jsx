@@ -21,7 +21,6 @@ const Doctorinfo = () => {
   const navigate = useNavigate();
 
   const AppointmentClick = () => {
-    console.log(doctor)
     navigate("/appointment", { state: { doctor } });
   }
 

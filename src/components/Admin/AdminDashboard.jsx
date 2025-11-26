@@ -4,7 +4,6 @@ import { useData } from "../../Context/DataContext";
 
 const AdminDashboard = () => {
   const { currentUser, appointments } = useData();
-  console.log(appointments)
   if (!currentUser) return window.location.href = "/login";
   if (currentUser.role !== "admin") return window.location.href = "/login";
 

@@ -11,7 +11,6 @@ const SelectTime = ({
   const [localTimes, setLocalTimes] = useState(selectedTimes);
 
   useEffect(() => {
-    console.log(selectedTimes);
   }, [selectedTimes]);
 
   const handleTimeChange = (date, time) => {

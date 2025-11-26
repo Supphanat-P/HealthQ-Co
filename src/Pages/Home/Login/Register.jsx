@@ -31,7 +31,6 @@ const Register = () => {
       setIsSending(true);
       const randomOtp = Math.floor(100000 + Math.random() * 900000).toString();
       setOtp(randomOtp);
-      console.log("Sending OTP:", randomOtp);
       await sendOtpForRegistration(identifier, randomOtp);
       toast.success("ส่งรหัส OTP สำเร็จ");
       setStep("otp");

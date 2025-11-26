@@ -5,7 +5,6 @@ import { Star } from "lucide-react";
 import { Stethoscope } from "lucide-react";
 
 const AppointmentDoctor = ({ selectedDoctor }) => {
-  console.log(selectedDoctor)
   return (
     <div className="d-flex ps-4 ">
       <img

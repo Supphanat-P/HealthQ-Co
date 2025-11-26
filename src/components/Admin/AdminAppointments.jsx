@@ -9,15 +9,13 @@ import {
   CircleQuestionMark,
   Save,
   X,
-  Sidebar, // เพิ่มไอคอน X สำหรับปิด Modal
 } from "lucide-react";
 import Dropdown from "react-bootstrap/Dropdown";
-import dayjs from "dayjs";
 import "dayjs/locale/th";
 import { useData } from "../../Context/DataContext";
 import { supabase } from "../../config/supabaseClient";
 import AdminSidebar from "./AdminSidebar";
-import { sendOtpForRegistration } from "../../Context/FetchData";
+import toast from "react-hot-toast";
 
 const CustomToggle = forwardRef(({ children, onClick }, ref) => (
   <button
@@ -32,8 +30,38 @@ const CustomToggle = forwardRef(({ children, onClick }, ref) => (
   </button>
 ));
 
+// --- Function to send confirmation email ---
+const sendConfirmationEmail = async (details) => {
+  try {
+    const response = await fetch("http://localhost:3001/send-confirm-email", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        to: details.to,
+        subject: details.subject,
+        details: {
+          title: details.subject,
+          patientName: details.patientName,
+          doctorName: details.doctorName,
+          hospitalName: details.hospitalName,
+          date: details.date,
+          time: details.time,
+        },
+      }),
+    });
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error sending confirmation email:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+
 const AdminAppointments = () => {
-  const { currentUser, appointments, fetchAndSetData, sendEmailForApprove } = useData();
+  const { currentUser, appointments, fetchAndSetData } = useData();
   const [filterStatusDisplay, setFilterStatusDisplay] = useState("ทั้งหมด");
   const [filterStatus, setFilterStatus] = useState("ทั้งหมด");
   const [searchQuery, setSearchQuery] = useState("");
@@ -59,67 +87,83 @@ const AdminAppointments = () => {
         })
         .eq("app_id", app_id);
 
-      if (!error) {
-        if (newStatus === "booked") {
-          const date = new Date(selectedDate).toLocaleDateString(
-            "th-TH",
-            { day: "numeric", month: "short", year: "numeric" }
-          )
-
-          const time = new Date(selectedDate).toLocaleTimeString("th-TH", {
-            hour: "2-digit",
-            minute: "2-digit",
-          });
-          const user = appointments.find((item) => item.app_id === app_id)?.user
-          const doctor = appointments.find((item) => item.app_id === app_id)?.doctor
-          const hospital = doctor.hospital.hospital_name
-          const emailUser = user.email
-          const doctorName = doctor.doctor_name
-
-          await sendEmailForApprove(emailUser, date, time, doctorName, hospital)
-
-          console.log('Userdata', user)
-          console.log('Doctor', doctor)
-        } else if (newStatus === "cancel") {
-
-        }
-      }
-
-      if (error) throw error;
-
-      if (newStatus === "booked") {
-
-        console.log(selectedDate)
-
-        const date = new Date(selectedDate).toLocaleDateString(
-          "th-TH",
-          { day: "numeric", month: "short", year: "numeric" }
-        )
-
-        const time = new Date(selectedDate).toLocaleTimeString("th-TH", {
-          hour: "2-digit",
-          minute: "2-digit",
-        });
-
-        console.log(date)
-        console.log(time)
-        const user = appointments.find((item) => item.app_id === app_id)?.user;
-        const doctor = appointments.find((item) => item.app_id === app_id)?.doctor;
-
-        const userEmail = user.email
-        const doctorName = doctor.doctor_name
-        const hospitalName = doctor.hospital.hospital_name
-
-        console.log('Userdata', user)
-        console.log('Doctor', doctor)
-      } else if (newStatus === "cancel") {
-      }
-      await fetchAndSetData();
-
-    } catch (error) {
-      console.error("Supabase Error:", error.message);
-      alert("เกิดข้อผิดพลาด: " + error.message);
-    }
+            if (error) throw error;
+            toast.success("สถานะอัปเดตเรียบร้อย");
+      
+            // 1. Refresh data immediately after DB update
+            await fetchAndSetData();
+      
+            // 2. If booked, find the new data and send email
+            if (newStatus === "booked") {
+              const appointment = appointments.find((item) => item.app_id === app_id);
+              if (!appointment || !appointment.user || !appointment.doctor) {
+                  console.error("Could not find appointment details to send email.");
+                  return
+              };
+      
+              const date = new Date(selectedDate).toLocaleDateString("th-TH", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              });
+      
+                      const time = new Date(selectedDate).toLocaleTimeString("th-TH", {
+      
+                        hour: "2-digit",
+      
+                        minute: "2-digit",
+      
+                      });
+      
+              
+      
+                      // Send the confirmation email
+      
+                      const emailResult = await sendConfirmationEmail({
+      
+                        to: appointment.user.email,
+      
+                        subject: "ยืนยันการนัดหมาย (Appointment Confirmed)",
+      
+                        patientName: appointment.user.full_name,
+      
+                        doctorName: appointment.doctor.doctor_name,
+      
+                        hospitalName: appointment.doctor.hospital.hospital_name,
+      
+                        date: date,
+      
+                        time: `${time} น.`,
+      
+                      });
+      
+              
+      
+                      if (emailResult.success) {
+      
+                        toast.success("ส่งอีเมลยืนยันเรียบร้อยแล้ว");
+      
+                      } else {
+      
+                        toast.error("ไม่สามารถส่งอีเมลยืนยันได้");
+      
+                      }
+      
+              
+      
+                    } else if (newStatus === "cancel") {
+      
+                      // Optionally, send a cancellation email here in the future
+      
+                    }
+      
+                  } catch (error) {
+      
+                    console.error("Supabase Error:", error.message);
+      
+                    toast.error("เกิดข้อผิดพลาด: " + error.message);
+      
+                  }
   };
 
   const handleOpenProposeModal = (item) => {
@@ -131,7 +175,7 @@ const AdminAppointments = () => {
 
   const handleSaveCustomDate = async () => {
     if (!customDate || !customTime) {
-      alert("กรุณาเลือกทั้งวันที่และเวลา");
+      toast.error("กรุณาเลือกทั้งวันที่และเวลา");
       return;
     }
     const dateTimeString = `${customDate}T${customTime}:00`;
@@ -139,6 +183,7 @@ const AdminAppointments = () => {
     await handleStatusChange(selectedApp.app_id, "booked", dateObject.toISOString());
     setShowModal(false);
   };
+
   const filteredAppointments = appointments.filter((item) => {
     const matchesStatus =
       filterStatus === "ทั้งหมด" || item.status === filterStatus;
