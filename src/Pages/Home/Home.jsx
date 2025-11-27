@@ -8,22 +8,22 @@ import chooseDays from "../../assets/chooseDays.mp4";
 import comfirm from "../../assets/comfirm.mp4";
 import { Ear,Eye,Venus,Mars,Heart,Bandage,Bone,Brain,Cross,Stethoscope,Droplet,Accessibility,Syringe,Wand,Activity,Search, Phone,} from "lucide-react";
 import { DentalToothIcon,LungsIcon,FourFinger02Icon,LiverIcon,BloodPressureIcon,StarFaceIcon } from "hugeicons-react";
+import { useNavigate } from "react-router-dom";
+
 
 export default function Home() {
-  const { specialties } = useData();
+  const { specialties,doctors } = useData();
+  const [query, setQuery] = useState("");
   console.log(specialties);
   const [view, setView] = useState(false);
+  const navigate = useNavigate();
+
   const handleMouseEnter = () => {
     if (videoRef.current) {
       videoRef.current.play();
     }
   };
-  const handleMouseLeave = () => {
-    if (videoRef.current) {
-      videoRef.current.pause();
-      videoRef.current.currentTime = 0;
-    }
-  };
+
 
   return (
     <>
@@ -114,7 +114,10 @@ export default function Home() {
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-7! mt-4!">
             {specialties.slice(0, view ? specialties.length : 8).map((sst) => (
-              <div key={sst.specialty_id}>
+              <div key={sst.specialty_id}
+              onClick={() => navigate(`/specialty/${sst.specialty_id}`)}
+          className="cursor-pointer"
+              >
                 <div
                   className="p-3! rounded-xl! w-full! h-40! flex flex-col items-center justify-center transition-all duration-300 cursor-pointer 
     bg-gradient-to-br from-blue-600/10 to-blue-600/5 
@@ -124,6 +127,7 @@ export default function Home() {
                   {sst.specialty_name === "หู คอ จมูก" && (
                     <div
                       className="flex justify-center items-center rounded-full text-white font-bold mb-3"
+                      
                       style={{
                         width: "40px",
                         height: "40px",
@@ -143,6 +147,7 @@ export default function Home() {
                         backgroundColor: "#1f2054",
                       }}
                     >
+                      
                       <Eye size={24} />
                     </div>
                   )}  
@@ -435,8 +440,7 @@ export default function Home() {
               <div
                 className="flex flex-col items-center text-center max-w-[280px] relative
                  hover:-translate-y-3 hover:scale-105 transition-all duration-300"
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
+         
               >
                 {/* Step Number Badge */}
                 <div
