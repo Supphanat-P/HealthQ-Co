@@ -12,8 +12,11 @@ import {
   sendOtpForRegistration,
   createUserAccount,
   login as loginFromFetchData,
-  updateUserInfo
+  updateUserInfo,
+  sendEmailForApprove,
+  sendEmailForCancel
 } from "./FetchData";
+import toast from "react-hot-toast";
 
 const DataContext = createContext(null);
 
@@ -24,7 +27,6 @@ export const DataProvider = ({ children }) => {
   const [appointments, setAppointments] = useState([]);
   const [searchData, setSearchData] = useState([]);
   const [symptomsListData, setSymptomsListData] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [usersInfo, setUsersInfo] = useState([]);
 
@@ -71,9 +73,9 @@ export const DataProvider = ({ children }) => {
     } catch (err) { }
   };
 
-  useEffect(() => {
-    const loadData = async () => {
-      try {
+  const fetchAndSetData = async () => {
+    toast.promise(
+      (async () => {
         const specialtiesData = await fetchSpecialties();
         const doctorsData = await fetchDoctors();
         const hospitalsData = await fetchHospitals();
@@ -81,65 +83,35 @@ export const DataProvider = ({ children }) => {
         const usersInfoData = await fetchUsersInfo();
         const symptomsListData = await fetchSymptomsList();
 
-        const formattedDoctors = (doctorsData || []).map(doctor => {
-          const specialty = (specialtiesData || []).find(s => s.specialty_id === doctor.specialty_id);
-          const hospital = (hospitalsData || []).find(h => h.hospital_id === doctor.hospital_id);
+        const formattedDoctors = doctorsData.map(doctor => {
+          const specialty = specialtiesData.find(s => s.specialty_id === doctor.specialty_id);
+          const hospital = hospitalsData.find(h => h.hospital_id === doctor.hospital_id);
           return { ...doctor, specialty, hospital };
         });
 
-        const symptomsWithSpecialties = (symptomsListData || []).map(symptom => {
-          const specialty = (specialtiesData || []).find(s => s.specialty_id === symptom.specialty_id);
-          return { ...symptom, specialties: specialty ? [specialty] : [] };
-        });
-
-        const searchData = (doctorsData || [])
-          .map((doctor) => ({
-            id: doctor.doctor_id,
-            name: doctor.doctor_name,
-            category: "Doctor",
-          }))
-          .concat(
-            (hospitalsData || []).map((hospital) => ({
-              id: hospital.hospital_id,
-              name: hospital.hospital_name,
-              category: "Hospital",
-            }))
-          )
-          .concat(
-            (specialtiesData || []).map((specialty) => ({
-              id: specialty.specialty_id,
-              name: specialty.specialty_name,
-              category: "Specialty",
-            }))
-          );
-
-        const formattedappointmentsData = appointmentsData.map((appointment) => {
-          const user = (usersInfoData || []).find((u) => u.user_id === appointment.user_id);
-          const doctor = (doctorsData || []).find((d) => d.doctor_id === appointment.doctor_id);
-          return {
-            ...appointment,
-            user,
-            doctor,
-          };
+        const formattedAppointmentsData = appointmentsData.map((appointment) => {
+          const user = usersInfoData.find((u) => u.user_id === appointment.user_id);
+          const doctor = formattedDoctors.find((d) => d.doctor_id === appointment.doctor_id);
+          return { ...appointment, user, doctor };
         });
 
         setDoctors(formattedDoctors);
-        setSpecialties(specialtiesData || []);
-        setHospitals(hospitalsData || []);
-        setAppointments(formattedappointmentsData || []);
-        setUsersInfo(usersInfoData || []);
-        setSearchData(searchData);
-        setSymptomsListData(symptomsWithSpecialties);
-        setError(null);
-      } catch (err) {
-        console.warn("Error fetching data:", err.message);
-        setError(err.message);
-      } finally {
-        setLoading(false);
+        setSpecialties(specialtiesData);
+        setHospitals(hospitalsData);
+        setAppointments(formattedAppointmentsData);
+        setUsersInfo(usersInfoData);
+        setSymptomsListData(symptomsListData);
+      })(),
+      {
+        id: "fetch-data-toast",
+        loading: "กำลังโหลดข้อมูล...",
+        success: <b>โหลดข้อมูลสำเร็จ!</b>,
+        error: <b>โหลดข้อมูลล้มเหลว</b>,
       }
-    };
-
-    loadData();
+    );
+  };
+  useEffect(() => {
+    fetchAndSetData();
   }, []);
 
   return (
@@ -158,13 +130,15 @@ export const DataProvider = ({ children }) => {
         login,
         logout,
         searchData,
-        loading,
         error,
         symptomsListData,
         createAppointment,
         sendOtpForRegistration,
         createUserAccount,
-        updateUserInfo
+        updateUserInfo,
+        fetchAndSetData,
+        sendEmailForApprove,
+        sendEmailForCancel
       }}
     >
       {children}

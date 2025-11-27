@@ -6,13 +6,37 @@ import choose from "../../assets/choose.mp4";
 import chooseDoctors from "../../assets/chooseDoctors.mp4";
 import chooseDays from "../../assets/chooseDays.mp4";
 import comfirm from "../../assets/comfirm.mp4";
-import { Ear,Eye,Venus,Mars,Heart,Bandage,Bone,Brain,Cross,Stethoscope,Droplet,Accessibility,Syringe,Wand,Activity,Search, Phone,} from "lucide-react";
-import { DentalToothIcon,LungsIcon,FourFinger02Icon,LiverIcon,BloodPressureIcon,StarFaceIcon } from "hugeicons-react";
+import {
+  Ear,
+  Eye,
+  Venus,
+  Mars,
+  Heart,
+  Bandage,
+  Bone,
+  Brain,
+  Cross,
+  Stethoscope,
+  Droplet,
+  Accessibility,
+  Syringe,
+  Wand,
+  Activity,
+  Search,
+  Phone,
+} from "lucide-react";
+import {
+  DentalToothIcon,
+  LungsIcon,
+  FourFinger02Icon,
+  LiverIcon,
+  BloodPressureIcon,
+  StarFaceIcon,
+} from "hugeicons-react";
 import { useNavigate } from "react-router-dom";
 
-
 export default function Home() {
-  const { specialties,doctors } = useData();
+  const { specialties, doctors } = useData();
   const [query, setQuery] = useState("");
   console.log(specialties);
   const [view, setView] = useState(false);
@@ -23,7 +47,6 @@ export default function Home() {
       videoRef.current.play();
     }
   };
-
 
   return (
     <>
@@ -53,7 +76,6 @@ export default function Home() {
             </div>
           </div>
         </div>
-
         {/* Search and Quick Actions Section */}
         <div className="py-16! px-5!">
           <div className="max-w-6xl! mx-auto">
@@ -114,9 +136,10 @@ export default function Home() {
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-7! mt-4!">
             {specialties.slice(0, view ? specialties.length : 8).map((sst) => (
-              <div key={sst.specialty_id}
-              onClick={() => navigate(`/specialty/${sst.specialty_id}`)}
-          className="cursor-pointer"
+              <div
+                key={sst.specialty_id}
+                onClick={() => navigate(`/specialty/${sst.specialty_id}`)}
+                className="cursor-pointer"
               >
                 <div
                   className="p-3! rounded-xl! w-full! h-40! flex flex-col items-center justify-center transition-all duration-300 cursor-pointer 
@@ -127,7 +150,6 @@ export default function Home() {
                   {sst.specialty_name === "หู คอ จมูก" && (
                     <div
                       className="flex justify-center items-center rounded-full text-white font-bold mb-3"
-                      
                       style={{
                         width: "40px",
                         height: "40px",
@@ -137,8 +159,8 @@ export default function Home() {
                       <Ear size={24} />
                     </div>
                   )}
-                
-                   {sst.specialty_name === "ตา" && (
+
+                  {sst.specialty_name === "ตา" && (
                     <div
                       className="flex justify-center items-center rounded-full text-white font-bold mb-3"
                       style={{
@@ -147,11 +169,10 @@ export default function Home() {
                         backgroundColor: "#1f2054",
                       }}
                     >
-                      
                       <Eye size={24} />
                     </div>
-                  )}  
-                  
+                  )}
+
                   {sst.specialty_name === "สุขภาพสตรี" && (
                     <div
                       className="flex justify-center items-center rounded-full text-white font-bold mb-3"
@@ -177,7 +198,7 @@ export default function Home() {
                       <Mars size={24} />
                     </div>
                   )}
-                   {sst.specialty_name === "หัวใจ" && (
+                  {sst.specialty_name === "หัวใจ" && (
                     <div
                       className="flex justify-center items-center rounded-full text-white font-bold mb-3"
                       style={{
@@ -225,7 +246,7 @@ export default function Home() {
                       <Brain size={24} />
                     </div>
                   )}
-                 {sst.specialty_name === "ส่งเสริมสุขภาพและอาชีวเวชศาสตร์" && (
+                  {sst.specialty_name === "ส่งเสริมสุขภาพและอาชีวเวชศาสตร์" && (
                     <div
                       className="flex justify-center items-center rounded-full text-white font-bold mb-3"
                       style={{
@@ -237,7 +258,7 @@ export default function Home() {
                       <Cross size={24} />
                     </div>
                   )}
-                 {sst.specialty_name === "อายุรกรรม" && (
+                  {sst.specialty_name === "อายุรกรรม" && (
                     <div
                       className="flex justify-center items-center rounded-full text-white font-bold mb-3"
                       style={{
@@ -249,7 +270,7 @@ export default function Home() {
                       <Stethoscope size={24} />
                     </div>
                   )}
-                 {sst.specialty_name === "โรคระบบทางเดินปัสสาวะ" && (
+                  {sst.specialty_name === "โรคระบบทางเดินปัสสาวะ" && (
                     <div
                       className="flex justify-center items-center rounded-full text-white font-bold mb-3"
                       style={{
@@ -273,7 +294,7 @@ export default function Home() {
                       <Accessibility size={24} />
                     </div>
                   )}
-                      {sst.specialty_name === "วิสัญญี" && (
+                  {sst.specialty_name === "วิสัญญี" && (
                     <div
                       className="flex justify-center items-center rounded-full text-white font-bold mb-3"
                       style={{
@@ -285,7 +306,7 @@ export default function Home() {
                       <Syringe size={24} />
                     </div>
                   )}
-                    {sst.specialty_name === "เวชกรรม" && (
+                  {sst.specialty_name === "เวชกรรม" && (
                     <div
                       className="flex justify-center items-center rounded-full text-white font-bold mb-3"
                       style={{
@@ -386,7 +407,7 @@ export default function Home() {
                     <p className="mb-0">{}</p>
                   </div>
                 </div>
-                </div>
+              </div>
             ))}
           </div>
         </div>
@@ -440,7 +461,6 @@ export default function Home() {
               <div
                 className="flex flex-col items-center text-center max-w-[280px] relative
                  hover:-translate-y-3 hover:scale-105 transition-all duration-300"
-         
               >
                 {/* Step Number Badge */}
                 <div

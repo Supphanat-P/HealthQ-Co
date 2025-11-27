@@ -37,7 +37,7 @@ const AppointmentSummary = ({
       return;
     }
 
-    const app_datetime_json = selectedDates.map(date => ({
+    const app_datetime_json = selectedDates.map((date) => ({
       date: dayjs(date).format("YYYY-MM-DD"),
       times: selectedTimes[date] || [],
     }));
@@ -59,13 +59,17 @@ const AppointmentSummary = ({
 
   return (
     <div className="appointment-summary-sticky sticky top-4 p-4 ms-5 w-80 space-y-4 bg-white shadow-sm rounded-xl">
-      <h5 className="text-lg font-semibold text-navy-600">สรุปรายละเอียดการจอง</h5>
+      <h5 className="text-lg font-semibold text-navy-600">
+        สรุปรายละเอียดการจอง
+      </h5>
 
       <div>
         <p className="text-gray-500 text-sm flex items-center gap-2">
           <Stethoscope /> ชื่อผู้ป่วย
         </p>
-        <p className="text-black">{patientInfo?.firstName} {patientInfo?.lastName || ""}</p>
+        <p className="text-black">
+          {patientInfo?.firstName} {patientInfo?.lastName || ""}
+        </p>
       </div>
 
       <div>
@@ -90,11 +94,14 @@ const AppointmentSummary = ({
         {selectedDates && selectedDates.length > 0 ? (
           <div className="text-black space-y-1">
             {selectedDates.map((date) => {
-              const formattedDate = dayjs(date).locale("th").format("D MMMM YYYY");
+              const formattedDate = dayjs(date)
+                .locale("th")
+                .format("D MMMM YYYY");
               const times = selectedTimes[date] || [];
               return (
                 <p key={date}>
-                  {formattedDate} — {(Array.isArray(times) ? times : [times]).join(", ")} น.
+                  {formattedDate} —{" "}
+                  {(Array.isArray(times) ? times : [times]).join(", ")} น.
                 </p>
               );
             })}
@@ -120,11 +127,24 @@ const AppointmentSummary = ({
           <Modal.Title>ส่งคำขอนัดหมายเรียบร้อย</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>คำขอของคุณถูกส่งแล้ว โปรดรอให้ผู้ดูแลระบบตรวจสอบและอนุมัติข้อมูลนัดหมายนี้</p>
+          <p>
+            คำขอของคุณถูกส่งแล้ว
+            โปรดรอให้ผู้ดูแลระบบตรวจสอบและอนุมัติข้อมูลนัดหมายนี้
+          </p>
         </Modal.Body>
         <Modal.Footer>
-          <button className="btn btn-secondary" onClick={() => setShowModal(false)}>ปิด</button>
-          <button className="btn btn-navy" onClick={() => navigate("/profile")}>ไปที่การนัดหมายของฉัน</button>
+          <button
+            className="border-0 bg-gray-500 rounded-md! px-3 text-white p-2"
+            onClick={() => setShowModal(false)}
+          >
+            ปิด
+          </button>
+          <button
+            className="border-0 bg-blue-950 rounded-md! px-3 text-white p-2"
+            onClick={() => navigate("/profile")}
+          >
+            ไปที่การนัดหมายของฉัน
+          </button>
         </Modal.Footer>
       </Modal>
     </div>

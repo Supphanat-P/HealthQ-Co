@@ -1,12 +1,12 @@
 import AdminSidebar from "./AdminSidebar";
 import { Users, Calendar, CheckCircle, Hourglass, XCircle, Clock } from "lucide-react";
 import { useData } from "../../Context/DataContext";
+import { Navigate } from "react-router-dom";
 
 const AdminDashboard = () => {
   const { currentUser, appointments } = useData();
-  console.log(appointments)
-  if (!currentUser) return window.location.href = "/login";
-  if (currentUser.role !== "admin") return window.location.href = "/login";
+  if (!currentUser) return <Navigate to="/login" replace />;
+  if (currentUser.role !== "admin") return <Navigate to="/login" replace />;
 
   const today = new Date();
   today.setHours(23, 59, 59, 999);
@@ -15,7 +15,7 @@ const AdminDashboard = () => {
   week.setDate(week.getDate() - 7);
   week.setHours(0, 0, 0, 0);
 
-  const appointmentsWeek = appointments.filter(app => {
+  const appointmentsWeek = appointments.filter(a => a.status === "pending").filter(app => {
     const created = new Date(app.created_at);
     return created >= week && created <= today;
   });
@@ -82,12 +82,12 @@ const AdminDashboard = () => {
           </div>
 
           <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-6!">
-            <h3 className="text-xl font-bold text-gray-900 mb-6">นัดหมายที่เข้ามาสัปดาห์นี้</h3>
+            <h3 className="text-xl font-bold text-gray-900 mb-6">นัดหมายที่รอการอนุมติ</h3>
 
             {appointmentsWeek.length === 0 && (
               <div className="text-center py-12!">
                 <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500">ไม่มีนัดหมายสัปดาห์นี้</p>
+                <p className="text-gray-500">ไม่มีนัดหมายที่รอการอนุมติ</p>
               </div>
             )}
 

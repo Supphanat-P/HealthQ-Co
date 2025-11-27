@@ -31,7 +31,6 @@ const PatientInfo = ({ onChange } = {}) => {
     if (!gender) setGender(info.gender || "");
     if (!phone) setPhone(info.phone || "");
     if (!email) setEmail(info.email || "");
-    console.log(info);
   }, [isLogin, currentUser, usersInfo]);
 
   useEffect(() => {
@@ -63,9 +62,9 @@ const PatientInfo = ({ onChange } = {}) => {
                     id="gender"
                     className="form-control  shadow-sm"
                   >
-                    <option value="">เพศ</option>
-                    <option value="male">ชาย</option>
-                    <option value="female">หญิง</option>
+                    <option value={gender ? gender : ""}>{gender ? gender : "เลือกเพศ"}</option>
+                    <option value="ชาย">ชาย</option>
+                    <option value="หญิง">หญิง</option>
                   </select>
                 </div>
                 <div className="col-5">

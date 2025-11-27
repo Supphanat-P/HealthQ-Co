@@ -1,44 +1,112 @@
-require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
-const nodemailer = require("nodemailer");
+import express from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
+import dotenv from "dotenv";
+import nodemailer from "nodemailer";
+
+dotenv.config();
 
 const app = express();
-app.use(cors());
-app.use(express.json());
-
-app.get("/", (req, res) => res.send("Server is running!"));
-
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.use(bodyParser.json());
+app.use(cors({ origin: "*" }));
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
   },
 });
 
-app.post("/send-email", async (req, res) => {
-  const { to, subject, text } = req.body;
+console.log("SMTP_USER:", process.env.SMTP_USER ? "Loaded" : "Missing");
+console.log("SMTP_PASS:", process.env.SMTP_PASS ? "Loaded" : "Missing");
 
-  if (!to) {
-    return res
-      .status(400)
-      .json({ success: false, error: "No recipient (to) provided" });
+app.get("/", (req, res) => {
+  res.send("HealthQ Backend is running 🚀");
+});
+
+app.post("/send-otp-email", async (req, res) => {
+  const { to, text } = req.body;
+
+  if (!to || !text) {
+    return res.status(400).json({ message: "Missing required fields" });
   }
+
+  const mailOptions = {
+    from: `"HealthQ" <${process.env.SMTP_USER}>`,
+    to,
+    subject: "Your OTP Code",
+    html: `<p>Your verification code is: <strong>${text}</strong></p>`,
+  };
 
   try {
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to,
-      subject: "Otp Code for Health Queue",
-      text,
+    const result = await transporter.sendMail(mailOptions);
+    console.log("Email sent:", result);
+
+    return res.json({ message: "Email sent", success: true });
+  } catch (error) {
+    console.error("Email error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Email sending failed",
     });
-    res.json({ success: true, message: "Email sent! " + text });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, error: err.message });
   }
 });
+
+app.post("/send-approve-email", async (req, res) => {
+  const { to, details } = req.body;
+
+  if (!to || !details) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  const mailOptions = {
+    from: `"HealthQ" <${process.env.SMTP_USER}>`,
+    to,
+    subject: details.title || "Your Appointment Has Been Approved",
+    html: `
+      <p>Hospital Name: <strong>${details.hospitalName}</strong></p>
+      <p>Doctor Name: <strong>${details.doctorName}</strong></p>
+      <p>Patient Name: <strong>${details.patientName}</strong></p>
+      <p>Date: <strong>${details.date}</strong></p>
+      <p>Time: <strong>${details.time}</strong></p>
+    `,
+  };
+
+  try {
+    const result = await transporter.sendMail(mailOptions);
+    return res.json({ success: true, message: "Email sent" });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.post("/send-cancel-email", async (req, res) => {
+  const { to, details } = req.body;
+
+  if (!to || !details) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  const mailOptions = {
+    from: `"HealthQ" <${process.env.SMTP_USER}>`,
+    to,
+    subject: details.title || "Your Appointment Has Been Cancelled",
+    html: `
+      <p>Sorrry!. your appointment has been cancelled</p>
+    `,
+  };
+
+  try {
+    const result = await transporter.sendMail(mailOptions);
+    return res.json({ success: true, message: "Email sent" });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+const port = process.env.PORT || 3000;
+app.listen(port, () => console.log(`🚀 Running on ${port}`));

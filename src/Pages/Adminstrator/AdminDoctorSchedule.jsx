@@ -3,6 +3,7 @@ import { useData } from "../../Context/DataContext";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { Button, Form } from "react-bootstrap";
+import toast from "react-hot-toast";
 
 dayjs.extend(customParseFormat);
 
@@ -44,10 +45,10 @@ const AdminDoctorSchedule = () => {
   }, [doctors]);
 
   const handleAddSlot = () => {
-    if (!selectedDoctorId) return alert("กรุณาเลือกแพทย์");
-    if (!form.date) return alert("กรุณาใส่วันที่ (DD/MM/YYYY)");
+    if (!selectedDoctorId) return toast.error("กรุณาเลือกแพทย์");
+    if (!form.date) return toast.error("กรุณาใส่วันที่ (DD/MM/YYYY)");
     const normalized = normalizeDateString(form.date);
-    if (!normalized) return alert("วันที่ไม่ถูกต้อง");
+    if (!normalized) return toast.error("วันที่ไม่ถูกต้อง");
 
     const newSlot = {
       schedule_text: `วันที่ ${form.date} ${form.start_time}-${form.end_time}`,

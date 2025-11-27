@@ -3,7 +3,7 @@ import { useData } from "../../Context/DataContext";
 import { supabase } from "../../config/supabaseClient";
 import toast from "react-hot-toast";
 import dayjs from "dayjs";
-import { SquarePen, X } from 'lucide-react';
+import { SquarePen, X } from "lucide-react";
 
 const ProfileCard = ({ lang }) => {
   const [selectedTab, setSelectedTab] = useState("1");
@@ -13,9 +13,7 @@ const ProfileCard = ({ lang }) => {
   const [nationValue, setNationValue] = useState("");
   const [isNationOpen, setIsNationOpen] = useState(false);
 
-  const findUserId = usersInfo.find(
-    (u) => u.user_id === currentUser?.user_id
-  );
+  const findUserId = usersInfo.find((u) => u.user_id === currentUser?.user_id);
 
   useEffect(() => {
     if (!findUserId) return;
@@ -23,11 +21,8 @@ const ProfileCard = ({ lang }) => {
     const thNation = findUserId.nation || "";
     const nationObj = nations.find((n) => n.th === thNation);
 
-    setNationValue(
-      lang === "TH" ? thNation : nationObj?.en || thNation
-    );
+    setNationValue(lang === "TH" ? thNation : nationObj?.en || thNation);
   }, [findUserId, lang]);
-
 
   const nations = [
     { th: "ไทย", en: "Thai" },
@@ -44,7 +39,6 @@ const ProfileCard = ({ lang }) => {
     { th: "ฟิลิปปินส์", en: "Filipino" },
   ];
 
-
   const filteredNation = nations.filter((n) =>
     (lang === "TH" ? n.th : n.en)
       .toLowerCase()
@@ -54,30 +48,29 @@ const ProfileCard = ({ lang }) => {
   const genderMap = {
     male: { th: "ชาย", en: "Male" },
     female: { th: "หญิง", en: "Female" },
-    other: { th: "อื่นๆ", en: "Other" }
+    other: { th: "อื่นๆ", en: "Other" },
   };
 
   const displayGender = {
     male: lang === "TH" ? genderMap.male.th : genderMap.male.en,
     female: lang === "TH" ? genderMap.female.th : genderMap.female.en,
-    other: lang === "TH" ? genderMap.other.th : genderMap.other.en
-  }
-
-  const displayNation = {
-    "ไทย": lang === "TH" ? "ไทย" : "Thai",
-    "สหรัฐอเมริกา": lang === "TH" ? "สหรัฐอเมริกา" : "American",
-    "อังกฤษ": lang === "TH" ? "อังกฤษ" : "British",
-    "ญี่ปุ่น": lang === "TH" ? "ญี่ปุ่น" : "Japanese",
-    "จีน": lang === "TH" ? "จีน" : "Chinese",
-    "เกาหลีใต้": lang === "TH" ? "เกาหลีใต้" : "South Korean",
-    "ลาว": lang === "TH" ? "ลาว" : "Lao",
-    "กัมพูชา": lang === "TH" ? "กัมพูชา" : "Cambodian",
-    "เมียนมา": lang === "TH" ? "เมียนมา" : "Myanmar",
-    "สิงคโปร์": lang === "TH" ? "สิงคโปร์" : "Singaporean",
-    "มาเลเซีย": lang === "TH" ? "มาเลเซีย" : "Malaysian",
-    "ฟิลิปปินส์": lang === "TH" ? "ฟิลิปปินส์" : "Filipino",
+    other: lang === "TH" ? genderMap.other.th : genderMap.other.en,
   };
 
+  const displayNation = {
+    ไทย: lang === "TH" ? "ไทย" : "Thai",
+    สหรัฐอเมริกา: lang === "TH" ? "สหรัฐอเมริกา" : "American",
+    อังกฤษ: lang === "TH" ? "อังกฤษ" : "British",
+    ญี่ปุ่น: lang === "TH" ? "ญี่ปุ่น" : "Japanese",
+    จีน: lang === "TH" ? "จีน" : "Chinese",
+    เกาหลีใต้: lang === "TH" ? "เกาหลีใต้" : "South Korean",
+    ลาว: lang === "TH" ? "ลาว" : "Lao",
+    กัมพูชา: lang === "TH" ? "กัมพูชา" : "Cambodian",
+    เมียนมา: lang === "TH" ? "เมียนมา" : "Myanmar",
+    สิงคโปร์: lang === "TH" ? "สิงคโปร์" : "Singaporean",
+    มาเลเซีย: lang === "TH" ? "มาเลเซีย" : "Malaysian",
+    ฟิลิปปินส์: lang === "TH" ? "ฟิลิปปินส์" : "Filipino",
+  };
 
   const text = {
     noData: lang === "TH" ? "ไม่พบข้อมูล" : "No data",
@@ -86,7 +79,10 @@ const ProfileCard = ({ lang }) => {
     save: lang === "TH" ? "บันทึก" : "Save",
     cancel: lang === "TH" ? "ยกเลิก" : "Cancel",
     saveSuccess: lang === "TH" ? "บันทึกข้อมูลสำเร็จ" : "Saved successfully.",
-    saveError: lang === "TH" ? "เกิดข้อผิดพลาดในการบันทึก" : "An error occurred while saving.",
+    saveError:
+      lang === "TH"
+        ? "เกิดข้อผิดพลาดในการบันทึก"
+        : "An error occurred while saving.",
 
     tab1: lang === "TH" ? "ข้อมูลส่วนตัว" : "Personal Info",
     tab2: lang === "TH" ? "ประวัติสุขภาพ" : "Health History",
@@ -117,7 +113,6 @@ const ProfileCard = ({ lang }) => {
     other: lang === "TH" ? "อื่นๆ" : "Other",
     selectGender: lang === "TH" ? "เลือกเพศ" : "Select gender",
   };
-
 
   useEffect(() => {
     if (!findUserId) return;
@@ -164,19 +159,19 @@ const ProfileCard = ({ lang }) => {
         emergency_contact: { phone: form.emergency || "" },
 
         chronic_conditions: form.chronic_conditions
-          ? form.chronic_conditions.split(",").map(wow => wow.trim())
+          ? form.chronic_conditions.split(",").map((wow) => wow.trim())
           : [],
 
         allergies_med: form.allergies_med
-          ? form.allergies_med.split(",").map(wow => wow.trim())
+          ? form.allergies_med.split(",").map((wow) => wow.trim())
           : [],
 
         food_allergies: form.food_allergies
-          ? form.food_allergies.split(",").map(wow => wow.trim())
+          ? form.food_allergies.split(",").map((wow) => wow.trim())
           : [],
 
         regular_med: form.regular_med
-          ? form.regular_med.split(",").map(wow => wow.trim())
+          ? form.regular_med.split(",").map((wow) => wow.trim())
           : [],
       };
 
@@ -192,7 +187,6 @@ const ProfileCard = ({ lang }) => {
 
       setIsEdit(false);
       toast.success(text.saveSuccess);
-
     } catch (err) {
       console.error(err);
       toast.error(text.saveError);
@@ -203,8 +197,10 @@ const ProfileCard = ({ lang }) => {
 
   return (
     <>
-      <div className="card p-4 mt-4 justify-content-center d-flex m-auto" style={{ width: "70%" }}>
-
+      <div
+        className="card p-4 mt-4 justify-content-center d-flex m-auto"
+        style={{ width: "70%" }}
+      >
         <div className="d-flex align-items-center mb-4">
           <div
             style={{
@@ -222,7 +218,10 @@ const ProfileCard = ({ lang }) => {
 
           <div className="ms-auto">
             {!isEdit ? (
-              <button className="btn btn-primary flex!" onClick={() => setIsEdit(true)}>
+              <button
+                className="btn btn-primary flex!"
+                onClick={() => setIsEdit(true)}
+              >
                 <SquarePen /> &nbsp; {text.edit}
               </button>
             ) : (
@@ -230,7 +229,10 @@ const ProfileCard = ({ lang }) => {
                 <button className="btn btn-success flex!" onClick={handleSave}>
                   <SquarePen /> &nbsp; {text.save}
                 </button>
-                <button className="btn btn-danger flex!" onClick={() => setIsEdit(false)}>
+                <button
+                  className="btn btn-danger flex!"
+                  onClick={() => setIsEdit(false)}
+                >
                   <X /> &nbsp; {text.cancel}
                 </button>
               </div>
@@ -259,7 +261,9 @@ const ProfileCard = ({ lang }) => {
             <div className="col-6">
               <div className="text-black">{text.fullname}</div>
               {!isEdit ? (
-                <div className="text-navy mb-4">{form.full_name || text.notSpecified}</div>
+                <div className="text-navy mb-4">
+                  {form.full_name || text.notSpecified}
+                </div>
               ) : (
                 <input
                   className="form-control mb-4"
@@ -270,7 +274,9 @@ const ProfileCard = ({ lang }) => {
 
               <div className="text-black">{text.gender}</div>
               {!isEdit ? (
-                <div className="text-navy mb-4">{displayGender[form.gender] || text.notSpecified}</div>
+                <div className="text-navy mb-4">
+                  {displayGender[form.gender] || text.notSpecified}
+                </div>
               ) : (
                 <select
                   className="form-select mb-4"
@@ -279,32 +285,35 @@ const ProfileCard = ({ lang }) => {
                 >
                   <option value="">{text.selectGender}</option>
 
-                  <option value="male">{genderMap.male[lang === "TH" ? "th" : "en"]}</option>
-                  <option value="female">{genderMap.female[lang === "TH" ? "th" : "en"]}</option>
-                  <option value="other">{genderMap.other[lang === "TH" ? "th" : "en"]}</option>
+                  <option value="ชาย">{genderMap.male[lang === "TH" ? "th" : "en"]}</option>
+                  <option value="หญิง">{genderMap.female[lang === "TH" ? "th" : "en"]}</option>
+                  <option value="อื่นๆ">{genderMap.other[lang === "TH" ? "th" : "en"]}</option>
                 </select>
               )}
 
               <div className="text-black">{text.birthdate}</div>
               {!isEdit ? (
-                <div className="text-navy mb-4">{form.dob || text.notSpecified}</div>
+                <div className="text-navy mb-4">
+                  {form.dob || text.notSpecified}
+                </div>
               ) : (
                 <input
                   className="form-control mb-4"
                   type="date"
                   min="1900-01-01"
-                  max={dayjs().format("YYYY-MM-DD")}
+                  max={dayjs().format("DD-MM-YYYY")}
                   value={form.dob}
                   onChange={(e) => handleChange("dob", e.target.value)}
                 />
               )}
 
-
               {/* Nation */}
               <div className="text-black">{text.nation}</div>
 
               {!isEdit ? (
-                <div className="text-navy mb-4">{displayNation[form.nation] || text.notSpecified}</div>
+                <div className="text-navy mb-4">
+                  {displayNation[form.nation] || text.notSpecified}
+                </div>
               ) : (
                 <div className="position-relative mb-4">
                   <input
@@ -320,7 +329,11 @@ const ProfileCard = ({ lang }) => {
                   {isNationOpen && filteredNation.length > 0 && (
                     <ul
                       className="list-group position-absolute w-100 mt-1 shadow bg-white"
-                      style={{ maxHeight: "200px", overflowY: "auto", zIndex: 9999 }}
+                      style={{
+                        maxHeight: "200px",
+                        overflowY: "auto",
+                        zIndex: 9999,
+                      }}
                     >
                       {filteredNation.map((n, i) => (
                         <li
@@ -344,10 +357,11 @@ const ProfileCard = ({ lang }) => {
             </div>
 
             <div className="col-6">
-
               <div className="text-black">{text.nid}</div>
               {!isEdit ? (
-                <div className="text-navy mb-4">{form.nid || text.notSpecified}</div>
+                <div className="text-navy mb-4">
+                  {form.nid || text.notSpecified}
+                </div>
               ) : (
                 <input
                   className="form-control mb-4"
@@ -359,7 +373,9 @@ const ProfileCard = ({ lang }) => {
 
               <div className="text-black">{text.blood}</div>
               {!isEdit ? (
-                <div className="text-navy mb-4">{form.blood_type || text.notSpecified}</div>
+                <div className="text-navy mb-4">
+                  {form.blood_type || text.notSpecified}
+                </div>
               ) : (
                 <input
                   className="form-control mb-4"
@@ -370,7 +386,9 @@ const ProfileCard = ({ lang }) => {
 
               <div className="text-black">{text.height}</div>
               {!isEdit ? (
-                <div className="text-navy mb-4">{form.height ? form.height + " cm" : text.notSpecified}</div>
+                <div className="text-navy mb-4">
+                  {form.height ? form.height + " cm" : text.notSpecified}
+                </div>
               ) : (
                 <input
                   className="form-control mb-4"
@@ -382,7 +400,9 @@ const ProfileCard = ({ lang }) => {
 
               <div className="text-black">{text.weight}</div>
               {!isEdit ? (
-                <div className="text-navy mb-4">{form.weight ? form.weight + " kg" : text.notSpecified}</div>
+                <div className="text-navy mb-4">
+                  {form.weight ? form.weight + " kg" : text.notSpecified}
+                </div>
               ) : (
                 <input
                   className="form-control mb-4"
@@ -400,18 +420,24 @@ const ProfileCard = ({ lang }) => {
             <div className="col-6">
               <div className="text-black">{text.chronic}</div>
               {!isEdit ? (
-                <div className="text-navy mb-4">{form.chronic_conditions || text.notSpecified}</div>
+                <div className="text-navy mb-4">
+                  {form.chronic_conditions || text.notSpecified}
+                </div>
               ) : (
                 <input
                   className="form-control mb-4"
                   value={form.chronic_conditions}
-                  onChange={(e) => handleChange("chronic_conditions", e.target.value)}
+                  onChange={(e) =>
+                    handleChange("chronic_conditions", e.target.value)
+                  }
                 />
               )}
 
               <div className="text-black">{text.regularMed}</div>
               {!isEdit ? (
-                <div className="text-navy mb-4">{form.regular_med || text.notSpecified}</div>
+                <div className="text-navy mb-4">
+                  {form.regular_med || text.notSpecified}
+                </div>
               ) : (
                 <input
                   className="form-control mb-4"
@@ -422,23 +448,31 @@ const ProfileCard = ({ lang }) => {
 
               <div className="text-black">{text.allergiesMed}</div>
               {!isEdit ? (
-                <div className="text-navy mb-4">{form.allergies_med || text.notSpecified}</div>
+                <div className="text-navy mb-4">
+                  {form.allergies_med || text.notSpecified}
+                </div>
               ) : (
                 <input
                   className="form-control mb-4"
                   value={form.allergies_med}
-                  onChange={(e) => handleChange("allergies_med", e.target.value)}
+                  onChange={(e) =>
+                    handleChange("allergies_med", e.target.value)
+                  }
                 />
               )}
 
               <div className="text-black">{text.foodAllergies}</div>
               {!isEdit ? (
-                <div className="text-navy mb-4">{form.food_allergies || text.notSpecified}</div>
+                <div className="text-navy mb-4">
+                  {form.food_allergies || text.notSpecified}
+                </div>
               ) : (
                 <input
                   className="form-control mb-4"
                   value={form.food_allergies}
-                  onChange={(e) => handleChange("food_allergies", e.target.value)}
+                  onChange={(e) =>
+                    handleChange("food_allergies", e.target.value)
+                  }
                 />
               )}
             </div>
@@ -448,21 +482,34 @@ const ProfileCard = ({ lang }) => {
         {selectedTab === "3" && (
           <div className="row fs-6">
             <div className="col-6">
-
               <div className="text-black">{text.phone}</div>
               {!isEdit ? (
-                <div className="text-navy mb-4">{form.phone || text.notSpecified}</div>
+                <div className="text-navy mb-4">
+                  {String(form.phone || text.notSpecified)
+                    .replace(/\D/g, "")
+                    .replace(/^(\d{3})(\d{3})(\d{4})$/, "$1-$2-$3")}
+                </div>
               ) : (
                 <input
+                  type="tel"
+                  maxLength={10}
                   className="form-control mb-4"
                   value={form.phone}
-                  onChange={(e) => handleChange("phone", e.target.value)}
+                  pattern="[0-9]{10}"
+                  title="กรุณากรอกตัวเลข 10 หลักเท่านั้น"
+                  onChange={(e) => {
+                    //ลบอักขระที่ไม่ใช่ตัวเลขออกทันที
+                    const cleanedValue = e.target.value.replace(/\D/g, "");
+                    handleChange("phone", cleanedValue);
+                  }}
                 />
               )}
 
               <div className="text-black">{text.email}</div>
               {!isEdit ? (
-                <div className="text-navy mb-4">{form.email || text.notSpecified}</div>
+                <div className="text-navy mb-4">
+                  {form.email || text.notSpecified}
+                </div>
               ) : (
                 <input
                   className="form-control mb-4"
@@ -475,18 +522,28 @@ const ProfileCard = ({ lang }) => {
             <div className="col-6">
               <div className="text-black">{text.emergency}</div>
               {!isEdit ? (
-                <div className="text-navy mb-4">{form.emergency || text.notSpecified}</div>
+                <div className="text-navy mb-4">
+                  {String(form.emergency || text.notSpecified)
+                    .replace(/\D/g, "")
+                    .replace(/^(\d{3})(\d{3})(\d{4})$/, "$1-$2-$3")}
+                </div>
               ) : (
                 <input
+                  type="tel" 
+                  maxLength={10}
                   className="form-control mb-4"
                   value={form.emergency}
-                  onChange={(e) => handleChange("emergency", e.target.value)}
+                  pattern="[0-9]{10}" 
+                  title="กรุณากรอกตัวเลข 10 หลักเท่านั้น" 
+                  onChange={(e) => {
+                    const cleanedValue = e.target.value.replace(/\D/g, "");
+                    handleChange("emergency", cleanedValue);
+                  }}
                 />
               )}
             </div>
           </div>
         )}
-
       </div>
     </>
   );
