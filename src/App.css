@@ -399,3 +399,9 @@ button:hover {
 .form-control-navy {
   color: #001f3f;
 }
+.icon-hover {
+  transition: transform 0.3s ease;
+}
+span:hover .icon-hover {
+  transform: translateX(5px);
+}
