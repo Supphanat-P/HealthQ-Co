@@ -115,7 +115,7 @@ export default function Home() {
 
         {/* ความชำนาญ */}
         <div className="m-5! py-30! px-75!">
-          <div className="text-[#1f2054] text-3xl font-bold text-blue-900">
+          <div className="text-3xl font-bold text-blue-900">
             ความชำนาญ
           </div>
 
@@ -142,10 +142,7 @@ export default function Home() {
                 className="cursor-pointer"
               >
                 <div
-                  className="p-3! rounded-xl! w-full! h-40! flex flex-col items-center justify-center transition-all duration-300 cursor-pointer 
-    bg-gradient-to-br from-blue-600/10 to-blue-600/5 
-    border-2 border-blue-300 
-    hover:-translate-y-1 hover:shadow-lg"
+                  className="p-3! rounded-xl! w-full! h-40! flex flex-col items-center justify-center transition-all duration-300 cursor-pointer bg-linear-to-br from-blue-600/10 to-blue-600/5 border-2 border-blue-300 hover:-translate-y-1 hover:shadow-lg"
                 >
                   {sst.specialty_name === "หู คอ จมูก" && (
                     <div
@@ -404,7 +401,7 @@ export default function Home() {
                   )}
                   <div className="text-center">
                     <p className="mb-0 font-bold">{sst.specialty_name}</p>
-                    <p className="mb-0">{}</p>
+                    <p className="mb-0">{ }</p>
                   </div>
                 </div>
               </div>
@@ -523,6 +520,135 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {/* ความชำนาญ */}
+      <div className="m-5 py-16! px-5!">
+        <div className="text-3xl font-bold text-blue-900">
+          ความชำนาญ
+        </div>
+
+        <div className=" flex justify-start items-center mt-2">
+          <span
+            onClick={() => {
+              setView(!view);
+            }}
+            className="text-blue-700 text-lg flex items-center cursor-pointer group"
+          >
+            ดูทั้งหมด
+            <BiChevronRight
+              size={24}
+              className="ml-1 transition-transform duration-300 group-hover:translate-x-1"
+            />
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-4">
+          {specialties.slice(0, view ? specialties.length : 8).map((sst) => (
+            <div key={sst.specialty_id}>
+              <div
+                className="rounded-xl p-3 h-full flex flex-col items-center justify-center transition-all duration-300 cursor-pointer bg-linear-to-br from-blue-600/10 to-blue-600/5 border-2 border-blue-300 hover:-translate-y-1 hover:shadow-lg"
+              >
+                <div
+                  className="flex justify-center items-center rounded-full text-white font-bold mb-3"
+                  style={{
+                    width: "40px",
+                    height: "40px",
+                    backgroundColor: "#1f2054",
+                  }}
+                >
+                  { }
+                </div>
+
+                <div className="text-center">
+                  <p className="mb-0 font-bold">{sst.specialty_name}</p>
+                  <p className="mb-0">{ }</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* How to Use Section */}
+      <div className="py-20! px-5!">
+        <div className="text-center mb-16!">
+          <h2 className="text-5xl font-bold text-blue-900 mb-5">
+            วิธีการใช้งาน
+          </h2>
+          <p className="text-2xl text-blue-700/80 max-w-3xl mx-auto">
+            เพียง 4 ขั้นตอนง่ายๆ คุณก็สามารถจองนัดหมายกับแพทย์ได้ทันที
+          </p>
+        </div>
+
+        <div className="flex flex-wrap justify-center items-start gap-12!  max-w-7xl! mx-auto!">
+          {[
+            {
+              num: "1",
+              title: "การใช้ตัวกรอง",
+              desc: "เลือกโรงพยาบาลเพื่อที่จะต้องนำทำการนัดหมาย",
+              bgColor: "from-blue-600 to-blue-700",
+              borderColor: "border-blue-600/30",
+              cardBg: "bg-linear-to-br from-blue-600/10 to-blue-600/5",
+              Video: "/myVideo.mp4",
+            },
+            {
+              num: "2",
+              title: "เลือกแพทย์",
+              desc: "เลือกแพทย์ที่ต้องการจากรายชื่อแพทย์ผู้เชี่ยวชาญของเรา",
+              bgColor: "from-blue-600 to-blue-700",
+              borderColor: "border-blue-600/30",
+              cardBg: "bg-linear-to-br from-blue-600/10 to-blue-600/5",
+            },
+            {
+              num: "3",
+              title: "เลือกวันและเวลา",
+              desc: "เลือกวันที่และเวลาที่สะดวกสำหรับคุณจากตารางที่ว่าง",
+              bgColor: "from-blue-600 to-blue-700",
+              borderColor: "border-blue-600/30",
+              cardBg: "bg-linear-to-br from-blue-600/10 to-blue-600/5",
+            },
+            {
+              num: "4",
+              title: "ยืนยันนัดหมาย",
+              desc: "ยืนยันการนัดหมายและรับการแจ้งเตือนก่อนถึงเวลานัด",
+              bgColor: "from-blue-600 to-blue-700",
+              borderColor: "border-blue-600/30",
+              cardBg: "bg-linear-to-br from-blue-600/10 to-blue-600/5",
+            },
+          ].map((step, index) => (
+            <div
+              key={index}
+              className="flex flex-col items-center text-center max-w-[280px] relative"
+            >
+              {/* Step Number Badge */}
+              <div
+                className={`w-[70px] h-[70px] bg-linear-to-br ${step.bgColor} rounded-full! flex items-center justify-center text-white font-bold text-2xl shadow-lg relative z-10! -mb-9!`}
+              >
+                {step.num}
+              </div>
+
+              {/* Card */}
+              <div
+                className={`w-full h-[200px] ${step.cardBg} rounded-3xl! border-3 ${step.borderColor} shadow-xl! hover:shadow-2xl hover:-translate-y-3 transition-all duration-300 flex items-center justify-center`}
+              >
+                <div className="text-6xl opacity-30 font-bold text-blue-800">
+                  {step.num}
+                </div>
+              </div>
+
+              {/* Text */}
+              <div className="mt-6!">
+                <h5 className="text-blue-900 font-bold text-xl mb-2">
+                  {step.title}
+                </h5>
+                <p className="text-blue-700/70 text-sm leading-relaxed">
+                  {step.desc}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Footer */}
       <div className="bg-linear-to-br from-blue-900 via-blue-800 to-blue-900 py-16! px-5! relative">
         <div className="max-w-7xl! mx-auto">
