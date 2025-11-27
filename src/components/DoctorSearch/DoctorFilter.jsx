@@ -29,7 +29,7 @@ const DoctorFilter = ({
     setSelectedSearch(null);
     setSelectedDoctor(null);
   };
-
+  
   const options = (searchData || []).map((option) => ({
     id: option.id,
     title: option.name,

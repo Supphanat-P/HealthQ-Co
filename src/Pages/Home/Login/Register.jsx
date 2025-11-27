@@ -23,7 +23,9 @@ const Register = () => {
   const [lName, setLName] = useState("");
 
   const sendOtp = async () => {
-    const existUser = usersInfo.find((u) => u.email === identifier);
+
+    const existUser = usersInfo.find((u) => u.email === identifier); // หาว่ามี email ซ้ำกับที่มีอยู่แล้วไหม
+
     if (existUser) {
       toast.error("อีเมลนี้มีผู้ใช้แล้ว");
       return;
@@ -39,14 +41,17 @@ const Register = () => {
       setOtp(randomOtp);
 
       const result = await sendOtpForRegistration(identifier, randomOtp);
-      console.log("OTP Result:", result);
+      console.log("OTP Result:", randomOtp)
 
       if (!result.success) {
         throw new Error(result.message || "ส่ง OTP ล้มเหลว");
       }
 
-      toast.success("ส่งรหัส OTP สำเร็จ");
-      setStep("otp");
+      if (result.success) {
+        toast.success("ส่ง OTP สำเร็จ");
+        setStep("otp");
+      }
+
     } catch (err) {
       console.error("OTP Error:", err);
       toast.error(err.message);
@@ -74,10 +79,15 @@ const Register = () => {
       return;
     }
     try {
-      await createUserAccount(identifier, password, fName, lName);
-      toast.success("ตั้งรหัสผ่านสำเร็จ");
-      setStep("done");
-      setTimeout(() => navigate("/login"), 2000);
+      const result = await createUserAccount(identifier, password, fName, lName);
+      if (!result.success) {
+        throw new Error(result.message || "สมัครสมาชิกไม่สำเร็จ");
+      }
+      if (result.success) {
+        toast.success("สมัครสมาชิกสำเร็จ");
+        setStep("done");
+        setTimeout(() => navigate("/login"), 2000);
+      }
     } catch (err) {
       toast.error(err.message);
     }

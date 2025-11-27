@@ -95,6 +95,28 @@ export const DataProvider = ({ children }) => {
           return { ...appointment, user, doctor };
         });
 
+        const formattedSearchData = (doctorsData || [])
+          .map((doctor) => ({
+            id: doctor.doctor_id,
+            name: doctor.doctor_name,
+            category: "แพทย์",
+          }))
+          .concat(
+            (hospitalsData || []).map((hospital) => ({
+              id: hospital.hospital_id,
+              name: hospital.hospital_name,
+              category: "โรงพยาบาล",
+            }))
+          )
+          .concat(
+            (specialtiesData || []).map((specialty) => ({
+              id: specialty.specialty_id,
+              name: specialty.specialty_name,
+              category: "ความชำนาญ",
+            }))
+          );
+
+        setSearchData(formattedSearchData);
         setDoctors(formattedDoctors);
         setSpecialties(specialtiesData);
         setHospitals(hospitalsData);

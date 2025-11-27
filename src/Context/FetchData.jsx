@@ -198,62 +198,76 @@ export const sendEmailForCancel = async ({ to, subject }) => {
 };
 
 export const createUserAccount = async (identifier, password, fName, lName) => {
-  if (!identifier || !password || !fName || !lName) {
-    throw new Error("Email, password, and name are required");
+  try {
+    if (!identifier || !password || !fName || !lName) {
+      return { success: false, message: "Email, password, and name are required" };
+    }
+
+    const { data: existing, error: checkError } = await supabase
+      .from("users")
+      .select("*")
+      .eq("email", identifier)
+      .maybeSingle();
+
+    if (checkError) {
+      return { success: false, message: checkError.message };
+    }
+
+    if (existing) {
+      return { success: false, message: "Email already registered" };
+    }
+
+    const hashedPassword = bcrypt.hashSync(password, 10);
+    const fullName = `${fName} ${lName}`;
+
+    const { data: userData, error: userError } = await supabase
+      .from("users")
+      .insert([
+        {
+          email: identifier,
+          password: hashedPassword,
+          full_name: fullName,
+          role: "patient",
+        },
+      ])
+      .select()
+      .single();
+
+    if (userError) {
+      return { success: false, message: userError.message };
+    }
+
+    const userId = userData.user_id;
+
+    const { data: infoData, error: infoError } = await supabase
+      .from("users_info")
+      .insert([
+        {
+          user_id: userId,
+          full_name: fullName,
+          first_name: fName,
+          last_name: lName,
+          email: identifier,
+        },
+      ])
+      .select()
+      .single();
+
+    if (infoError) {
+      return { success: false, message: infoError.message };
+    }
+
+    return {
+      success: true,
+      user: userData,
+      info: infoData,
+    };
+
+  } catch (err) {
+    return { success: false, message: err.message };
   }
-
-  const { data: existing, error: checkError } = await supabase
-    .from("users")
-    .select("*")
-    .eq("email", identifier)
-    .single();
-
-  if (existing) {
-    throw new Error("Email already registered");
-  }
-
-  const hashedPassword = bcrypt.hashSync(password, 10);
-  const fullName = `${fName} ${lName}`;
-
-  const { data: userData, error: userError } = await supabase
-    .from("users")
-    .insert([
-      {
-        email: identifier,
-        password: hashedPassword,
-        full_name: fullName,
-        role: "patient",
-      },
-    ])
-    .select()
-    .single();
-
-  if (userError) {
-    throw new Error(userError.message);
-  }
-
-  const userId = userData.user_id;
-
-  const { data: infoData, error: infoError } = await supabase
-    .from("users_info")
-    .insert([
-      {
-        user_id: userId,
-        full_name: fullName,
-        first_name: fName,
-        last_name: lName,
-        email: identifier,
-      },
-    ])
-    .select()
-    .single();
-
-  if (infoError) {
-    throw new Error(infoError.message);
-  }
-
-  return { user: userData, info: infoData };
 };
+
 
 export const login = async (email, password) => {
   try {

@@ -63,6 +63,7 @@ const NavigateBar = ({ lang, setLang }) => {
                   className="flex items-center no-deco space-x-2! px-4! py-2! text-navy hover:bg-white/10 rounded-xl! transition-all duration-200"
                 >
                   <LogIn className="w-4 h-4" />
+
                   <span>{text.login}</span>
                 </Link>
 
@@ -71,6 +72,7 @@ const NavigateBar = ({ lang, setLang }) => {
                   className="me-4 flex items-center no-deco space-x-2 px-4 py-2 text-navy hover:bg-white/10 rounded-xl transition-all duration-200"
                 >
                   <UserPlus className="w-4 h-4" />
+                  &nbsp;
                   <span>{text.register}</span>
                 </Link>
               </div>
