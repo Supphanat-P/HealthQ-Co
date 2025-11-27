@@ -1,10 +1,11 @@
-import { supabase } from '../config/supabaseClient';
+import { supabase } from "../config/supabaseClient";
 import bcrypt from "bcryptjs";
+import toast from "react-hot-toast";
 
 export const fetchDoctors = async () => {
   const { data, error } = await supabase
-    .from('doctors')
-    .select('*, hospital:hospitals(*)');
+    .from("doctors")
+    .select("*, hospital:hospitals(*)");
   if (error) {
     throw new Error(error.message);
   }
@@ -12,7 +13,7 @@ export const fetchDoctors = async () => {
 };
 
 export const fetchHospitals = async () => {
-  const { data, error } = await supabase.from('hospitals').select('*');
+  const { data, error } = await supabase.from("hospitals").select("*");
   if (error) {
     throw new Error(error.message);
   }
@@ -20,7 +21,7 @@ export const fetchHospitals = async () => {
 };
 
 export const fetchSpecialties = async () => {
-  const { data, error } = await supabase.from('specialties').select('*');
+  const { data, error } = await supabase.from("specialties").select("*");
   if (error) {
     throw new Error(error.message);
   }
@@ -28,19 +29,19 @@ export const fetchSpecialties = async () => {
 };
 
 export const fetchAppointments = async () => {
-  const { data, error } = await supabase.from('appointments').select('*, appointment_slots(slot_datetime)');
+  const { data, error } = await supabase
+    .from("appointments")
+    .select("*, appointment_slots(slot_datetime)");
   if (error) {
     throw new Error(error.message);
   }
   return data;
 };
 
-
-
 export const fetchUsersInfo = async () => {
   const { data, error } = await supabase
-    .from('users_info')
-    .select('*, users(*)');
+    .from("users_info")
+    .select("*, users(*)");
   if (error) {
     throw new Error(error.message);
   }
@@ -48,37 +49,44 @@ export const fetchUsersInfo = async () => {
 };
 
 export const fetchSymptomsList = async () => {
-  const { data, error } = await supabase
-    .from('symptoms')
-    .select('*');
+  const { data, error } = await supabase.from("symptoms").select("*");
   if (error) {
     throw new Error(error.message);
   }
   return data;
 };
 
-export const createAppointment = async (user_id, doctor_id, appointment_slots_data, note) => {
+export const createAppointment = async (
+  user_id,
+  doctor_id,
+  appointment_slots_data,
+  note
+) => {
   const { data: appointmentData, error: appointmentError } = await supabase
-    .from('appointments')
+    .from("appointments")
     .insert([
       {
         user_id: user_id,
         doctor_id: doctor_id,
         note: note,
-      }
+      },
     ])
     .select();
 
   if (appointmentError) {
-    throw new Error("Failed to create main appointment: " + appointmentError.message);
+    throw new Error(
+      "Failed to create main appointment: " + appointmentError.message
+    );
   }
 
   const app_id = appointmentData[0].app_id;
   const slotsToInsert = [];
 
-  appointment_slots_data.forEach(slotGroup => {
-    const timesArray = Array.isArray(slotGroup.times) ? slotGroup.times : [slotGroup.times];
-    timesArray.forEach(time => {
+  appointment_slots_data.forEach((slotGroup) => {
+    const timesArray = Array.isArray(slotGroup.times)
+      ? slotGroup.times
+      : [slotGroup.times];
+    timesArray.forEach((time) => {
       const slotDateTime = `${slotGroup.date}T${time}:00Z`;
       slotsToInsert.push({
         app_id: app_id,
@@ -92,39 +100,100 @@ export const createAppointment = async (user_id, doctor_id, appointment_slots_da
   }
 
   const { data: slotData, error: slotError } = await supabase
-    .from('appointment_slots')
+    .from("appointment_slots")
     .insert(slotsToInsert)
     .select();
 
   if (slotError) {
-    await supabase.from('appointments').delete().eq('app_id', app_id);
+    await supabase.from("appointments").delete().eq("app_id", app_id);
     throw new Error("Failed to create appointment slots: " + slotError.message);
   }
 
   return { appointment: appointmentData[0], slots: slotData };
 };
 
-export const sendOtpForRegistration = async (identifier, otp) => {
-  if (!identifier) {
-    toast.error("กรุณากรอกอีเมล");
-    return;
-  }
-
+export async function sendOtpForRegistration(to, otp) {
   try {
-    const res = await fetch("http://localhost:3001/send-email", {
+    const res = await fetch("http://localhost:578/send-otp-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ to, text: otp })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      return { success: false, message: data.message || "Server error" };
+    }
+
+    return { success: true };
+  } catch (err) {
+    return { success: false, message: err.message };
+  }
+}
+
+
+export const sendEmailForApprove = async ({
+  to,
+  subject,
+  patientName,
+  doctorName,
+  hospitalName,
+  date,
+  time
+}) => {
+  try {
+    const res = await fetch("http://localhost:578/send-approve-email", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        to: identifier,
-        subject: "Otp code for registration",
-        text: "รหัส OTP ของคุณคือ " + otp,
+        to,
+        subject,
+        details: {
+          title: subject,
+          patientName,
+          doctorName,
+          hospitalName,
+          date,
+          time,
+        },
       }),
     });
 
     const data = await res.json();
-    alert(data.success ? "Email Sent!" : "Failed: " + data.error);
+
+    if (!res.ok) {
+      return { success: false, message: data.message || "Server error" };
+    }
+
+    return { success: data.success };
   } catch (err) {
-    alert("Error: " + err.message);
+    return { success: false, message: err.message };
+  }
+};
+
+export const sendEmailForCancel = async ({ to, subject }) => {
+  try {
+    const res = await fetch("http://localhost:578/send-cancel-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        to,
+        details: {
+          title: subject,
+        },
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      return { success: false, message: data.message || "Server error" };
+    }
+
+    return { success: data.success };
+  } catch (err) {
+    return { success: false, message: err.message };
   }
 };
 
@@ -148,7 +217,14 @@ export const createUserAccount = async (identifier, password, fName, lName) => {
 
   const { data: userData, error: userError } = await supabase
     .from("users")
-    .insert([{ email: identifier, password: hashedPassword, full_name: fullName, role: "patient" }])
+    .insert([
+      {
+        email: identifier,
+        password: hashedPassword,
+        full_name: fullName,
+        role: "patient",
+      },
+    ])
     .select()
     .single();
 
@@ -160,7 +236,15 @@ export const createUserAccount = async (identifier, password, fName, lName) => {
 
   const { data: infoData, error: infoError } = await supabase
     .from("users_info")
-    .insert([{ user_id: userId, full_name: fullName, first_name: fName, last_name: lName, email: identifier }])
+    .insert([
+      {
+        user_id: userId,
+        full_name: fullName,
+        first_name: fName,
+        last_name: lName,
+        email: identifier,
+      },
+    ])
     .select()
     .single();
 

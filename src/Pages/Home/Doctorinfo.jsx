@@ -13,16 +13,14 @@ const Doctorinfo = () => {
   const [selectedSlot, setSelectedSlot] = useState(null);
 
   const location = useLocation();
-  const { doctor } = location.state || {};
 
-  console.log("Selected Doctor:", doctor);
+  const { doctor } = location.state || {};
 
   const selectedDoctorId = doctor?.doctor_id || null;
 
   const navigate = useNavigate();
 
   const AppointmentClick = () => {
-    console.log(doctor)
     navigate("/appointment", { state: { doctor } });
   }
 

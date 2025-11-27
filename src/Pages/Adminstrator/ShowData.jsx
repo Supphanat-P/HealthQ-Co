@@ -220,7 +220,6 @@ const ShowData = () => {
           : true
       );
 
-    console.log("Filtered schedules:", filtered);
   }, [doctorsSchedule, doctors, q]);
 
   const renderTab = () => {
