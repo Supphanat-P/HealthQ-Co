@@ -3,11 +3,11 @@ import { useData } from "../../Context/DataContext";
 import { supabase } from "../../config/supabaseClient";
 import toast from "react-hot-toast";
 import dayjs from "dayjs";
-import { SquarePen, X } from "lucide-react";
+import { SquarePen, X, Save } from "lucide-react";
 
 const ProfileCard = ({ lang }) => {
   const [selectedTab, setSelectedTab] = useState("1");
-  const { currentUser, usersInfo, fetchUsersInfo } = useData();
+  const { currentUser, usersInfo } = useData();
   const [isEdit, setIsEdit] = useState(false);
   const [form, setForm] = useState(null);
   const [nationValue, setNationValue] = useState("");
@@ -17,10 +17,8 @@ const ProfileCard = ({ lang }) => {
 
   useEffect(() => {
     if (!findUserId) return;
-
     const thNation = findUserId.nation || "";
     const nationObj = nations.find((n) => n.th === thNation);
-
     setNationValue(lang === "TH" ? thNation : nationObj?.en || thNation);
   }, [findUserId, lang]);
 
@@ -45,16 +43,10 @@ const ProfileCard = ({ lang }) => {
       .includes(nationValue.toLowerCase())
   );
 
-  const genderMap = {
-    male: { th: "ชาย", en: "Male" },
-    female: { th: "หญิง", en: "Female" },
-    other: { th: "อื่นๆ", en: "Other" },
-  };
-
   const displayGender = {
-    male: lang === "TH" ? genderMap.male.th : genderMap.male.en,
-    female: lang === "TH" ? genderMap.female.th : genderMap.female.en,
-    other: lang === "TH" ? genderMap.other.th : genderMap.other.en,
+    ชาย: lang === "TH" ? "ชาย" : "Male",
+    หญิง: lang === "TH" ? "หญิง" : "Female",
+    อื่นๆ: lang === "TH" ? "อื่นๆ" : "Other",
   };
 
   const displayNation = {
@@ -74,7 +66,6 @@ const ProfileCard = ({ lang }) => {
 
   const text = {
     noData: lang === "TH" ? "ไม่พบข้อมูล" : "No data",
-
     edit: lang === "TH" ? "แก้ไข" : "Edit",
     save: lang === "TH" ? "บันทึก" : "Save",
     cancel: lang === "TH" ? "ยกเลิก" : "Cancel",
@@ -83,11 +74,9 @@ const ProfileCard = ({ lang }) => {
       lang === "TH"
         ? "เกิดข้อผิดพลาดในการบันทึก"
         : "An error occurred while saving.",
-
     tab1: lang === "TH" ? "ข้อมูลส่วนตัว" : "Personal Info",
     tab2: lang === "TH" ? "ประวัติสุขภาพ" : "Health History",
     tab3: lang === "TH" ? "ข้อมูลติดต่อ" : "Contact Info",
-
     fullname: lang === "TH" ? "ชื่อ - นามสกุล" : "Full name",
     gender: lang === "TH" ? "เพศ" : "Gender",
     birthdate: lang === "TH" ? "วันเกิด" : "Date of Birth",
@@ -96,18 +85,14 @@ const ProfileCard = ({ lang }) => {
     blood: lang === "TH" ? "หมู่เลือด" : "Blood Type",
     height: lang === "TH" ? "ส่วนสูง" : "Height",
     weight: lang === "TH" ? "น้ำหนัก" : "Weight",
-
     chronic: lang === "TH" ? "โรคประจำตัว" : "Chronic Diseases",
     regularMed: lang === "TH" ? "ยาประจำตัว" : "Regular Medication",
     allergiesMed: lang === "TH" ? "ประวัติแพ้ยา" : "Drug Allergies",
     foodAllergies: lang === "TH" ? "ประวัติแพ้อาหาร" : "Food Allergies",
-
     phone: lang === "TH" ? "เบอร์โทรศัพท์" : "Phone Number",
     email: lang === "TH" ? "อีเมล" : "Email",
     emergency: lang === "TH" ? "เบอร์ติดต่อฉุกเฉิน" : "Emergency Contact",
-
     notSpecified: lang === "TH" ? "ไม่ระบุ" : "Not specified",
-
     male: lang === "TH" ? "ชาย" : "Male",
     female: lang === "TH" ? "หญิง" : "Female",
     other: lang === "TH" ? "อื่นๆ" : "Other",
@@ -116,7 +101,6 @@ const ProfileCard = ({ lang }) => {
 
   useEffect(() => {
     if (!findUserId) return;
-
     setForm({
       full_name: findUserId.full_name || "",
       gender: findUserId.gender || "",
@@ -155,23 +139,18 @@ const ProfileCard = ({ lang }) => {
         weight: form.weight === "" ? null : Number(form.weight),
         phone: form.phone,
         email: form.email,
-
         emergency_contact: { phone: form.emergency || "" },
-
         chronic_conditions: form.chronic_conditions
-          ? form.chronic_conditions.split(",").map((wow) => wow.trim())
+          ? form.chronic_conditions.split(",").map((w) => w.trim())
           : [],
-
         allergies_med: form.allergies_med
-          ? form.allergies_med.split(",").map((wow) => wow.trim())
+          ? form.allergies_med.split(",").map((w) => w.trim())
           : [],
-
         food_allergies: form.food_allergies
-          ? form.food_allergies.split(",").map((wow) => wow.trim())
+          ? form.food_allergies.split(",").map((w) => w.trim())
           : [],
-
         regular_med: form.regular_med
-          ? form.regular_med.split(",").map((wow) => wow.trim())
+          ? form.regular_med.split(",").map((w) => w.trim())
           : [],
       };
 
@@ -179,11 +158,7 @@ const ProfileCard = ({ lang }) => {
         .from("users_info")
         .update(updateData)
         .eq("user_id", currentUser.user_id);
-
-      if (error) {
-        toast.error(text.saveError);
-        return;
-      }
+      if (error) throw error;
 
       setIsEdit(false);
       toast.success(text.saveSuccess);
@@ -193,86 +168,109 @@ const ProfileCard = ({ lang }) => {
     }
   };
 
-  if (!form) return <div className="text-center mt-4">{text.noData}</div>;
+  if (!form)
+    return (
+      <div className="text-center! mt-10! text-gray-500!">{text.noData}</div>
+    );
+
+  const Label = ({ children }) => (
+    <div className="text-sm! font-semibold! text-gray-400! mb-1!">
+      {children}
+    </div>
+  );
+  const DisplayValue = ({ children }) => (
+    <div className="text-lg! font-medium! text-gray-800! h-10! flex! items-center!">
+      {children}
+    </div>
+  );
+  const InputStyle =
+    "w-full! px-4! py-2! rounded-xl! border! border-gray-200! bg-gray-50! focus:bg-white! focus:border-indigo-500! focus:ring-4! focus:ring-indigo-100! outline-none! transition-all! duration-200!";
 
   return (
-    <>
-      <div
-        className="card p-4 mt-4 justify-content-center d-flex m-auto"
-        style={{ width: "70%" }}
-      >
-        <div className="d-flex align-items-center mb-4">
-          <div
-            style={{
-              width: "120px",
-              height: "120px",
-              background: "#D9D9D9",
-              borderRadius: "50%",
-            }}
-          ></div>
+    <div className="w-full! max-w-5xl! mx-auto! p-6! sm:p-10! mt-10! bg-white! rounded-4xl! shadow-xl! border">
+      {/* Header Section */}
+      <div className="flex! flex-col! md:flex-row! items-center! gap-6! mb-10!">
+        <div className="w-32! h-32! bg-linear-to-br! from-gray-200! to-gray-300! rounded-full! shadow-inner! shrink-0!"></div>
 
-          <div className="ms-3">
-            <div className="fs-3 fw-bold">{form.full_name}</div>
-            <div className="text-gray">{form.email || text.notSpecified}</div>
-          </div>
-
-          <div className="ms-auto">
-            {!isEdit ? (
-              <button
-                className="btn btn-primary flex!"
-                onClick={() => setIsEdit(true)}
-              >
-                <SquarePen /> &nbsp; {text.edit}
-              </button>
-            ) : (
-              <div className="flex gap-3">
-                <button className="btn btn-success flex!" onClick={handleSave}>
-                  <SquarePen /> &nbsp; {text.save}
-                </button>
-                <button
-                  className="btn btn-danger flex!"
-                  onClick={() => setIsEdit(false)}
-                >
-                  <X /> &nbsp; {text.cancel}
-                </button>
-              </div>
-            )}
-          </div>
+        <div className="flex-1! text-center! md:text-left!">
+          <h1 className="text-3xl! font-bold! text-gray-900!">
+            {form.full_name}
+          </h1>
+          <p className="text-gray-500! mt-1!">
+            {form.email || text.notSpecified}
+          </p>
         </div>
 
-        <div className="d-flex gap-4 border-bottom pb-2 mb-4">
-          {["1", "2", "3"].map((tab) => (
-            <div
-              key={tab}
-              onClick={() => setSelectedTab(tab)}
-              style={{
-                cursor: "pointer",
-                borderBottom: selectedTab === tab ? "3px solid #1f2054" : "",
-                color: selectedTab === tab ? "#1f2054" : "black",
-              }}
+        <div className="shrink-0!">
+          {!isEdit ? (
+            <button
+              onClick={() => setIsEdit(true)}
+              className="inline-flex! items-center! px-6! py-2.5! bg-indigo-600! hover:bg-indigo-700! text-white! font-medium! rounded-xl! shadow-lg! shadow-indigo-200! transition-all! hover:-translate-y-1!"
             >
-              {tab === "1" ? text.tab1 : tab === "2" ? text.tab2 : text.tab3}
+              <SquarePen size={18} className="mr-2!" /> {text.edit}
+            </button>
+          ) : (
+            <div className="flex! gap-3!">
+              <button
+                onClick={handleSave}
+                className="inline-flex! items-center! px-5! py-2.5! bg-emerald-500! hover:bg-emerald-600! text-white! font-medium! rounded-xl! shadow-lg! shadow-emerald-200! transition-all! hover:-translate-y-1!"
+              >
+                <Save size={18} className="mr-2!" /> {text.save}
+              </button>
+              <button
+                onClick={() => setIsEdit(false)}
+                className="inline-flex! items-center! px-5! py-2.5! bg-rose-500! hover:bg-rose-600! text-white! font-medium! rounded-xl! shadow-lg! shadow-rose-200! transition-all! hover:-translate-y-1!"
+              >
+                <X size={18} className="mr-2!" /> {text.cancel}
+              </button>
             </div>
-          ))}
+          )}
         </div>
+      </div>
 
+      {/* Tabs */}
+      <div className="flex! border-b! border-gray-100! mb-8! gap-4!">
+        {["1", "2", "3"].map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setSelectedTab(tab)}
+            className={`
+              px-5! py-3! text-base! font-semibold! transition-all! relative! rounded-xl!
+              ${
+                selectedTab === tab
+                  ? "text-indigo-900! after:w-full!"
+                  : "text-gray-400! hover:text-indigo-600! hover:bg-gray-50! after:w-0!"
+              }
+              after:content-['']! after:absolute! after:bottom-0! after:left-0! after:h-1! after:bg-indigo-900! after:rounded-full! after:transition-all! after:duration-300!
+            `}
+          >
+            {tab === "1" ? text.tab1 : tab === "2" ? text.tab2 : text.tab3}
+          </button>
+        ))}
+      </div>
+
+      {/* Content Grid */}
+      <div className="grid! grid-cols-1! md:grid-cols-2! gap-x-12! gap-y-8! animate-fadeIn!">
+        {/* Personal Info */}
         {selectedTab === "1" && (
-          <div className="row fs-6">
-            <div className="col-6">
-              <div className="text-black">{text.fullname}</div>
+          <>
+            <div>
+              <Label>{text.fullname}</Label>
               {!isEdit ? (
-                <div className="text-navy mb-4">
+                <DisplayValue>
                   {form.full_name || text.notSpecified}
-                </div>
+                </DisplayValue>
               ) : (
                 <input
-                  className="form-control mb-4"
+                  className={InputStyle}
                   value={form.full_name}
                   onChange={(e) => handleChange("full_name", e.target.value)}
                 />
               )}
+            </div>
 
-              <div className="text-black">{text.gender}</div>
+            <div>
+              <Label>{text.gender}</Label>
               {!isEdit ? (
                 <div className="text-navy mb-4">
                   {displayGender[form.gender] || text.notSpecified}
@@ -283,41 +281,38 @@ const ProfileCard = ({ lang }) => {
                   value={form.gender}
                   onChange={(e) => handleChange("gender", e.target.value)}
                 >
-                  <option value="">{text.selectGender}</option>
-
-                  <option value="ชาย">{genderMap.male[lang === "TH" ? "th" : "en"]}</option>
-                  <option value="หญิง">{genderMap.female[lang === "TH" ? "th" : "en"]}</option>
-                  <option value="อื่นๆ">{genderMap.other[lang === "TH" ? "th" : "en"]}</option>
+                  <option value="ชาย">{displayGender["ชาย"]}</option>
+                  <option value="หญิง">{displayGender["หญิง"]}</option>
+                  <option value="อื่นๆ">{displayGender["อื่นๆ"]}</option>
                 </select>
               )}
+            </div>
 
-              <div className="text-black">{text.birthdate}</div>
+            <div>
+              <Label>{text.birthdate}</Label>
               {!isEdit ? (
-                <div className="text-navy mb-4">
-                  {form.dob || text.notSpecified}
-                </div>
+                <DisplayValue>{form.dob || text.notSpecified}</DisplayValue>
               ) : (
                 <input
-                  className="form-control mb-4"
                   type="date"
-                  min="1900-01-01"
+                  className={InputStyle}
                   max={dayjs().format("DD-MM-YYYY")}
                   value={form.dob}
                   onChange={(e) => handleChange("dob", e.target.value)}
                 />
               )}
+            </div>
 
-              {/* Nation */}
-              <div className="text-black">{text.nation}</div>
-
+            <div className="relative!">
+              <Label>{text.nation}</Label>
               {!isEdit ? (
-                <div className="text-navy mb-4">
+                <DisplayValue>
                   {displayNation[form.nation] || text.notSpecified}
-                </div>
+                </DisplayValue>
               ) : (
-                <div className="position-relative mb-4">
+                <>
                   <input
-                    className="form-control"
+                    className={InputStyle}
                     value={nationValue}
                     onChange={(e) => {
                       setNationValue(e.target.value);
@@ -325,150 +320,151 @@ const ProfileCard = ({ lang }) => {
                     }}
                     onFocus={() => setIsNationOpen(true)}
                   />
-
                   {isNationOpen && filteredNation.length > 0 && (
-                    <ul
-                      className="list-group position-absolute w-100 mt-1 shadow bg-white"
-                      style={{
-                        maxHeight: "200px",
-                        overflowY: "auto",
-                        zIndex: 9999,
-                      }}
-                    >
+                    <ul className="absolute! z-50! w-full! bg-white! shadow-xl! rounded-xl! max-h-60! overflow-auto! border! border-gray-100! mt-2!">
                       {filteredNation.map((n, i) => (
                         <li
                           key={i}
-                          className="list-group-item list-group-item-action"
+                          className="px-4! py-3! hover:bg-indigo-50! cursor-pointer! text-gray-700! border-b! border-gray-50! last:border-0!"
                           onClick={() => {
-                            const displayValue = lang === "TH" ? n.th : n.en;
-                            setNationValue(displayValue);
+                            setNationValue(lang === "TH" ? n.th : n.en);
                             handleChange("nation", n.th);
                             setIsNationOpen(false);
                           }}
-                          style={{ cursor: "pointer" }}
                         >
                           {lang === "TH" ? n.th : n.en}
                         </li>
                       ))}
                     </ul>
                   )}
-                </div>
+                </>
               )}
             </div>
 
-            <div className="col-6">
-              <div className="text-black">{text.nid}</div>
+            <div>
+              <Label>{text.nid}</Label>
               {!isEdit ? (
-                <div className="text-navy mb-4">
-                  {form.nid || text.notSpecified}
-                </div>
+                <DisplayValue>{form.nid || text.notSpecified}</DisplayValue>
               ) : (
                 <input
-                  className="form-control mb-4"
                   type="number"
+                  className={InputStyle}
                   value={form.nid}
                   onChange={(e) => handleChange("nid", e.target.value)}
                 />
               )}
+            </div>
 
-              <div className="text-black">{text.blood}</div>
+            <div>
+              <Label>{text.blood}</Label>
               {!isEdit ? (
-                <div className="text-navy mb-4">
+                <DisplayValue>
                   {form.blood_type || text.notSpecified}
-                </div>
+                </DisplayValue>
               ) : (
                 <input
-                  className="form-control mb-4"
+                  className={InputStyle}
                   value={form.blood_type}
                   onChange={(e) => handleChange("blood_type", e.target.value)}
                 />
               )}
+            </div>
 
-              <div className="text-black">{text.height}</div>
+            <div>
+              <Label>{text.height}</Label>
               {!isEdit ? (
-                <div className="text-navy mb-4">
-                  {form.height ? form.height + " cm" : text.notSpecified}
-                </div>
+                <DisplayValue>
+                  {form.height ? `${form.height} cm` : text.notSpecified}
+                </DisplayValue>
               ) : (
                 <input
-                  className="form-control mb-4"
                   type="number"
+                  className={InputStyle}
                   value={form.height}
                   onChange={(e) => handleChange("height", e.target.value)}
                 />
               )}
+            </div>
 
-              <div className="text-black">{text.weight}</div>
+            <div>
+              <Label>{text.weight}</Label>
               {!isEdit ? (
-                <div className="text-navy mb-4">
-                  {form.weight ? form.weight + " kg" : text.notSpecified}
-                </div>
+                <DisplayValue>
+                  {form.weight ? `${form.weight} kg` : text.notSpecified}
+                </DisplayValue>
               ) : (
                 <input
-                  className="form-control mb-4"
                   type="number"
+                  className={InputStyle}
                   value={form.weight}
                   onChange={(e) => handleChange("weight", e.target.value)}
                 />
               )}
             </div>
-          </div>
+          </>
         )}
 
+        {/* Health History */}
         {selectedTab === "2" && (
-          <div className="row fs-6">
-            <div className="col-6">
-              <div className="text-black">{text.chronic}</div>
+          <>
+            <div className="md:col-span-2!">
+              <Label>{text.chronic}</Label>
               {!isEdit ? (
-                <div className="text-navy mb-4">
+                <DisplayValue>
                   {form.chronic_conditions || text.notSpecified}
-                </div>
+                </DisplayValue>
               ) : (
                 <input
-                  className="form-control mb-4"
+                  className={InputStyle}
                   value={form.chronic_conditions}
                   onChange={(e) =>
                     handleChange("chronic_conditions", e.target.value)
                   }
                 />
               )}
+            </div>
 
-              <div className="text-black">{text.regularMed}</div>
+            <div className="md:col-span-2!">
+              <Label>{text.regularMed}</Label>
               {!isEdit ? (
-                <div className="text-navy mb-4">
+                <DisplayValue>
                   {form.regular_med || text.notSpecified}
-                </div>
+                </DisplayValue>
               ) : (
                 <input
-                  className="form-control mb-4"
+                  className={InputStyle}
                   value={form.regular_med}
                   onChange={(e) => handleChange("regular_med", e.target.value)}
                 />
               )}
+            </div>
 
-              <div className="text-black">{text.allergiesMed}</div>
+            <div className="md:col-span-2!">
+              <Label>{text.allergiesMed}</Label>
               {!isEdit ? (
-                <div className="text-navy mb-4">
+                <DisplayValue>
                   {form.allergies_med || text.notSpecified}
-                </div>
+                </DisplayValue>
               ) : (
                 <input
-                  className="form-control mb-4"
+                  className={InputStyle}
                   value={form.allergies_med}
                   onChange={(e) =>
                     handleChange("allergies_med", e.target.value)
                   }
                 />
               )}
+            </div>
 
-              <div className="text-black">{text.foodAllergies}</div>
+            <div className="md:col-span-2!">
+              <Label>{text.foodAllergies}</Label>
               {!isEdit ? (
-                <div className="text-navy mb-4">
+                <DisplayValue>
                   {form.food_allergies || text.notSpecified}
-                </div>
+                </DisplayValue>
               ) : (
                 <input
-                  className="form-control mb-4"
+                  className={InputStyle}
                   value={form.food_allergies}
                   onChange={(e) =>
                     handleChange("food_allergies", e.target.value)
@@ -476,76 +472,72 @@ const ProfileCard = ({ lang }) => {
                 />
               )}
             </div>
-          </div>
+          </>
         )}
 
+        {/* Contact Info */}
         {selectedTab === "3" && (
-          <div className="row fs-6">
-            <div className="col-6">
-              <div className="text-black">{text.phone}</div>
+          <>
+            <div>
+              <Label>{text.phone}</Label>
               {!isEdit ? (
-                <div className="text-navy mb-4">
-                  {String(form.phone || text.notSpecified)
-                    .replace(/\D/g, "")
-                    .replace(/^(\d{3})(\d{3})(\d{4})$/, "$1-$2-$3")}
-                </div>
+                <DisplayValue>
+                  {String(form.phone || text.notSpecified).replace(
+                    /(\d{3})(\d{3})(\d{4})/,
+                    "$1-$2-$3"
+                  )}
+                </DisplayValue>
               ) : (
                 <input
                   type="tel"
                   maxLength={10}
-                  className="form-control mb-4"
+                  className={InputStyle}
                   value={form.phone}
-                  pattern="[0-9]{10}"
-                  title="กรุณากรอกตัวเลข 10 หลักเท่านั้น"
-                  onChange={(e) => {
-                    //ลบอักขระที่ไม่ใช่ตัวเลขออกทันที
-                    const cleanedValue = e.target.value.replace(/\D/g, "");
-                    handleChange("phone", cleanedValue);
-                  }}
+                  onChange={(e) =>
+                    handleChange("phone", e.target.value.replace(/\D/g, ""))
+                  }
                 />
               )}
+            </div>
 
-              <div className="text-black">{text.email}</div>
+            <div>
+              <Label>{text.email}</Label>
               {!isEdit ? (
-                <div className="text-navy mb-4">
-                  {form.email || text.notSpecified}
-                </div>
+                <DisplayValue>{form.email || text.notSpecified}</DisplayValue>
               ) : (
                 <input
-                  className="form-control mb-4"
+                  className={InputStyle}
                   value={form.email}
                   onChange={(e) => handleChange("email", e.target.value)}
                 />
               )}
             </div>
 
-            <div className="col-6">
-              <div className="text-black">{text.emergency}</div>
+            <div className="md:col-span-2!">
+              <Label>{text.emergency}</Label>
               {!isEdit ? (
-                <div className="text-navy mb-4">
-                  {String(form.emergency || text.notSpecified)
-                    .replace(/\D/g, "")
-                    .replace(/^(\d{3})(\d{3})(\d{4})$/, "$1-$2-$3")}
-                </div>
+                <DisplayValue>
+                  {String(form.emergency || text.notSpecified).replace(
+                    /(\d{3})(\d{3})(\d{4})/,
+                    "$1-$2-$3"
+                  )}
+                </DisplayValue>
               ) : (
                 <input
-                  type="tel" 
+                  type="tel"
                   maxLength={10}
-                  className="form-control mb-4"
+                  className={InputStyle}
                   value={form.emergency}
-                  pattern="[0-9]{10}" 
-                  title="กรุณากรอกตัวเลข 10 หลักเท่านั้น" 
-                  onChange={(e) => {
-                    const cleanedValue = e.target.value.replace(/\D/g, "");
-                    handleChange("emergency", cleanedValue);
-                  }}
+                  onChange={(e) =>
+                    handleChange("emergency", e.target.value.replace(/\D/g, ""))
+                  }
                 />
               )}
             </div>
-          </div>
+          </>
         )}
       </div>
-    </>
+    </div>
   );
 };
 

@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Row, Col, Button } from "react-bootstrap";
 import AppointmentHeader from "../../components/Shared/AppointmentHeader";
-import Calendar from "../../components/Appointment/Calendar"
+import Calendar from "../../components/Appointment/Calendar";
 import SelectTime from "../../components/Appointment/SelectTime";
 import BackToNavigate from "../../components/Shared/backToNavigate";
 import { useNavigate, useLocation } from "react-router-dom";
 import dayjs from "dayjs";
 import Appointment from "./Appointment/Appointment";
+import { Calendar1, CalendarFold } from "lucide-react";
 const Doctorinfo = () => {
   const [selectedDates, setSelectedDates] = useState([]);
   const [selectedTimes, setSelectedTimes] = useState([]);
@@ -22,7 +23,7 @@ const Doctorinfo = () => {
 
   const AppointmentClick = () => {
     navigate("/appointment", { state: { doctor } });
-  }
+  };
 
   return (
     <>
@@ -34,7 +35,7 @@ const Doctorinfo = () => {
       <BackToNavigate label="กลับไปหน้าค้นหาแพทย์" linkTo="doctorsearch" />
       <AppointmentHeader label={"ข้อมูลแพทย์"} />
       <div
-        className="d-flex flex-row justify-content-center gap-4 "
+        className="d-flex flex-row justify-content-center gap-4"
         style={{ marginBottom: "5rem" }}
       >
         <div
@@ -81,7 +82,7 @@ const Doctorinfo = () => {
               >
                 การศึกษาและใบรับรอง
               </p>
-              <hr style={{ border: "1px solid #000000ff" }} />
+              <hr style={{ border: "1px solid #737373" }} />
               <p>
                 แพทย์ผู้เชี่ยวชาญด้าน {doctor?.specialty_name} มีประสบการณ์กว่า
                 15 ปี
@@ -97,11 +98,16 @@ const Doctorinfo = () => {
               >
                 ติดต่อแพทย์
               </p>
-              <hr style={{ border: "1px solid #000000ff" }} />
+              <hr style={{ border: "1px solid #737373" }} />
               <p>02-123-4567</p>
               <p>dr.hongsawadee@hearthrakna.co.th</p>
               <p>123 อาคารแพทย์ ชั้น 4 ถนนพระราม 4 กรุงเทพฯ 10110</p>
-              <button className="rounded bg-navy justify-self-end d-flex text-white p-3" onClick={AppointmentClick}>นัดหมาย</button>
+              <button
+                className="rounded-full! py-3! bg-navy justify-self-end d-flex text-white p-3"
+                onClick={AppointmentClick}
+              >
+                <CalendarFold /> &nbsp; นัดหมาย
+              </button>
             </Col>
           </Row>
         </div>
