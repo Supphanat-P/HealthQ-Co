@@ -7,6 +7,7 @@ import chooseDoctors from "../../assets/chooseDoctors.mp4";
 import chooseDays from "../../assets/chooseDays.mp4";
 import comfirm from "../../assets/comfirm.mp4";
 import { Link } from "react-router-dom";
+import { Autocomplete, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -38,11 +39,21 @@ import {
 } from "hugeicons-react";
 
 export default function Home() {
-  const { specialties, doctors } = useData();
-  const [query, setQuery] = useState("");
+  const { specialties, hospitals, doctors, searchData } = useData();
   console.log(specialties);
   const [view, setView] = useState(false);
   const navigate = useNavigate();
+  const options = (searchData || []).map((option) => ({
+    id: option.id,
+    title: option.name,
+    category: option.category,
+  }));
+  const [selectedSearch, setSelectedSearch] = useState(null);
+  const handleSearch = () => {
+    if (!selectedSearch) return;
+
+    navigate("/DoctorSearch", { state: { selected: selectedSearch } });
+  };
 
   return (
     <>
@@ -64,8 +75,47 @@ export default function Home() {
                 for your health.
               </p>
 
-              <Link to="/DoctorSearch">
-                <button className="w-[370px] h-[70px] rounded-full! mt-10! bg-white text-blue-800 text-2xl! font-semibold shadow-2xl hover:shadow-blue-500/50 hover:-translate-y-1 transition-all duration-300">
+              <Link className="no-deco" to="/DoctorSearch">
+                <button
+                  className="
+                      group 
+                      w-[370px] h-[70px] 
+                      rounded-full! 
+                      mt-10! 
+                      bg-white! 
+                      text-blue-900! 
+                      text-2xl! font-semibold! 
+                      shadow-xl! 
+                      hover:shadow-2xl! hover:shadow-blue-400/40!
+                      hover:-translate-y-1!
+                      transition-all! duration-300! 
+                      flex items-center! justify-center! gap-3!
+                    "
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="26"
+                    height="26"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-blue-800 group-hover:animate-bounce"
+                  >
+                    <rect
+                      x="3"
+                      y="4"
+                      width="18"
+                      height="18"
+                      rx="2"
+                      ry="2"
+                    ></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                  </svg>
                   นัดหมายแพทย์เลยตอนนี้
                 </button>
               </Link>
@@ -76,15 +126,42 @@ export default function Home() {
         <div className="py-16! px-5!">
           <div className="max-w-6xl! mx-auto">
             {/* Search Bar */}
-            <div className="flex justify-center mb-12!">
-              <div className="flex items-center w-full max-w-2xl h-16 bg-white rounded-full! shadow-xl shadow-blue-200/50 hover:shadow-2xl hover:shadow-blue-300/50 hover:-translate-y-0.5 transition-all duration-300">
-                <button className="w-16 h-16 rounded-full! bg-linear-to-br from-blue-800 to-blue-900 flex items-center justify-center shadow-lg shadow-blue-500/40">
+            <div className="flex justify-center mb-12">
+              <div className="flex items-center w-full max-w-2xl h-16 bg-white rounded-full shadow-xl shadow-blue-200/50 hover:shadow-2xl hover:shadow-blue-300/50 hover:-translate-y-0.5 transition-all duration-300 ">
+                <button
+                  onClick={handleSearch}
+                  className="w-16 h-16 rounded-full bg-linear-to-br from-blue-800 to-blue-900 flex items-center justify-center shadow-lg shadow-blue-500/40 rounded-full!"
+                >
                   <Search size={24} className="text-white" />
                 </button>
-                <input
-                  type="text"
-                  placeholder="ค้นหาโรงพยาบาล ชื่อแพทย์ ความชำนาญ"
-                  className="flex-1 h-full! border-none outline-none px-5 text-base text-blue-900 rounded-r-full! bg-transparent"
+                <Autocomplete
+                  freeSolo
+                  options={options}
+                  groupBy={(option) => option.category}
+                  getOptionLabel={(option) => option.title || ""}
+                  value={selectedSearch}
+                  onChange={(event, newValue) => setSelectedSearch(newValue)}
+                  onInputChange={(event, newInputValue) =>
+                    setSelectedSearch({ title: newInputValue })
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      placeholder="ค้นหาโรงพยาบาล ชื่อแพทย์ ความชำนาญ"
+                      variant="standard"
+                      fullWidth
+                      className="px-5 text-blue-900"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") handleSearch();
+                      }}
+                      InputProps={{
+                        ...params.InputProps,
+                        disableUnderline: true,
+                        className: "h-full mt-3",
+                      }}
+                    />
+                  )}
+                  className="flex-1 h-full"
                 />
               </div>
             </div>
@@ -92,7 +169,7 @@ export default function Home() {
         </div>
 
         {/* ความชำนาญ */}
-        <div className="m-5! py-30! px-75!">
+        <div className="py-30! px-75!">
           <div className="text-3xl font-bold text-blue-900">ความชำนาญ</div>
 
           <div className=" flex justify-start items-center mt-2">
@@ -499,7 +576,7 @@ export default function Home() {
         </div>
       </div>
       {/* Footer */}
-      <div className="bg-linear-to-br from-blue-900 via-blue-800 to-blue-900 py-16! px-5! relative">
+      <div className="bg-linear-to-br from-blue-900 via-blue-800 to-blue-900 py-16! mt-5 px-5! relative">
         <div className="max-w-7xl! mx-auto">
           <h2 className="text-white text-4xl font-bold mb-10! text-center">
             Health Queue
