@@ -1,134 +1,640 @@
-import React from 'react';
-import { Search, Calendar, Phone } from 'lucide-react';
-import { Navigate, Link } from 'react-router-dom';
-export default function Home() {
+import React from "react";
+import { BiChevronRight } from "react-icons/bi";
+import { useData } from "../../Context/DataContext";
+import { useState } from "react";
+import choose from "../../assets/choose.mp4";
+import chooseDoctors from "../../assets/chooseDoctors.mp4";
+import chooseDays from "../../assets/chooseDays.mp4";
+import comfirm from "../../assets/comfirm.mp4";
+import { Link } from "react-router-dom";
+import { Autocomplete, TextField } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+
+import {
+  Ear,
+  Eye,
+  Venus,
+  Mars,
+  Heart,
+  Bandage,
+  Bone,
+  Brain,
+  Cross,
+  Stethoscope,
+  Droplet,
+  Accessibility,
+  Syringe,
+  Wand,
+  Activity,
+  Search,
+  Phone,
+} from "lucide-react";
+import {
+  DentalToothIcon,
+  LungsIcon,
+  FourFinger02Icon,
+  LiverIcon,
+  BloodPressureIcon,
+  StarFaceIcon,
+} from "hugeicons-react";
+const Home = ({ lang }) => {
+  const text = {
+    TiTle: lang === "TH" ? "เราใส่ใจสุขภาพของคุณ" : "WE CARE ABOUT YOUR HEALTH",
+    subTiTle:
+      lang === "TH"
+        ? "ทุกวันคือโอกาสใหม่สำหรับคุณที่จะทำอะไรบางอย่างเพื่อสุขภาพของคุณ"
+        : "every day is a new opportunity for you to do something for your health.",
+    apmNow:
+      lang === "TH"
+        ? "นัดหมายแพทย์เลยตอนนี้"
+        : "Make an appointment with a doctor now",
+    searchPld:
+      lang === "TH"
+        ? "ค้นหาโรงพยาบาล/ชื่อแพทย์/ความชำนาญ"
+        : "Search for hospital/doctor name/specialty",
+    special: lang === "TH" ? "ความชำนาญ" : "Expertise",
+    seeAll: lang === "TH" ? "ดูทั้งหมด" : "View all",
+    use: lang === "TH" ? "วิธีการใช้งาน" : "How to use it",
+    fourStep:
+      lang === "TH"
+        ? "เพียง 4 ขั้นตอนง่ายๆ คุณก็สามารถจองนัดหมายกับแพทย์ได้ทันที"
+        : "Just four easy steps and you can instantly book an appointment with a doctor.",
+    about: lang === "TH" ? "เกี่ยวกับเรา" : "About Us",
+    service: lang === "TH" ? "บริการ" : "Services",
+    helpSup: lang === "TH" ? "ช่วยเหลือ & สนับสนุน" : "Help & Support",
+    socialM: lang === "TH" ? "โซเชียลมีเดีย" : "Social Media",
+  };
+  const { specialties, hospitals, doctors, searchData } = useData();
+  console.log(specialties);
+
+  const [view, setView] = useState(false);
+  const navigate = useNavigate();
+  const options = (searchData || []).map((option) => ({
+    id: option.id,
+    title: option.name,
+    category: option.category,
+  }));
+  const [selectedSearch, setSelectedSearch] = useState(null);
+  const handleSearch = () => {
+    if (!selectedSearch) return;
+
+    navigate("/DoctorSearch", { state: { selected: selectedSearch } });
+  };
+
   return (
     <>
-      {/* Hero Section with Background */}
-      <div className="relative w-full min-h-[600px]! bg-linear-to-r from-blue-950 to-blue-500 overflow-hidden">
-        {/* Decorative circles */}
-        <div className="absolute w-[500px] h-[500px] rounded-full! bg-blue-400/10 -top-24 -right-24 blur-3xl" />
-        <div className="absolute w-[400px] h-[400px] rounded-full! bg-blue-300/10 -bottom-36 -left-24 blur-3xl" />
+      <div className="bg-linear-to-b from-blue-100 to-white-400">
+        {/* Hero Section with Background */}
+        <div className="relative w-full min-h-[600px]! bg-linear-to-r from-blue-950 to-blue-500 overflow-hidden">
+          {/* Decorative circles */}
+          <div className="absolute w-[500px] h-[500px] rounded-full! bg-blue-400/10 -top-24 -right-24 blur-3xl" />
+          <div className="absolute w-[400px] h-[400px] rounded-full! bg-blue-300/10 -bottom-36 -left-24 blur-3xl" />
 
-        <div className="relative z-10 flex items-center justify-center min-h-[600px] px-5!">
-          <div className="flex flex-col items-center text-center text-white">
-            <h1 className="text-6xl font-bold leading-tight mb-5 drop-shadow-2xl">
-              WE CARE ABOUT <br /> YOUR HEALTH
-            </h1>
-
-            <p className="text-2xl mt-5! leading-relaxed max-w-3xl! text-white/90 drop-shadow-lg">
-              every day is a new opportunity for you to do <br /> something for
-              your health.
-            </p>
-
-            <button className="w-[275px] h-[70px] rounded-full! mt-10! bg-white text-blue-800 text-2xl font-semibold shadow-2xl hover:shadow-blue-500/50 hover:-translate-y-1 transition-all duration-300">
-              นัดหมายแพทย์
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Search and Quick Actions Section */}
-      <div className="bg-linear-to-b from-blue-50 to-white py-16! px-5!">
-        <div className="max-w-6xl! mx-auto">
-          {/* Search Bar */}
-          <div className="flex justify-center mb-12!">
-            <div className="flex items-center w-full max-w-2xl h-16 bg-white rounded-full! shadow-xl shadow-blue-200/50 hover:shadow-2xl hover:shadow-blue-300/50 hover:-translate-y-0.5 transition-all duration-300">
-              <button className="w-16 h-16 rounded-full! bg-linear-to-br from-blue-800 to-blue-900 flex items-center justify-center shadow-lg shadow-blue-500/40">
-                <Search size={24} className="text-white" />
-              </button>
-              <input
-                type="text"
-                placeholder="ค้นหาโรงพยาบาล ชื่อแพทย์ ความชำนาญ"
-                className="flex-1 h-full! border-none outline-none px-5 text-base text-blue-900 rounded-r-full! bg-transparent"
-              />
-            </div>
-          </div>
-
-          {/* Quick Action Buttons */}
-          <div className="flex flex-wrap justify-center items-center gap-4">
-            <button className="bg-linear-to-br from-cyan-600 to-blue-700 rounded-2xl! px-10! py-5! flex items-center! gap-3 shadow-lg shadow-cyan-500/30 hover:shadow-xl hover:shadow-cyan-600/40 hover:-translate-y-2 transition-all duration-300 min-w-[200px]">
-              <Search size={28} className="text-white" />
-              <span className="text-white text-xl font-semibold">
-                <Link to="/doctorsearch" className="no-deco">
-                  <span className="text-white no-deco text-xl font-semibold">ค้นหาแพทย์</span>
-                </Link>
-              </span>
-            </button>
-            <button className="bg-linear-to-br from-blue-600 to-cyan-500 rounded-2xl! px-10! py-5! flex items-center! gap-3 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-600/40 hover:-translate-y-2 transition-all duration-300 min-w-[200px]">
-              <Phone size={28} className="text-white" />
-              <span className="text-white text-xl font-semibold">ติดต่อเรา</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* How to Use Section */}
-      <div className="bg-linear-to-b from-white to-blue-50 py-20! px-5!">
-        <div className="text-center mb-16!">
-          <h2 className="text-5xl font-bold text-blue-900 mb-5">
-            วิธีการใช้งาน
-          </h2>
-          <p className="text-2xl text-blue-700/80 max-w-3xl mx-auto">
-            เพียง 4 ขั้นตอนง่ายๆ คุณก็สามารถจองนัดหมายกับแพทย์ได้ทันที
-          </p>
-        </div>
-
-        <div className="flex flex-wrap justify-center items-start gap-12!  max-w-7xl! mx-auto!">
-          {[
-            { num: "1", title: "เลือกโรงพยาบาล", desc: "เลือกโรงพยาบาลที่ต้องการจากรายชื่อของเรา", bgColor: "from-blue-800 to-blue-900", borderColor: "border-blue-800/30", cardBg: "bg-linear-to-br from-blue-800/10 to-blue-800/5" },
-            { num: "2", title: "เลือกแพทย์", desc: "เลือกแพทย์ที่ต้องการจากรายชื่อแพทย์ผู้เชี่ยวชาญของเรา", bgColor: "from-cyan-600 to-blue-700", borderColor: "border-cyan-600/30", cardBg: "bg-linear-to-br from-cyan-600/10 to-cyan-600/5" },
-            { num: "3", title: "เลือกวันและเวลา", desc: "เลือกวันที่และเวลาที่สะดวกสำหรับคุณจากตารางที่ว่าง", bgColor: "from-blue-600 to-cyan-500", borderColor: "border-blue-600/30", cardBg: "bg-linear-to-br from-blue-600/10 to-blue-600/5" },
-            { num: "4", title: "ยืนยันนัดหมาย", desc: "ยืนยันการนัดหมายและรับการแจ้งเตือนก่อนถึงเวลานัด", bgColor: "from-blue-700 to-blue-800", borderColor: "border-blue-700/30", cardBg: "bg-linear-to-br from-blue-700/10 to-blue-700/5" },
-          ].map((step, index) => (
-            <div key={index} className="flex flex-col items-center text-center max-w-[280px] relative">
-              {/* Step Number Badge */}
-              <div className={`w-[70px] h-[70px] bg-linear-to-br ${step.bgColor} rounded-full! flex items-center justify-center text-white font-bold text-2xl shadow-lg relative z-10! -mb-9!`}>
-                {step.num}
-              </div>
-
-              {/* Card */}
-              <div className={`w-full h-[200px] ${step.cardBg} rounded-3xl! border-3 ${step.borderColor} shadow-xl! hover:shadow-2xl hover:-translate-y-3 transition-all duration-300 flex items-center justify-center`}>
-                <div className="text-6xl opacity-30 font-bold text-blue-800">
-                  {step.num}
+          {/* Search and Quick Actions Section */}
+          <div className="pt-16! px-5!">
+            <div className="max-w-6xl! mx-auto">
+              {/* Search Bar */}
+              <div className="flex justify-center mb-4 mt-3">
+                <div className="flex items-center w-full max-w-2xl h-16 bg-white rounded-full shadow-xl shadow-blue-200/50 hover:shadow-2xl hover:shadow-blue-300/50 hover:-translate-y-0.5 transition-all duration-300 ">
+                  <button
+                    onClick={handleSearch}
+                    className="w-16! h-16! border-blue-950 bg-linear-to-br from-blue-800 to-blue-900 flex items-center justify-center shadow-lg shadow-blue-500/40 rounded-full!"
+                  >
+                    <Search size={24} className="text-white" />
+                  </button>
+                  <Autocomplete
+                    freeSolo
+                    options={options}
+                    groupBy={(option) => option.category}
+                    getOptionLabel={(option) => option.title || ""}
+                    value={selectedSearch}
+                    onChange={(event, newValue) => setSelectedSearch(newValue)}
+                    onInputChange={(event, newInputValue) =>
+                      setSelectedSearch({ title: newInputValue })
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        placeholder={text.searchPld}
+                        variant="standard"
+                        fullWidth
+                        className="px-5 text-blue-900"
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") handleSearch();
+                        }}
+                        InputProps={{
+                          ...params.InputProps,
+                          disableUnderline: true,
+                          className: "h-full mt-3",
+                        }}
+                      />
+                    )}
+                    className="flex-1 h-full"
+                  />
                 </div>
               </div>
-
-              {/* Text */}
-              <div className="mt-6!">
-                <h5 className="text-blue-900 font-bold text-xl mb-2">
-                  {step.title}
-                </h5>
-                <p className="text-blue-700/70 text-sm leading-relaxed">
-                  {step.desc}
-                </p>
-              </div>
             </div>
-          ))}
+          </div>
+
+          <div className="relative z-10 flex items-center justify-center min-h-[400px] px-5!">
+            <div className="flex flex-col items-center text-center text-white">
+              <h1 className="text-6xl font-bold leading-tight mb-5 drop-shadow-2xl">
+                {text.TiTle}
+              </h1>
+
+              <p className="text-2xl mt-5! leading-relaxed  text-white/90 drop-shadow-lg">
+                {text.subTiTle}
+              </p>
+
+              <Link className="no-deco" to="/DoctorSearch">
+                <button
+                  className="
+                      group 
+                      w-auto h-[70px] 
+                      rounded-full! 
+                      px-7!
+                      mt-10! 
+                      bg-white! 
+                      text-blue-900! 
+                      text-2xl! font-semibold! 
+                      shadow-xl! 
+                      hover:shadow-2xl! hover:shadow-blue-400/40!
+                      hover:-translate-y-1!
+                      transition-all! duration-300! 
+                      flex items-center! justify-center! gap-3!
+                    "
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="26"
+                    height="26"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-blue-900 group-hover:animate-bounce"
+                  >
+                    <rect
+                      x="3"
+                      y="4"
+                      width="18"
+                      height="18"
+                      rx="2"
+                      ry="2"
+                    ></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                  </svg>
+                  {text.apmNow}
+                </button>
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* ความชำนาญ */}
+        <div className="py-30! px-75!">
+          <div className="text-3xl font-bold text-blue-900">{text.special}</div>
+
+          <div className=" flex justify-start items-center mt-2">
+            <span
+              onClick={() => {
+                setView(!view);
+              }}
+              className="text-blue-700 text-lg flex items-center cursor-pointer group"
+            >
+              {text.seeAll}
+              <BiChevronRight
+                size={24}
+                className="ml-1 transition-transform duration-300 group-hover:translate-x-1"
+              />
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-7! mt-4!">
+            {specialties.slice(0, view ? specialties.length : 8).map((sst) => (
+              <div
+                key={sst.specialty_id}
+                onClick={() => {
+                  navigate("/DoctorSearch", {
+                    state: { selectedSpecialty: sst.specialty_name },
+                  });
+                }}
+                className="cursor-pointer"
+              >
+                <div className="p-3! rounded-xl! w-full! h-40! flex flex-col items-center justify-center transition-all duration-300 cursor-pointer bg-linear-to-br from-blue-600/10 to-blue-600/5 border-2 border-blue-300 hover:-translate-y-1 hover:shadow-lg">
+                  {sst.specialty_name === "หู คอ จมูก" && (
+                    <div
+                      className="flex justify-center items-center rounded-full text-white font-bold mb-3"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        backgroundColor: "#1f2054",
+                      }}
+                    >
+                      <Ear size={24} />
+                    </div>
+                  )}
+
+                  {sst.specialty_name === "ตา" && (
+                    <div
+                      className="flex justify-center items-center rounded-full text-white font-bold mb-3"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        backgroundColor: "#1f2054",
+                      }}
+                    >
+                      <Eye size={24} />
+                    </div>
+                  )}
+
+                  {sst.specialty_name === "สุขภาพสตรี" && (
+                    <div
+                      className="flex justify-center items-center rounded-full text-white font-bold mb-3"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        backgroundColor: "#1f2054",
+                      }}
+                    >
+                      <Venus size={24} />
+                    </div>
+                  )}
+
+                  {sst.specialty_name === "สุขภาพเพศชาย" && (
+                    <div
+                      className="flex justify-center items-center rounded-full text-white font-bold mb-3"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        backgroundColor: "#1f2054",
+                      }}
+                    >
+                      <Mars size={24} />
+                    </div>
+                  )}
+                  {sst.specialty_name === "หัวใจ" && (
+                    <div
+                      className="flex justify-center items-center rounded-full text-white font-bold mb-3"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        backgroundColor: "#1f2054",
+                      }}
+                    >
+                      <Heart size={24} />
+                    </div>
+                  )}
+                  {sst.specialty_name === "ตรวจสุขภาพ" && (
+                    <div
+                      className="flex justify-center items-center rounded-full text-white font-bold mb-3"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        backgroundColor: "#1f2054",
+                      }}
+                    >
+                      <Bandage size={24} />
+                    </div>
+                  )}
+                  {sst.specialty_name === "กระดูกและข้อ" && (
+                    <div
+                      className="flex justify-center items-center rounded-full text-white font-bold mb-3"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        backgroundColor: "#1f2054",
+                      }}
+                    >
+                      <Bone size={24} />
+                    </div>
+                  )}
+                  {sst.specialty_name === "โรคระบบประสาทและสมอง" && (
+                    <div
+                      className="flex justify-center items-center rounded-full text-white font-bold mb-3"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        backgroundColor: "#1f2054",
+                      }}
+                    >
+                      <Brain size={24} />
+                    </div>
+                  )}
+                  {sst.specialty_name === "ส่งเสริมสุขภาพและอาชีวเวชศาสตร์" && (
+                    <div
+                      className="flex justify-center items-center rounded-full text-white font-bold mb-3"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        backgroundColor: "#1f2054",
+                      }}
+                    >
+                      <Cross size={24} />
+                    </div>
+                  )}
+                  {sst.specialty_name === "อายุรกรรม" && (
+                    <div
+                      className="flex justify-center items-center rounded-full text-white font-bold mb-3"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        backgroundColor: "#1f2054",
+                      }}
+                    >
+                      <Stethoscope size={24} />
+                    </div>
+                  )}
+                  {sst.specialty_name === "โรคระบบทางเดินปัสสาวะ" && (
+                    <div
+                      className="flex justify-center items-center rounded-full text-white font-bold mb-3"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        backgroundColor: "#1f2054",
+                      }}
+                    >
+                      <Droplet size={24} />
+                    </div>
+                  )}
+                  {sst.specialty_name === "เวชศาสตร์ฟื้นฟู และกายภาพบำบัด" && (
+                    <div
+                      className="flex justify-center items-center rounded-full text-white font-bold mb-3"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        backgroundColor: "#1f2054",
+                      }}
+                    >
+                      <Accessibility size={24} />
+                    </div>
+                  )}
+                  {sst.specialty_name === "วิสัญญี" && (
+                    <div
+                      className="flex justify-center items-center rounded-full text-white font-bold mb-3"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        backgroundColor: "#1f2054",
+                      }}
+                    >
+                      <Syringe size={24} />
+                    </div>
+                  )}
+                  {sst.specialty_name === "เวชกรรม" && (
+                    <div
+                      className="flex justify-center items-center rounded-full text-white font-bold mb-3"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        backgroundColor: "#1f2054",
+                      }}
+                    >
+                      <Wand size={24} />
+                    </div>
+                  )}
+                  {sst.specialty_name === "โรคระบบทางเดินหายใจ" && (
+                    <div
+                      className="flex justify-center items-center rounded-full text-white font-bold mb-3"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        backgroundColor: "#1f2054",
+                      }}
+                    >
+                      <LungsIcon size={24} />
+                    </div>
+                  )}
+                  {sst.specialty_name === "รังสีวินิจฉัย X-Ray" && (
+                    <div
+                      className="flex justify-center items-center rounded-full text-white font-bold mb-3"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        backgroundColor: "#1f2054",
+                      }}
+                    >
+                      <Activity size={24} />
+                    </div>
+                  )}
+                  {sst.specialty_name === "ทันตกรรม" && (
+                    <div
+                      className="flex justify-center items-center rounded-full text-white font-bold mb-3"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        backgroundColor: "#1f2054",
+                      }}
+                    >
+                      <DentalToothIcon size={24} />
+                    </div>
+                  )}
+                  {sst.specialty_name === "ผิวหนัง" && (
+                    <div
+                      className="flex justify-center items-center rounded-full text-white font-bold mb-3"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        backgroundColor: "#1f2054",
+                      }}
+                    >
+                      <FourFinger02Icon size={24} />
+                    </div>
+                  )}
+                  {sst.specialty_name === "ระบบทางเดินอาหารและตับ" && (
+                    <div
+                      className="flex justify-center items-center rounded-full text-white font-bold mb-3"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        backgroundColor: "#1f2054",
+                      }}
+                    >
+                      <LiverIcon size={24} />
+                    </div>
+                  )}
+                  {sst.specialty_name === "เบาหวานและต่อมไร้ท่อ" && (
+                    <div
+                      className="flex justify-center items-center rounded-full text-white font-bold mb-3"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        backgroundColor: "#1f2054",
+                      }}
+                    >
+                      <BloodPressureIcon size={24} />
+                    </div>
+                  )}
+                  {sst.specialty_name === "ศัลยกรรม" && (
+                    <div
+                      className="flex justify-center items-center rounded-full text-white font-bold mb-3"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        backgroundColor: "#1f2054",
+                      }}
+                    >
+                      <StarFaceIcon size={24} />
+                    </div>
+                  )}
+                  <div className="text-center">
+                    <p className="mb-0 font-bold">{sst.specialty_name}</p>
+                    <p className="mb-0">{}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* How to Use Section */}
+        <div className="py-20! px-5!">
+          <div className="text-center mb-16!">
+            <h2 className="text-5xl font-bold text-blue-900 mb-5">
+              {text.use}
+            </h2>
+            <p className="text-2xl text-blue-700/80 mx-auto">{text.fourStep}</p>
+          </div>
+
+          <div className="flex flex-wrap justify-center items-start gap-12! max-w-7xl! mx-auto!">
+            {[
+              {
+                num: "1",
+                title: lang === "TH" ? "การใช้ตัวกรอง" : "Using filters",
+                desc:
+                  lang === "TH"
+                    ? "เลือกโรงพยาบาลเพื่อที่จะต้องนำทำการนัดหมาย"
+                    : "Select the hospital to make an appointment with.",
+                bgColor: "from-blue-600 to-blue-700",
+                borderColor: "border-blue-600/30",
+                cardBg: "bg-linear-to-br from-blue-600/10 to-blue-600/5",
+              },
+              {
+                num: "2",
+                title:
+                  lang === "TH"
+                    ? "เลือกแพทย์และความชำนาญ"
+                    : "Choose a doctor and their expertise",
+                desc:
+                  lang === "TH"
+                    ? "เลือกแพทย์ที่ต้องการจากรายชื่อแพทย์ผู้เชี่ยวชาญของเรา"
+                    : "Select your desired doctor from our list of specialists.",
+                bgColor: "from-blue-600 to-blue-700",
+                borderColor: "border-blue-600/30",
+                cardBg: "bg-linear-to-br from-blue-600/10 to-blue-600/5",
+              },
+              {
+                num: "3",
+                title:
+                  lang === "TH" ? "เลือกวันและเวลา" : "Select date and time",
+                desc:
+                  lang === "TH"
+                    ? "เลือกวันที่และเวลาที่สะดวกสำหรับคุณจากตารางที่ว่าง"
+                    : "Choose a date and time that is convenient for you from the available schedule.",
+                bgColor: "from-blue-600 to-blue-700",
+                borderColor: "border-blue-600/30",
+                cardBg: "bg-linear-to-br from-blue-600/10 to-blue-600/5",
+              },
+              {
+                num: "4",
+                title: lang === "TH" ? "ยืนยันนัดหมาย" : "Confirm appointment",
+                desc:
+                  lang === "TH"
+                    ? "ยืนยันการนัดหมายและรับการแจ้งเตือนก่อนถึงเวลานัด"
+                    : "Confirm your appointment and get a reminder before your appointment time.",
+                bgColor: "from-blue-600 to-blue-700",
+                borderColor: "border-blue-600/30",
+                cardBg: "bg-linear-to-br from-blue-600/10 to-blue-600/5",
+              },
+            ].map((step, index) => (
+              <div
+                className="flex flex-col items-center text-center max-w-[280px] relative
+                 hover:-translate-y-3 hover:scale-105 transition-all duration-300"
+              >
+                {/* Step Number Badge */}
+                <div
+                  className={`w-[70px] h-[70px] bg-linear-to-br ${step.bgColor} rounded-full! flex items-center justify-center text-white font-bold text-2xl shadow-lg relative z-10! -mb-9!`}
+                >
+                  {step.num}
+                </div>
+                <div
+                  className={`w-full h-[200px] ${step.cardBg} rounded-3xl! border-3 ${step.borderColor} shadow-xl! flex items-center justify-center`}
+                >
+                  {step.num === "1" ? (
+                    <video
+                      src={choose}
+                      muted
+                      loop
+                      controls
+                      className="w-full h-full object-cover rounded-3xl!"
+                    />
+                  ) : step.num === "2" ? (
+                    <video
+                      src={chooseDoctors}
+                      muted
+                      loop
+                      controls
+                      className="w-full h-full object-cover rounded-3xl!"
+                    />
+                  ) : step.num === "3" ? (
+                    <video
+                      src={chooseDays}
+                      muted
+                      loop
+                      controls
+                      className="w-full h-full object-cover rounded-3xl!"
+                    />
+                  ) : step.num === "4" ? (
+                    <video
+                      src={comfirm}
+                      muted
+                      loop
+                      controls
+                      className="w-full h-full object-cover rounded-3xl!"
+                    />
+                  ) : (
+                    <div className="text-6xl opacity-30 font-bold text-blue-800">
+                      {step.num}
+                    </div>
+                  )}
+                </div>
+                {/* Text อยู่ใต้คลิป */}
+                <div className="mt-6!">
+                  <h5 className="text-blue-900 font-bold text-xl mb-2">
+                    {step.title}
+                  </h5>
+                  <p className="text-blue-700/70 text-sm leading-relaxed">
+                    {step.desc}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-
-      {/* ความชำนาญ */}
-      <div>
-
-      </div>
-
       {/* Footer */}
-      <div className="bg-linear-to-br from-blue-900 via-blue-800 to-blue-900 py-16! px-5! relative">
+      <div className="bg-linear-to-br from-blue-900 via-blue-800 to-blue-900 py-16! mt-5 px-5! relative">
         <div className="max-w-7xl! mx-auto">
           <h2 className="text-white text-4xl font-bold mb-10! text-center">
             Health Queue
           </h2>
 
           <div className="flex flex-wrap justify-center items-center gap-12! mb-10!">
-            {["About Us", "Services", "Help & Support", "Social Media"].map((item, index) => (
-              <button
-                key={index}
-                className="bg-transparent border-none text-white text-lg px-5! py-2 border-b-2 border-transparent hover:border-white hover:-translate-y-0.5 transition-all duration-300"
-              >
-                {item}
-              </button>
-            ))}
+            {/* เอา {} ใน Array ออก และใช้ ! นำหน้า class ตามมาตรฐาน Tailwind */}
+            {[text.about, text.service, text.helpSup, text.socialM].map(
+              (item, index) => (
+                <button
+                  key={index}
+                  className="bg-transparent border-none text-white text-lg px-5! py-2 border-b-2 border-transparent hover:border-white hover:-translate-y-0.5 transition-all duration-300"
+                >
+                  {item}
+                </button>
+              )
+            )}
           </div>
 
           <div className="w-full h-px bg-white/30 my-8!" />
@@ -140,4 +646,5 @@ export default function Home() {
       </div>
     </>
   );
-}
+};
+export default Home;

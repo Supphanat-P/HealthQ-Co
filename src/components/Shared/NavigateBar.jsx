@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Search, User, LogIn, UserPlus, LogOut, Menu, X, LayoutDashboard } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const NavigateBar = ({ lang, setLang }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -29,7 +30,7 @@ const NavigateBar = ({ lang, setLang }) => {
   ];
 
   return (
-    <nav className="bg-white shadow-sm">
+    <nav className="bg-white shadow-sm sticky-top">
       <div className="max-w-7xl mx-auto px-6!">
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center space-x-3">

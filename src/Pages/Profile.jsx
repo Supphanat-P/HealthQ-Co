@@ -14,12 +14,12 @@ const Profile = ({ lang }) => {
   }
   return (
     <>
-      <AppointmentHeader label={lang === "TH" ? "ข้อมูลส่วนตัว" : "Personal Info"} lang={lang} />
+      <AppointmentHeader label={lang === "TH" ? "ข้อมูลส่วนตัว" : "PERSONAL INFO"} lang={lang} />
 
       <ProfileCard lang={lang} />
 
-      <AppointmentHeader label={"ประวัติการนัดหมาย"} lang={lang} />
-      <AppointmentHistory />
+      <AppointmentHeader label={lang === "TH" ? "ประวัติการนัดหมาย" : "APPOINTMENT HISTORY"} lang={lang} />
+      <AppointmentHistory lang={lang}/>
     </>
   );
 };

@@ -6,6 +6,8 @@ import { Button } from "react-bootstrap";
 import dayjs from "dayjs";
 import { useData } from "../../Context/DataContext";
 import { Autocomplete, TextField } from "@mui/material";
+import { FileBadge, Hospital } from "lucide-react";
+
 const DoctorFilter = ({
   selectedDoctor,
   setSelectedDoctor,
@@ -16,6 +18,7 @@ const DoctorFilter = ({
   selectedDate,
   setSelectedDate,
   closestHospital,
+  lang,
 }) => {
   const { specialties, hospitals, doctors, searchData } = useData();
   const [showSpecialtiesModal, setShowSpecialtiesModal] = useState(false);
@@ -29,7 +32,13 @@ const DoctorFilter = ({
     setSelectedSearch(null);
     setSelectedDoctor(null);
   };
-  
+  const text = {
+    findDT : lang === "TH" ? "ค้นหาเเพทย์" : "FIND A DOCTOR",
+    allHos : lang === "TH" ? "โรงพยาบาลทั้งหมด" : "All hospitals",
+    allspec : lang === "TH" ? "ความชำนาญแพทย์ทั้งหมด" : "All medical expertise",
+    labeltext : lang === "TH" ? "ค้นหา (แพทย์ / โรงพยาบาล / ความเชี่ยวชาญ)" : "Search (doctor / hospital / specialty)",
+    langFil : lang === "TH" ? "ตัวกรอง" : "filters",
+  }
   const options = (searchData || []).map((option) => ({
     id: option.id,
     title: option.name,
@@ -48,6 +57,7 @@ const DoctorFilter = ({
     if (dataName === "hospitals") setShowHospitalsModal(true);
     else setShowSpecialtiesModal(true);
   };
+
   const DateButton = forwardRef(({ value, onClick, className }, ref) => (
     <button
       type="button"
@@ -68,55 +78,75 @@ const DoctorFilter = ({
   const clearSpecialty = () => setSelectedSpecialty(null);
   const clearDateOnly = () => setSelectedDate(null);
   const clearDoctor = () => setSelectedDoctor(null);
+
   return (
     <>
-      <h1 className="text-navy mt-3">ค้นหาเเพทย์</h1>
-      <div className="input-group shadow">
+      <h1 className="text-navy mt-3">{text.findDT}</h1>
+      <div
+        className="input-group shadow rounded-full!"
+        style={{ borderRadius: "0 50px 50px 0" }}
+      >
         <Autocomplete
           options={options}
           className="doctor-filter-input grow"
           groupBy={(option) => option.category}
           getOptionLabel={(option) => option.title}
-          sx={{ width: 300 }}
+          sx={{
+            width: 300,
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "50px 0 0 50px",
+              paddingRight: "9px !important",
+            },
+            "& .MuiInputBase-root": {
+              height: "100%",
+            },
+          }}
           value={selectedSearch}
           onChange={(event, newValue) => setSelectedSearch(newValue)}
           renderInput={(params) => (
             <TextField
               {...params}
-              label="ค้นหา (แพทย์ / โรงพยาบาล / ความเชี่ยวชาญ)"
+              label={text.labeltext}
               placeholder="พิมพ์ชื่อหรือเลือกจากรายการ"
             />
           )}
         />
         <button
-          className="btn bg-navy text-white doctor-filter-input"
+          className="btn bg-navy text-white doctor-filter-input bg-navy"
           onClick={toggleFilters}
           aria-expanded={filtersOpen}
           aria-controls="filter-div"
+          style={{ borderRadius: "0 50px 50px 0" }}
         >
-          ตัวกรอง
+          {text.langFil}
         </button>
       </div>
+
       <div
-        className={`${filtersOpen ? "d-flex" : "d-none"
-          } gap-4 mt-0 align-items-center`}
+        className={`${
+          filtersOpen ? "d-flex" : "d-none"
+        } gap-4 mt-0 align-items-center`}
         id="filter-div"
       >
         <Button
-          className="bg-navy border-0 text-white rounded fs-6 mt-2 p-2 align-items-center"
+          className="bg-navy border-0 d-flex text-white rounded-full! fs-6 mt-2 py-2 px-4 align-items-center bg-navy"
           aria-label="เลือกโรงพยาบาล"
           id="Hosp_Filter"
           onClick={() => modalShow("hospitals")}
         >
-          {selectedHospital ? selectedHospital : "โรงพยาบาลทั้งหมด"}
+          <Hospital />
+          &nbsp;
+          {selectedHospital ? selectedHospital : text.allHos}
         </Button>
         <Button
-          className="bg-navy border-0 text-white rounded fs-6 mt-2 p-2 align-items-center"
+          className="bg-navy d-flex border-0 text-white rounded-full! fs-6 mt-2 py-2 px-4 align-items-center bg-navy"
           aria-label="เลือกความชำนาญ"
           id="Spec_Filter"
           onClick={() => modalShow("specialties")}
         >
-          {selectedSpecialty ? selectedSpecialty : "ความชำนาญแพทย์ทั้งหมด"}
+          <FileBadge />
+          &nbsp;
+          {selectedSpecialty ? selectedSpecialty : text.allspec}
         </Button>
         <div
           role="separator"
@@ -131,7 +161,7 @@ const DoctorFilter = ({
         />
         <button
           type="button"
-          className="btn btn-danger h-fit fw-bold rounded mt-2 align-items-center"
+          className="btn btn-danger h-fit fw-bold rounded-full! mt-2 align-items-center"
           aria-label="ล้างตัวกรองทั้งหมด"
           title="ล้างตัวกรองทั้งหมด"
           onClick={clearFilters}
@@ -139,6 +169,7 @@ const DoctorFilter = ({
           <MdOutlineClear />
         </button>
       </div>
+
       <div className="mt-2 d-flex gap-2 align-items-center flex-wrap">
         {selectedHospital && (
           <div className="badge bg-light border d-inline-flex align-items-center">
@@ -193,6 +224,7 @@ const DoctorFilter = ({
           </div>
         )}
       </div>
+
       <PopupModal
         label={"เลือกโรงพยาบาล"}
         name={"hospitals"}
@@ -201,6 +233,7 @@ const DoctorFilter = ({
         onSelect={setSelectedHospital}
         dataName={"hospitals"}
       />
+
       <PopupModal
         label={"เลือกความชำนาญ"}
         name={"specialties"}

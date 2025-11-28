@@ -8,24 +8,32 @@ import buildSymptomsIntro from "../../symptomsList";
 import { useData } from "../../Context/DataContext";
 
 const Chatbot = () => {
-  // ดึงข้อมูล
+  // 1. ดึงข้อมูลรวม จาก DataContext
   const { specialties, hospitals, doctors, doctorsSchedule, symptomsListData } =
     useData();
-  // State เก็บข้อมูล
+
+  // 2. State เก็บประวัติแชท (เริ่มต้นด้วย role: model)
   const [chatHistory, setChatHistory] = useState([
     {
-      hideInChat: true,
+      hideInChat: true, // ซ่อนไม่ให้userเห็น
       role: "model",
       text: "กำลังเตรียมข้อมูล...",
     },
   ]);
+
+  // State ควบคุมการเปิด/ปิดหน้าต่างแชท
   const [showChatbot, setShowChatbot] = useState(false);
+
+  // Ref เอาไว้สั่ง Scroll ลงล่างสุด
   const chatBodyRef = useRef();
-  // ฟังก์ชันส่งข้อความไปหา AI
+
+  // 3. ฟังก์ชันหลัก: ส่งข้อความไปหา AI และรับคำตอบ
   const generateBotResponse = async (history) => {
+    // ฟังก์ชันย่อย: อัปเดตข้อความในหน้าจอ (ถ้า text เข้ามาคือโชว์เลย, ถ้า error ก็โชว์ error)
     const updateHistory = (text, isError = false) => {
       setChatHistory((prev) => {
         const updated = [...prev];
+        // ลบข้อความ "กำลังคิด..." ออกก่อนใส่คำตอบจริง
         if (
           updated.length &&
           updated[updated.length - 1].text === "กำลังคิด..."
@@ -36,6 +44,7 @@ const Chatbot = () => {
       });
     };
 
+    // จัดรูปแบบข้อมูลให้ตรงกับที่ API ต้องการ
     const formattedHistory = history.map(({ role, text }) => ({
       role,
       parts: [{ text }],
@@ -47,6 +56,7 @@ const Chatbot = () => {
       body: JSON.stringify({ contents: formattedHistory }),
     };
 
+    // ยิง API ไปหา Server (AI)
     try {
       const response = await fetch(
         import.meta.env.VITE_API_URL,
@@ -58,6 +68,7 @@ const Chatbot = () => {
         throw new Error(data.error?.message || "Something went wrong!");
       }
 
+      // แกะคำตอบจาก AI และลบเครื่องหมาย ** ออก (เพื่อให้ข้อความสวยงาม)
       const apiResponseText = data.candidates[0].content.parts[0].text
         .replace(/\*\*(.*?)\*\*/g, "$1 ")
         .trim();
@@ -68,6 +79,7 @@ const Chatbot = () => {
     }
   };
 
+  // 4. Auto-Scroll: เมื่อมีข้อความใหม่ ให้เลื่อนลงล่างสุดเสมอ
   useEffect(() => {
     chatBodyRef.current.scrollTo({
       top: chatBodyRef.current.scrollHeight,
@@ -75,6 +87,7 @@ const Chatbot = () => {
     });
   }, [chatHistory]);
 
+  // 5. Context Loading: เมื่อข้อมูลแพทย์/รพ. โหลดเสร็จ ให้สร้าง Prompt ไปบอก AI
   useEffect(() => {
     const haveData =
       (specialties && specialties.length) ||
@@ -84,6 +97,7 @@ const Chatbot = () => {
       (symptomsListData && symptomsListData.length);
 
     if (haveData) {
+      // สร้างข้อความแนะนำตัวระบบ (System Prompt)
       const intro = buildSymptomsIntro({
         specialties,
         hospitals,
@@ -91,7 +105,8 @@ const Chatbot = () => {
         doctorsSchedule,
         symptomsListData,
       });
-      // อัปเดตข้อความแรก
+
+      // แอบยัดใส่ history ตัวแรกสุด (User ไม่เห็น แต่ AI รู้ข้อมูลนี้)
       setChatHistory((prev) => {
         const updated = [...prev];
         if (updated.length && updated[0]?.hideInChat) {
@@ -107,7 +122,7 @@ const Chatbot = () => {
   return (
     <div className="chatbot-all">
       <div className={`chatbot-container ${showChatbot ? "show-chatbot" : ""}`}>
-        {/* เปิด/ปิด แชทบอท */}
+        {/* กดเพื่อ เปิด/ปิด แชท */}
         <button
           onClick={() => setShowChatbot((prev) => !prev)}
           id="chatbot-toggler"
@@ -120,7 +135,9 @@ const Chatbot = () => {
           </span>
         </button>
 
+        {/* ตัวหน้าต่างแชท */}
         <div className="chatbot-popup">
+          {/* ส่วนหัว Header */}
           <div className="chat-header">
             <div className="header-info">
               <ChatbotIcon />
@@ -131,21 +148,24 @@ const Chatbot = () => {
             </button>
           </div>
 
+          {/* ส่วนเนื้อหาแชท Body */}
           <div ref={chatBodyRef} className="chat-body">
-            {/* ข้อความเริ่มต้นจากแชทบอท */}
+            {/* ข้อความต้อนรับเริ่มต้น (Hardcode ไว้) */}
             <div className="message bot-message">
               <ChatbotIcon />
               <p className="message-text">
                 สวัสดีครับ <br /> มีอะไรให้ช่วยไหมครับ?
               </p>
             </div>
+
+            {/* วนลูปแสดงข้อความแชท (ChatMessage) */}
             {chatHistory.map((chat, index) => (
               <ChatMessage key={index} chat={chat} />
             ))}
           </div>
 
+          {/* Footer */}
           <div className="chat-footer">
-            {/* พิมพ์ข้อความ */}
             <ChatForm
               chatHistory={chatHistory}
               setChatHistory={setChatHistory}
