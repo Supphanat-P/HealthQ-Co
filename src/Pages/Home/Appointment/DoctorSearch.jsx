@@ -6,11 +6,14 @@ import DoctorFilter from "../../../components/DoctorSearch/DoctorFilter";
 import { Button } from "react-bootstrap";
 import dayjs from "dayjs";
 
-const DoctorSearch = () => {
-  const { doctors, specialties, hospitals } =
-    useContext(DataContext);
-
+const DoctorSearch = ({ lang }) => {
+  const { doctors, specialties, hospitals } = useContext(DataContext);
   const location = useLocation();
+
+  const text = {
+    noinfoDT:
+      lang === "TH" ? "ไม่ข้อมูลพบแพทย์" : "No information to see a doctor",
+  };
 
   const [filteredDoctors, setFilteredDoctors] = useState(doctors || []);
   const [displayedDoctors, setDisplayedDoctors] = useState([]);
@@ -95,13 +98,14 @@ const DoctorSearch = () => {
           setSelectedSpecialty={setSelectedSpecialty}
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
+          lang={lang}
         />
         <hr />
 
         <div className="d-flex gap-4 flex-wrap justify-content-center">
           {(filteredDoctors || []).length === 0 && (
             <div className="text-center text-danger mt-5">
-              ไม่ข้อมูลพบแพทย์ ❌
+              {text.noinfoDT}❌
             </div>
           )}
 
@@ -110,6 +114,7 @@ const DoctorSearch = () => {
               key={doctor.doctor_id}
               doctor={doctor}
               selectedDate={selectedDate}
+              lang={lang}
             />
           ))}
         </div>

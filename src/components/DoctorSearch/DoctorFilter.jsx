@@ -18,13 +18,13 @@ const DoctorFilter = ({
   selectedDate,
   setSelectedDate,
   closestHospital,
+  lang,
 }) => {
   const { specialties, hospitals, doctors, searchData } = useData();
   const [showSpecialtiesModal, setShowSpecialtiesModal] = useState(false);
   const [showHospitalsModal, setShowHospitalsModal] = useState(false);
   const [selectedSearch, setSelectedSearch] = useState(null);
   const [filtersOpen, setFiltersOpen] = useState(true);
-
   const clearFilters = () => {
     setSelectedSpecialty(null);
     setSelectedHospital(null);
@@ -32,7 +32,13 @@ const DoctorFilter = ({
     setSelectedSearch(null);
     setSelectedDoctor(null);
   };
-  
+  const text = {
+    findDT : lang === "TH" ? "ค้นหาเเพทย์" : "FIND A DOCTOR",
+    allHos : lang === "TH" ? "โรงพยาบาลทั้งหมด" : "All hospitals",
+    allspec : lang === "TH" ? "ความชำนาญแพทย์ทั้งหมด" : "All medical expertise",
+    labeltext : lang === "TH" ? "ค้นหา (แพทย์ / โรงพยาบาล / ความเชี่ยวชาญ)" : "Search (doctor / hospital / specialty)",
+    langFil : lang === "TH" ? "ตัวกรอง" : "filters",
+  }
   const options = (searchData || []).map((option) => ({
     id: option.id,
     title: option.name,
@@ -75,7 +81,7 @@ const DoctorFilter = ({
 
   return (
     <>
-      <h1 className="text-navy mt-3">ค้นหาเเพทย์</h1>
+      <h1 className="text-navy mt-3">{text.findDT}</h1>
       <div
         className="input-group shadow rounded-full!"
         style={{ borderRadius: "0 50px 50px 0" }}
@@ -100,7 +106,7 @@ const DoctorFilter = ({
           renderInput={(params) => (
             <TextField
               {...params}
-              label="ค้นหา (แพทย์ / โรงพยาบาล / ความเชี่ยวชาญ)"
+              label={text.labeltext}
               placeholder="พิมพ์ชื่อหรือเลือกจากรายการ"
             />
           )}
@@ -112,7 +118,7 @@ const DoctorFilter = ({
           aria-controls="filter-div"
           style={{ borderRadius: "0 50px 50px 0" }}
         >
-          ตัวกรอง
+          {text.langFil}
         </button>
       </div>
 
@@ -130,7 +136,7 @@ const DoctorFilter = ({
         >
           <Hospital />
           &nbsp;
-          {selectedHospital ? selectedHospital : "โรงพยาบาลทั้งหมด"}
+          {selectedHospital ? selectedHospital : text.allHos}
         </Button>
         <Button
           className="bg-navy d-flex border-0 text-white rounded-full! fs-6 mt-2 py-2 px-4 align-items-center bg-navy"
@@ -140,7 +146,7 @@ const DoctorFilter = ({
         >
           <FileBadge />
           &nbsp;
-          {selectedSpecialty ? selectedSpecialty : "ความชำนาญแพทย์ทั้งหมด"}
+          {selectedSpecialty ? selectedSpecialty : text.allspec}
         </Button>
         <div
           role="separator"

@@ -73,7 +73,7 @@ function AppContent() {
       {showChatbot && <Chatbot />}
 
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home lang={lang} setLang={setLang} />} />
         <Route path="/appointment" element={<Appointment lang={lang} setLang={setLang} />} />
         <Route path="/doctorsearch" element={<DoctorSearch lang={lang} setLang={setLang} />} />
         <Route path="/doctorinfo" element={<Doctorinfo lang={lang} setLang={setLang} />} />
