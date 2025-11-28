@@ -10,10 +10,16 @@ import toast, { Toaster } from "react-hot-toast";
 import { useEffect } from "react";
 import { Calendar } from "lucide-react";
 
-const DoctorCard = ({ doctor, selectedDate }) => {
+
+const DoctorCard = ({ doctor, selectedDate, lang}) => {
   const { isLogin } = useData();
   const navigate = useNavigate();
   const { hospitals } = useData();
+
+  const text = {
+    appoint : lang === "TH" ? "นัดหมาย" : "appointment",
+    info : lang === "TH" ? "รายละเอียด" : "details",
+  };
 
   const handleBook = () => {
     if (!isLogin) {
@@ -103,13 +109,13 @@ const DoctorCard = ({ doctor, selectedDate }) => {
                 <line x1="8" y1="2" x2="8" y2="6"></line>
                 <line x1="3" y1="10" x2="21" y2="10"></line>
               </svg>
-              นัดหมาย
+              {text.appoint}
             </button>
             <button
               onClick={handleInfo}
-              className="btn btn-outline-secondary w-50 rounded-full!"
+              className="w-1/2! rounded-full! border! border-gray-500! text-gray-500! hover:bg-gray-500! hover:text-white! px-4! py-2! transition! duration-300!"
             >
-              รายละเอียด
+              {text.info}
             </button>
           </div>
         </div>

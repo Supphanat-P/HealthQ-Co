@@ -27,7 +27,7 @@ const STATUS = {
   CANCEL: "cancel",
 };
 
-const AppointmentHistory = () => {
+const AppointmentHistory = ({ lang }) => {
   const {
     doctors,
     appointments,
@@ -37,7 +37,32 @@ const AppointmentHistory = () => {
     specialties,
     fetchAndSetData,
   } = useData();
-  console.log(usersInfo);
+  const text = {
+    wait: lang === "TH" ? "รออนุมัติ" : "Waiting for approval",
+    coming: lang === "TH" ? "นัดหมายที่กำลังจะมาถึง" : "Upcoming Appointments",
+    done: lang === "TH" ? "เสร็จสิ้น" : "Completed",
+    cancle: lang === "TH" ? "นัดหมายที่ยกเลิกแล้ว" : "Cancelled Appointments",
+    
+    noComing:
+      lang === "TH"
+        ? "คุณไม่มีนัดหมายที่กำลังจะมาถึง"
+        : "You have no upcoming appointments",
+    noWait:
+      lang === "TH"
+        ? "คุณไม่มีนัดหมายที่รออนุมัติ"
+        : "You have no pending appointments",
+    noDone:
+      lang === "TH"
+        ? "ยังไม่มีประวัติการนัดหมายที่เสร็จสิ้น"
+        : "You have no completed appointment history",
+    noCancle:
+      lang === "TH"
+        ? "ยังไม่มีการนัดหมายที่ยกเลิกแล้ว"
+        : "You have no cancelled appointments",
+    skip: lang === "TH" ? "เลื่อนนัด" : "Postpone the appointment",
+    cancleApm: lang === "TH" ? "ยกเลิกนัด" : "Cancel appointment",
+    seeInfo: lang === "TH" ? "ดูรายละเอียดแพทย์" : "View doctor details",
+  };
   const [selectedTab, setSelectedTab] = useState("1");
   const [showModal, setShowModal] = useState(false);
   const [modalAppointment, setModalAppointment] = useState(null);
@@ -45,7 +70,6 @@ const AppointmentHistory = () => {
   const [rescheduleDate, setRescheduleDate] = useState("");
   const [rescheduleTime, setRescheduleTime] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-
   const navigate = useNavigate();
   const user = currentUser;
 
@@ -55,8 +79,6 @@ const AppointmentHistory = () => {
     today.getMonth(),
     today.getDate() + 7
   );
-
-  console.log(appointments);
 
   const userAppointments = useMemo(() => {
     return (appointments || []).filter(
@@ -116,31 +138,31 @@ const AppointmentHistory = () => {
       case STATUS.BOOKED:
         return {
           color: "bg-blue-600 text-white",
-          label: "กำลังจะมาถึง",
+          label: lang === "TH" ? "นัดหมายที่กำลังจะมาถึง" : "Upcoming Appointments",
           icon: <AlertCircle size={16} />,
         };
       case STATUS.PENDING:
         return {
           color: "bg-yellow-500 text-black",
-          label: "รออนุมัติ",
+          label: lang === "TH" ? "รออนุมัติ" : "Waiting for approval",
           icon: <Clock size={16} />,
         };
       case STATUS.COMPLETED:
         return {
           color: "bg-green-700 text-white",
-          label: "เสร็จสิ้น",
+          label: lang === "TH" ? "เสร็จสิ้น" : "Completed",
           icon: <CheckCircle size={16} />,
         };
       case STATUS.CANCEL:
         return {
           color: "bg-red-500 text-white",
-          label: "ยกเลิกแล้ว",
+          label: lang === "TH" ? "นัดหมายที่ยกเลิกแล้ว" : "Cancelled Appointments",
           icon: <AlertCircle size={16} />,
         };
       default:
         return {
           color: "bg-gray-500 text-white",
-          label: "ไม่ระบุสถานะ",
+          label: lang === "TH" ? "ไม่ระบุสถานะ" : "Status not specified",
           icon: <AlertCircle size={16} />,
         };
     }
@@ -249,7 +271,7 @@ const AppointmentHistory = () => {
                 onClick={() => handleDoctorInfo(item.doctor_id)}
                 className="mt-2 text-sm text-blue-600 bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-full! hover:bg-blue-100 flex items-center"
               >
-                <Search size={14} className="mr-2!" /> ดูรายละเอียดแพทย์
+                <Search size={14} className="mr-2!" /> {text.seeInfo}
               </button>
               <p className="text-sm text-gray-500 mt-3">{item.specialtyName}</p>
             </div>
@@ -305,7 +327,7 @@ const AppointmentHistory = () => {
                     : "hover:bg-gray-100"
                 }`}
               >
-                <Clock size={16} className="inline mr-1" /> เลื่อนนัด
+                <Clock size={16} className="inline mr-1" /> {text.skip}
               </button>
 
               <button
@@ -317,7 +339,8 @@ const AppointmentHistory = () => {
                     : "hover:bg-red-700"
                 }`}
               >
-                <AlertCircle size={16} className="inline mr-1" /> ยกเลิกนัด
+                <AlertCircle size={16} className="inline mr-1" />{" "}
+                {text.cancleApm}
               </button>
             </div>
           )}
@@ -416,16 +439,19 @@ const AppointmentHistory = () => {
           {[
             {
               id: "2",
-              label: `รออนุมัติ (${pendingAppointments.length})`,
+              label: `${text.wait} (${pendingAppointments.length})`,
             },
             {
               id: "1",
-              label: `นัดหมายที่กำลังจะมาถึง (${comingAppointments.length})`,
+              label: `${text.coming} (${comingAppointments.length})`,
             },
-            { id: "3", label: `เสร็จสิ้น (${completedAppointments.length})` },
+            {
+              id: "3",
+              label: `${text.done} (${completedAppointments.length})`,
+            },
             {
               id: "4",
-              label: `นัดหมายที่ยกเลิกแล้ว (${cancelAppointments.length})`,
+              label: `${text.cancle} (${cancelAppointments.length})`,
             },
           ].map((tab) => (
             <button
@@ -434,13 +460,13 @@ const AppointmentHistory = () => {
               className={`py-2! px-5! rounded-full! text-sm font-semibold border shadow-md transition
               ${
                 selectedTab === tab.id
-                  ? tab.id === "1" 
+                  ? tab.id === "1"
                     ? "bg-blue-600! text-white! border-blue-300! hover:bg-blue-800! shadow-blue-300! ring-2! ring-blue-100! hover:-translate-y-0.5!"
-                    : tab.id === "2" 
+                    : tab.id === "2"
                     ? "bg-yellow-500! text-white! border-yellow-400! hover:bg-yellow-600! shadow-yellow-300! ring-2! ring-yellow-100! hover:-translate-y-0.5!"
-                    : tab.id === "3" 
+                    : tab.id === "3"
                     ? "bg-emerald-600! text-white! border-emerald-200! hover:bg-emerald-700! shadow-emerald-200! ring-2! ring-emerald-100! hover:-translate-y-0.5!"
-                    : tab.id === "4" 
+                    : tab.id === "4"
                     ? "bg-rose-600! text-white! border-rose-200! hover:bg-rose-700! shadow-rose-200! ring-2! ring-rose-200! hover:-translate-y-0.5!"
                     : "bg-gray-500! text-white! border-gray-500!"
                   : "bg-white! text-gray-500! border-gray-200! hover:bg-gray-50! hover:text-gray-700! hover:border-gray-300!"
@@ -470,16 +496,16 @@ const AppointmentHistory = () => {
             ))}
 
           {selectedTab === "1" && comingAppointments.length === 0 && (
-            <Empty text="คุณไม่มีนัดหมายที่กำลังจะมาถึง" />
+            <Empty text={text.noComing} />
           )}
           {selectedTab === "2" && pendingAppointments.length === 0 && (
-            <Empty text="คุณไม่มีนัดหมายที่รออนุมัติ" />
+            <Empty text={text.noWait} />
           )}
           {selectedTab === "3" && completedAppointments.length === 0 && (
-            <Empty text="ยังไม่มีประวัติการนัดหมายที่เสร็จสิ้น" />
+            <Empty text={text.noDone} />
           )}
           {selectedTab === "4" && cancelAppointments.length === 0 && (
-            <Empty text="ยังไม่มีการนัดหมายที่ยกเลิกแล้ว" />
+            <Empty text={text.noCancle} />
           )}
         </div>
       </div>

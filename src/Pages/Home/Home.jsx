@@ -37,10 +37,36 @@ import {
   BloodPressureIcon,
   StarFaceIcon,
 } from "hugeicons-react";
-
-export default function Home() {
+const Home = ({ lang }) => {
+  const text = {
+    TiTle: lang === "TH" ? "เราใส่ใจสุขภาพของคุณ" : "WE CARE ABOUT YOUR HEALTH",
+    subTiTle:
+      lang === "TH"
+        ? "ทุกวันคือโอกาสใหม่สำหรับคุณที่จะทำอะไรบางอย่างเพื่อสุขภาพของคุณ"
+        : "every day is a new opportunity for you to do something for your health.",
+    apmNow:
+      lang === "TH"
+        ? "นัดหมายแพทย์เลยตอนนี้"
+        : "Make an appointment with a doctor now",
+    searchPld:
+      lang === "TH"
+        ? "ค้นหาโรงพยาบาล/ชื่อแพทย์/ความชำนาญ"
+        : "Search for hospital/doctor name/specialty",
+    special: lang === "TH" ? "ความชำนาญ" : "Expertise",
+    seeAll: lang === "TH" ? "ดูทั้งหมด" : "View all",
+    use: lang === "TH" ? "วิธีการใช้งาน" : "How to use it",
+    fourStep:
+      lang === "TH"
+        ? "เพียง 4 ขั้นตอนง่ายๆ คุณก็สามารถจองนัดหมายกับแพทย์ได้ทันที"
+        : "Just four easy steps and you can instantly book an appointment with a doctor.",
+    about: lang === "TH" ? "เกี่ยวกับเรา" : "About Us",
+    service: lang === "TH" ? "บริการ" : "Services",
+    helpSup: lang === "TH" ? "ช่วยเหลือ & สนับสนุน" : "Help & Support",
+    socialM: lang === "TH" ? "โซเชียลมีเดีย" : "Social Media",
+  };
   const { specialties, hospitals, doctors, searchData } = useData();
   console.log(specialties);
+
   const [view, setView] = useState(false);
   const navigate = useNavigate();
   const options = (searchData || []).map((option) => ({
@@ -64,23 +90,69 @@ export default function Home() {
           <div className="absolute w-[500px] h-[500px] rounded-full! bg-blue-400/10 -top-24 -right-24 blur-3xl" />
           <div className="absolute w-[400px] h-[400px] rounded-full! bg-blue-300/10 -bottom-36 -left-24 blur-3xl" />
 
-          <div className="relative z-10 flex items-center justify-center min-h-[600px] px-5!">
+          {/* Search and Quick Actions Section */}
+          <div className="pt-16! px-5!">
+            <div className="max-w-6xl! mx-auto">
+              {/* Search Bar */}
+              <div className="flex justify-center mb-4 mt-3">
+                <div className="flex items-center w-full max-w-2xl h-16 bg-white rounded-full shadow-xl shadow-blue-200/50 hover:shadow-2xl hover:shadow-blue-300/50 hover:-translate-y-0.5 transition-all duration-300 ">
+                  <button
+                    onClick={handleSearch}
+                    className="w-16! h-16! border-blue-950 bg-linear-to-br from-blue-800 to-blue-900 flex items-center justify-center shadow-lg shadow-blue-500/40 rounded-full!"
+                  >
+                    <Search size={24} className="text-white" />
+                  </button>
+                  <Autocomplete
+                    freeSolo
+                    options={options}
+                    groupBy={(option) => option.category}
+                    getOptionLabel={(option) => option.title || ""}
+                    value={selectedSearch}
+                    onChange={(event, newValue) => setSelectedSearch(newValue)}
+                    onInputChange={(event, newInputValue) =>
+                      setSelectedSearch({ title: newInputValue })
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        placeholder={text.searchPld}
+                        variant="standard"
+                        fullWidth
+                        className="px-5 text-blue-900"
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") handleSearch();
+                        }}
+                        InputProps={{
+                          ...params.InputProps,
+                          disableUnderline: true,
+                          className: "h-full mt-3",
+                        }}
+                      />
+                    )}
+                    className="flex-1 h-full"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="relative z-10 flex items-center justify-center min-h-[400px] px-5!">
             <div className="flex flex-col items-center text-center text-white">
               <h1 className="text-6xl font-bold leading-tight mb-5 drop-shadow-2xl">
-                WE CARE ABOUT <br /> YOUR HEALTH
+                {text.TiTle}
               </h1>
 
-              <p className="text-2xl mt-5! leading-relaxed max-w-3xl! text-white/90 drop-shadow-lg">
-                every day is a new opportunity for you to do <br /> something
-                for your health.
+              <p className="text-2xl mt-5! leading-relaxed  text-white/90 drop-shadow-lg">
+                {text.subTiTle}
               </p>
 
               <Link className="no-deco" to="/DoctorSearch">
                 <button
                   className="
                       group 
-                      w-[370px] h-[70px] 
+                      w-auto h-[70px] 
                       rounded-full! 
+                      px-7!
                       mt-10! 
                       bg-white! 
                       text-blue-900! 
@@ -102,7 +174,7 @@ export default function Home() {
                     strokeWidth="2.2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="text-blue-800 group-hover:animate-bounce"
+                    className="text-blue-900 group-hover:animate-bounce"
                   >
                     <rect
                       x="3"
@@ -116,61 +188,16 @@ export default function Home() {
                     <line x1="8" y1="2" x2="8" y2="6"></line>
                     <line x1="3" y1="10" x2="21" y2="10"></line>
                   </svg>
-                  นัดหมายแพทย์เลยตอนนี้
+                  {text.apmNow}
                 </button>
               </Link>
-            </div>
-          </div>
-        </div>
-        {/* Search and Quick Actions Section */}
-        <div className="py-16! px-5!">
-          <div className="max-w-6xl! mx-auto">
-            {/* Search Bar */}
-            <div className="flex justify-center mb-12">
-              <div className="flex items-center w-full max-w-2xl h-16 bg-white rounded-full shadow-xl shadow-blue-200/50 hover:shadow-2xl hover:shadow-blue-300/50 hover:-translate-y-0.5 transition-all duration-300 ">
-                <button
-                  onClick={handleSearch}
-                  className="w-16 h-16 rounded-full bg-linear-to-br from-blue-800 to-blue-900 flex items-center justify-center shadow-lg shadow-blue-500/40 rounded-full!"
-                >
-                  <Search size={24} className="text-white" />
-                </button>
-                <Autocomplete
-                  freeSolo
-                  options={options}
-                  groupBy={(option) => option.category}
-                  getOptionLabel={(option) => option.title || ""}
-                  value={selectedSearch}
-                  onChange={(event, newValue) => setSelectedSearch(newValue)}
-                  onInputChange={(event, newInputValue) =>
-                    setSelectedSearch({ title: newInputValue })
-                  }
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      placeholder="ค้นหาโรงพยาบาล ชื่อแพทย์ ความชำนาญ"
-                      variant="standard"
-                      fullWidth
-                      className="px-5 text-blue-900"
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") handleSearch();
-                      }}
-                      InputProps={{
-                        ...params.InputProps,
-                        disableUnderline: true,
-                        className: "h-full mt-3",
-                      }}
-                    />
-                  )}
-                  className="flex-1 h-full"
-                />
-              </div>
             </div>
           </div>
         </div>
 
         {/* ความชำนาญ */}
         <div className="py-30! px-75!">
-          <div className="text-3xl font-bold text-blue-900">ความชำนาญ</div>
+          <div className="text-3xl font-bold text-blue-900">{text.special}</div>
 
           <div className=" flex justify-start items-center mt-2">
             <span
@@ -179,7 +206,7 @@ export default function Home() {
               }}
               className="text-blue-700 text-lg flex items-center cursor-pointer group"
             >
-              ดูทั้งหมด
+              {text.seeAll}
               <BiChevronRight
                 size={24}
                 className="ml-1 transition-transform duration-300 group-hover:translate-x-1"
@@ -468,43 +495,57 @@ export default function Home() {
         <div className="py-20! px-5!">
           <div className="text-center mb-16!">
             <h2 className="text-5xl font-bold text-blue-900 mb-5">
-              วิธีการใช้งาน
+              {text.use}
             </h2>
-            <p className="text-2xl text-blue-700/80 max-w-3xl mx-auto">
-              เพียง 4 ขั้นตอนง่ายๆ คุณก็สามารถจองนัดหมายกับแพทย์ได้ทันที
-            </p>
+            <p className="text-2xl text-blue-700/80 mx-auto">{text.fourStep}</p>
           </div>
 
           <div className="flex flex-wrap justify-center items-start gap-12! max-w-7xl! mx-auto!">
             {[
               {
                 num: "1",
-                title: "การใช้ตัวกรอง",
-                desc: "เลือกโรงพยาบาลเพื่อที่จะต้องนำทำการนัดหมาย",
+                title: lang === "TH" ? "การใช้ตัวกรอง" : "Using filters",
+                desc:
+                  lang === "TH"
+                    ? "เลือกโรงพยาบาลเพื่อที่จะต้องนำทำการนัดหมาย"
+                    : "Select the hospital to make an appointment with.",
                 bgColor: "from-blue-600 to-blue-700",
                 borderColor: "border-blue-600/30",
                 cardBg: "bg-linear-to-br from-blue-600/10 to-blue-600/5",
               },
               {
                 num: "2",
-                title: "เลือกแพทย์และความชำนาญ",
-                desc: "เลือกแพทย์ที่ต้องการจากรายชื่อแพทย์ผู้เชี่ยวชาญของเรา",
+                title:
+                  lang === "TH"
+                    ? "เลือกแพทย์และความชำนาญ"
+                    : "Choose a doctor and their expertise",
+                desc:
+                  lang === "TH"
+                    ? "เลือกแพทย์ที่ต้องการจากรายชื่อแพทย์ผู้เชี่ยวชาญของเรา"
+                    : "Select your desired doctor from our list of specialists.",
                 bgColor: "from-blue-600 to-blue-700",
                 borderColor: "border-blue-600/30",
                 cardBg: "bg-linear-to-br from-blue-600/10 to-blue-600/5",
               },
               {
                 num: "3",
-                title: "เลือกวันและเวลา",
-                desc: "เลือกวันที่และเวลาที่สะดวกสำหรับคุณจากตารางที่ว่าง",
+                title:
+                  lang === "TH" ? "เลือกวันและเวลา" : "Select date and time",
+                desc:
+                  lang === "TH"
+                    ? "เลือกวันที่และเวลาที่สะดวกสำหรับคุณจากตารางที่ว่าง"
+                    : "Choose a date and time that is convenient for you from the available schedule.",
                 bgColor: "from-blue-600 to-blue-700",
                 borderColor: "border-blue-600/30",
                 cardBg: "bg-linear-to-br from-blue-600/10 to-blue-600/5",
               },
               {
                 num: "4",
-                title: "ยืนยันนัดหมาย",
-                desc: "ยืนยันการนัดหมายและรับการแจ้งเตือนก่อนถึงเวลานัด",
+                title: lang === "TH" ? "ยืนยันนัดหมาย" : "Confirm appointment",
+                desc:
+                  lang === "TH"
+                    ? "ยืนยันการนัดหมายและรับการแจ้งเตือนก่อนถึงเวลานัด"
+                    : "Confirm your appointment and get a reminder before your appointment time.",
                 bgColor: "from-blue-600 to-blue-700",
                 borderColor: "border-blue-600/30",
                 cardBg: "bg-linear-to-br from-blue-600/10 to-blue-600/5",
@@ -583,7 +624,8 @@ export default function Home() {
           </h2>
 
           <div className="flex flex-wrap justify-center items-center gap-12! mb-10!">
-            {["About Us", "Services", "Help & Support", "Social Media"].map(
+            {/* เอา {} ใน Array ออก และใช้ ! นำหน้า class ตามมาตรฐาน Tailwind */}
+            {[text.about, text.service, text.helpSup, text.socialM].map(
               (item, index) => (
                 <button
                   key={index}
@@ -604,4 +646,5 @@ export default function Home() {
       </div>
     </>
   );
-}
+};
+export default Home;
