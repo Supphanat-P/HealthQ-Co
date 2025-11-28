@@ -39,7 +39,6 @@ const AdminAppointments = () => {
   const [filterStatus, setFilterStatus] = useState("ทั้งหมด");
   const [searchQuery, setSearchQuery] = useState("");
 
-  // --- State สำหรับ Modal ---
   const [showModal, setShowModal] = useState(false);
   const [selectedApp, setSelectedApp] = useState(null);
   const [customDate, setCustomDate] = useState("");
@@ -48,7 +47,6 @@ const AdminAppointments = () => {
   if (!currentUser) return <Navigate to="/login" replace />;
   if (currentUser.role !== "admin") return <Navigate to="/login" replace />;
 
-  // --- ฟังก์ชันอัปเดตสถานะ ---
   const handleStatusChange = async (app_id, newStatus, selectedDate = null) => {
     try {
       const { error } = await supabase
@@ -63,10 +61,8 @@ const AdminAppointments = () => {
       if (error) throw error;
       toast.success("สถานะอัปเดตเรียบร้อย");
 
-      // 1. Refresh data immediately after DB update
       await fetchAndSetData();
 
-      // 2. If booked, find the new data and send email
       const appointment = appointments.find((item) => item.app_id === app_id);
       if (!appointment || !appointment.user || !appointment.doctor) {
         console.error("Could not find appointment details to send email.");
@@ -86,7 +82,6 @@ const AdminAppointments = () => {
           minute: "2-digit",
         });
 
-        // Send the confirmation email
 
         const emailResult = await sendEmailForApprove({
           to: appointment.user.email,
@@ -465,8 +460,7 @@ const AdminAppointments = () => {
           </table>
         </div>
       </div>
-
-      {/* --- Modal (Tailwind CSS Only) --- */}
+              
       {showModal && (
         <div className="fixed inset-0 `z-[2000] flex items-center justify-center bg-black/50 backdrop-blur-sm p-8! transition-all">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">

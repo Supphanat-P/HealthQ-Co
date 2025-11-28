@@ -107,7 +107,7 @@ const DoctorCard = ({ doctor, selectedDate }) => {
             </button>
             <button
               onClick={handleInfo}
-              className="btn btn-outline-secondary w-50 rounded-full!"
+              className="w-1/2! rounded-full! border! border-gray-500! text-gray-500! hover:bg-gray-500! hover:text-white! px-4! py-2! transition! duration-300!"
             >
               รายละเอียด
             </button>
