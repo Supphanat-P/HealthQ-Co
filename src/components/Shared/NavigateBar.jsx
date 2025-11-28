@@ -96,7 +96,7 @@ const NavigateBar = ({ lang, setLang }) => {
                   <span className="font-medium">{text.logout}</span>
                 </Link>
                 {token && getRole === "admin" && (
-                  <Link
+                  <Link 
                     to="/admindashboard"
                     className="flex no-deco items-center me-3 space-x-2! px-4! py-2! text-navy hover:bg-blue-500/20 hover:text-red-200 rounded-xl! transition-all duration-200"
                   >

@@ -198,6 +198,7 @@ export const sendEmailForCancel = async ({ to, subject }) => {
 };
 
 export const createUserAccount = async (identifier, password, fName, lName) => {
+
   try {
     if (!identifier || !password || !fName || !lName) {
       return { success: false, message: "Email, password, and name are required" };
