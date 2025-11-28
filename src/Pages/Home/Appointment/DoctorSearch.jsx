@@ -7,11 +7,13 @@ import { Button } from "react-bootstrap";
 import dayjs from "dayjs";
 
 const DoctorSearch = () => {
-  const { doctors, specialties, hospitals } =
-    useContext(DataContext);
+  // ดึงข้อมูลจาก Context
+  const { doctors, specialties, hospitals } = useContext(DataContext);
 
+  // ใช้รับ state ที่ส่งมาจากหน้าก่อนหน้า
   const location = useLocation();
 
+  // State สำหรับการกรองข้อมูล
   const [filteredDoctors, setFilteredDoctors] = useState(doctors || []);
   const [displayedDoctors, setDisplayedDoctors] = useState([]);
   const [selectedHospital, setSelectedHospital] = useState(null);
@@ -19,6 +21,7 @@ const DoctorSearch = () => {
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
 
+  // รับค่าเริ่มต้นจากหน้าอื่น
   useEffect(() => {
     if (location && location.state) {
       const { selectedSpecialty: initSpec, selectedHospital: initHosp } =
@@ -33,10 +36,12 @@ const DoctorSearch = () => {
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 6;
 
-  ///Map
+  ///Map สำหรับกรองข้อมูลแพทย์
   useEffect(() => {
+    // clone array เพื่อไม่ให้กระทบต้นฉบับ
     let filteredDoctors = (doctors || []).slice();
 
+    // กรองตามหมอ
     if (selectedDoctor) {
       filteredDoctors = filteredDoctors.filter(
         (doctor) => doctor.doctor_id === selectedDoctor
@@ -48,6 +53,7 @@ const DoctorSearch = () => {
       );
     }
 
+    // กรองตามสาขา
     if (selectedSpecialty) {
       filteredDoctors = filteredDoctors.filter(
         (doctor) => doctor.specialty.specialty_name === selectedSpecialty
@@ -61,7 +67,10 @@ const DoctorSearch = () => {
     //   return 0;
     // });
 
+    // อัปเดต state รายชื่อแพทย์ที่ผ่านการกรอง
     setFilteredDoctors(filteredDoctors);
+
+    // รีเซ็ตกลับไปหน้าแรกทุกครั้งที่เปลี่ยน filter
     setCurrpage(1);
   }, [
     doctors,
@@ -74,10 +83,15 @@ const DoctorSearch = () => {
   ///Pagination
 
   useEffect(() => {
+    // คำนวณ index เริ่มต้นของหน้าปัจจุบัน
     const i = (currpage - 1) * itemsPerPage;
+
+    // ตัดเฉพาะแพทย์ที่ต้องแสดงในหน้านี้
     const paginatedDoctors = (filteredDoctors || []).slice(i, i + itemsPerPage);
     setDisplayedDoctors(paginatedDoctors);
     setTotalPages(Math.ceil((filteredDoctors || []).length / itemsPerPage));
+
+    // ป้องกันกรณี currpage มากกว่าจำนวนหน้าที่มี
     if (currpage > totalPages && totalPages > 0) {
       setCurrpage(totalPages);
     }
