@@ -42,7 +42,6 @@ const AdminAppointments = () => {
     sendEmailForApprove,
     sendEmailForCancel,
   } = useData();
-
   // State สำหรับตัวกรองและการค้นหา
   const [filterStatusDisplay, setFilterStatusDisplay] = useState("ทั้งหมด");
   const [filterStatus, setFilterStatus] = useState("ทั้งหมด");
@@ -117,7 +116,7 @@ const AdminAppointments = () => {
         // ปฏิเสธ/ยกเลิก Cancel
         const emailResult = await sendEmailForCancel({
           to: appointment.user.email,
-          subject: "การนัดหมายของคุณถูกปฎิเสธ"
+          subject: "การนัดหมายของคุณถูกปฎิเสธ",
         });
 
         if (emailResult.success) {
@@ -206,7 +205,6 @@ const AdminAppointments = () => {
       </span>
     );
   };
-
   // อัปเดตข้อความบนปุ่ม Dropdown เมื่อเลือก Filter
   useEffect(() => {
     const statusMap = {
@@ -372,8 +370,13 @@ const AdminAppointments = () => {
                         {item.user.phone}
                       </div>
                     </td>
-                    <td className="p-4 text-gray-700">
-                      {item.doctor.doctor_name}
+                    <td className="p-4">
+                      <div className="text-gray-700">
+                        {item.doctor.doctor_name}
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        {item.doctor.hospital.hospital_name}
+                      </div>
                     </td>
 
                     {/* Badge สถานะ */}

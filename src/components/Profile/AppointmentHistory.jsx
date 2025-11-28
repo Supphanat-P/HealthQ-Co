@@ -63,7 +63,7 @@ const AppointmentHistory = ({ lang }) => {
     cancleApm: lang === "TH" ? "ยกเลิกนัด" : "Cancel appointment",
     seeInfo: lang === "TH" ? "ดูรายละเอียดแพทย์" : "View doctor details",
   };
-  const [selectedTab, setSelectedTab] = useState("1");
+  const [selectedTab, setSelectedTab] = useState("2");
   const [showModal, setShowModal] = useState(false);
   const [modalAppointment, setModalAppointment] = useState(null);
   const [modalAction, setModalAction] = useState("");

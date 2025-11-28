@@ -3,6 +3,7 @@ import { X } from "lucide-react";
 import { red } from "@mui/material/colors";
 import { useData } from "../../Context/DataContext";
 import toast from "react-hot-toast";
+
 const PatientInfo = ({ onChange } = {}) => {
   const [files, setFiles] = useState([]);
   const [lastName, setLastName] = useState("");
@@ -13,18 +14,35 @@ const PatientInfo = ({ onChange } = {}) => {
   const [symptom, setSymptom] = useState("");
   const { isLogin, usersInfo, currentUser } = useData();
 
+  // ฟังก์ชันจัดรูปแบบเบอร์โทร (แยกออกมาเพื่อให้เรียกใช้ซ้ำได้)
+  const formatPhoneNumber = (val) => {
+    if (!val) return "";
+    let cleanVal = val.toString().replace(/\D/g, ""); // เอาเฉพาะตัวเลข
+
+    if (cleanVal.length > 6) {
+      return cleanVal.replace(/(\d{3})(\d{3})(\d+)/, "$1-$2-$3");
+    } else if (cleanVal.length > 3) {
+      return cleanVal.replace(/(\d{3})(\d+)/, "$1-$2");
+    }
+    return cleanVal;
+  };
+
   useEffect(() => {
     if (!isLogin || !currentUser || !usersInfo || usersInfo.length === 0) {
-      toast.error("ไม่สามารถโหลดข้อมูลผู้ใช้ได้");
+      // toast.error("ไม่สามารถโหลดข้อมูลผู้ใช้ได้"); // อาจจะปิดไว้ถ้าไม่อยากให้เด้งตอนโหลดแรกๆ
       return;
     }
 
     const info = usersInfo.find((u) => u.user_id === currentUser.user_id);
     if (!info) return;
+    
     if (!firstName) setFirstName(info.first_name || "");
     if (!lastName) setLastName(info.last_name || "");
     if (!gender) setGender(info.gender || "");
-    if (!phone) setPhone(info.phone || "");
+    
+    // เรียกใช้ฟังก์ชัน format ตอนดึงข้อมูลมาแสดง
+    if (!phone) setPhone(formatPhoneNumber(info.phone || ""));
+    
     if (!email) setEmail(info.email || "");
   }, [isLogin, currentUser, usersInfo]);
 
@@ -39,9 +57,11 @@ const PatientInfo = ({ onChange } = {}) => {
     }
     setFiles((prev) => [...prev, ...Array.from(e.target.files)]);
   };
+
   const clearFiles = () => {
     setFiles([]);
   };
+
   return (
     <>
       <h4 className="mb-4 fw-semibold fs-3 text-center">ข้อมูลผู้ป่วย</h4>
@@ -56,10 +76,10 @@ const PatientInfo = ({ onChange } = {}) => {
                     name="gender"
                     id="gender"
                     className="form-control  shadow-sm"
+                    value={gender}
+                    onChange={(e) => setGender(e.target.value)}
                   >
-                    <option value={gender ? gender : ""}>
-                      {gender ? gender : "เลือกเพศ"}
-                    </option>
+                    <option value="">เลือกเพศ</option>
                     <option value="ชาย">ชาย</option>
                     <option value="หญิง">หญิง</option>
                   </select>
@@ -67,7 +87,7 @@ const PatientInfo = ({ onChange } = {}) => {
                 <div className="col-5">
                   <label className="form-label fw-ligh ">ชื่อ</label>
                   <input
-                    value={firstName ? firstName : ""}
+                    value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     type="text"
                     className="form-control  shadow-sm"
@@ -91,23 +111,11 @@ const PatientInfo = ({ onChange } = {}) => {
               <label className="form-label fw-ligh">เบอร์โทร</label>
               <input
                 value={phone}
-                onChange={(e) => {
-                  // 1. เอาเฉพาะตัวเลข
-                  let val = e.target.value.replace(/\D/g, "");
-
-                  // 2. เติมขีดตามความยาว
-                  if (val.length > 6) {
-                    val = val.replace(/(\d{3})(\d{3})(\d+)/, "$1-$2-$3");
-                  } else if (val.length > 3) {
-                    val = val.replace(/(\d{3})(\d+)/, "$1-$2");
-                  }
-
-                  setPhone(val);
-                }}
+                onChange={(e) => setPhone(formatPhoneNumber(e.target.value))} // เรียกใช้ตรงนี้ตอนพิมพ์
                 maxLength="12"
                 type="tel"
                 className="form-control shadow-sm"
-                placeholder="กรอกเบอร์โทร"
+                placeholder="081-234-5678"
               />
             </div>
           </div>
@@ -176,7 +184,8 @@ const PatientInfo = ({ onChange } = {}) => {
                 <button
                   type="button"
                   className="btn btn-sm btn-outline-danger mt-3"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.preventDefault(); // กันไว้ไม่ให้เปิด dialog ซ้ำ
                     clearFiles();
                   }}
                 >
