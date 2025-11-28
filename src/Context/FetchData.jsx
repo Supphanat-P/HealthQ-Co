@@ -165,8 +165,9 @@ export const sendEmailForApprove = async ({
     if (!res.ok) {
       return { success: false, message: data.message || "Server error" };
     }
-
+    
     return { success: data.success };
+
   } catch (err) {
     return { success: false, message: err.message };
   }

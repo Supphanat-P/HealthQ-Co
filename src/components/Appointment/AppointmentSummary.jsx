@@ -16,7 +16,7 @@ const AppointmentSummary = ({
 }) => {
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
-  const { createAppointment, currentUser } = useData();
+  const { createAppointment, currentUser, fetchAndSetData } = useData();
 
   const handleConfirm = async () => {
     if (!selectedDates || selectedDates.length === 0) {
@@ -50,6 +50,7 @@ const AppointmentSummary = ({
         app_datetime_json,
         patientInfo.symptom
       );
+      await fetchAndSetData();
       toast.dismiss(loadingToast);
       setShowModal(true);
     } catch (error) {

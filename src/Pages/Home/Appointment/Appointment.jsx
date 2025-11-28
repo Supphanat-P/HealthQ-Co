@@ -30,13 +30,6 @@ export default function Appointment() {
     return <Navigate to="/login" />;
   }
 
-  useEffect(() => {
-    const mapped = selectedDates.map((date) => ({
-      date,
-      time: selectedTimes[date] || null,
-    }));
-    setMapDatesTimes(mapped);
-  }, [selectedDates, selectedTimes]);
 
   return (
     <>

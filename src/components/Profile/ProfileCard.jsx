@@ -12,6 +12,8 @@ const ProfileCard = ({ lang }) => {
   const [form, setForm] = useState(null);
   const [nationValue, setNationValue] = useState("");
   const [isNationOpen, setIsNationOpen] = useState(false);
+  const [isBloodOpen, setIsBloodOpen] = useState(false);
+  const [bloodValue, setBloodValue] = useState("");
 
   const findUserId = usersInfo.find((u) => u.user_id === currentUser?.user_id);
 
@@ -36,6 +38,13 @@ const ProfileCard = ({ lang }) => {
     { th: "มาเลเซีย", en: "Malaysian" },
     { th: "ฟิลิปปินส์", en: "Filipino" },
   ];
+
+  const bloodType = {
+    A: "A",
+    B: "B",
+    AB: "AB",
+    O: "O",
+  };
 
   const filteredNation = nations.filter((n) =>
     (lang === "TH" ? n.th : n.en)
@@ -236,10 +245,9 @@ const ProfileCard = ({ lang }) => {
             onClick={() => setSelectedTab(tab)}
             className={`
               px-5! py-3! text-base! font-semibold! transition-all! relative! rounded-xl!
-              ${
-                selectedTab === tab
-                  ? "text-indigo-900! after:w-full!"
-                  : "text-gray-400! hover:text-indigo-600! hover:bg-gray-50! after:w-0!"
+              ${selectedTab === tab
+                ? "text-indigo-900! after:w-full!"
+                : "text-gray-400! hover:text-indigo-600! hover:bg-gray-50! after:w-0!"
               }
               after:content-['']! after:absolute! after:bottom-0! after:left-0! after:h-1! after:bg-indigo-900! after:rounded-full! after:transition-all! after:duration-300!
             `}
@@ -354,22 +362,46 @@ const ProfileCard = ({ lang }) => {
                 />
               )}
             </div>
-
-            <div>
+            {/* //blood_type */}
+            <div className="relative!">
               <Label>{text.blood}</Label>
+
               {!isEdit ? (
                 <DisplayValue>
                   {form.blood_type || text.notSpecified}
                 </DisplayValue>
               ) : (
-                <input
-                  className={InputStyle}
-                  value={form.blood_type}
-                  onChange={(e) => handleChange("blood_type", e.target.value)}
-                />
+                <>
+                  <input
+                    className={InputStyle}
+                    value={form.blood_type}
+                    onChange={(e) => {
+                      setBloodValue(e.target.value);
+                      setIsBloodOpen(true);
+                    }}
+                    onFocus={() => setIsBloodOpen(true)}
+                  />
+
+                  {isBloodOpen && (
+                    <ul className="absolute! z-50! w-full! bg-white! shadow-xl! rounded-xl! max-h-60! overflow-auto! border! border-gray-100! mt-2!">
+                      {Object.values(bloodType).map((bt, index) => (
+                        <li
+                          key={index}
+                          className="px-4! py-3! hover:bg-indigo-50! cursor-pointer! text-gray-700! border-b! border-gray-50! last:border-0!"
+                          onClick={() => {
+                            handleChange("blood_type", bt);
+                            setBloodValue(bt);
+                            setIsBloodOpen(false);
+                          }}
+                        >
+                          {bt}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </>
               )}
             </div>
-
             <div>
               <Label>{text.height}</Label>
               {!isEdit ? (

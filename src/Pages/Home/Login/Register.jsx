@@ -10,7 +10,7 @@ const Register = () => {
   const navigate = useNavigate();
   const { currentUser, usersInfo } = useData();
   if (currentUser) return navigate("/");
-  const { sendOtpForRegistration, createUserAccount } = useData();
+  const { sendOtpForRegistration, createUserAccount, fetchAndSetData } = useData();
 
   const [identifier, setIdentifier] = useState("");
   const [step, setStep] = useState("input");
@@ -84,6 +84,7 @@ const Register = () => {
         throw new Error(result.message || "สมัครสมาชิกไม่สำเร็จ");
       }
       if (result.success) {
+        await fetchAndSetData();
         toast.success("สมัครสมาชิกสำเร็จ");
         setStep("done");
         setTimeout(() => navigate("/login"), 2000);
