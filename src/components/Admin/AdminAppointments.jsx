@@ -100,9 +100,7 @@ const AdminAppointments = () => {
 
         const emailResult = await sendEmailForApprove({
           to: appointment.user.email,
-
           subject: "การนัดหมายถูกอนุมัติแล้ว (Appointment Approved)",
-
           patientName: appointment.user.full_name,
           doctorName: appointment.doctor.doctor_name,
           hospitalName: appointment.doctor.hospital.hospital_name,

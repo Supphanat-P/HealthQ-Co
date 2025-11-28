@@ -20,9 +20,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-console.log("SMTP_USER:", process.env.SMTP_USER ? "Loaded" : "Missing");
-console.log("SMTP_PASS:", process.env.SMTP_PASS ? "Loaded" : "Missing");
-
 app.get("/", (req, res) => {
   res.send("HealthQ Backend is running 🚀");
 });
@@ -109,4 +106,4 @@ app.post("/send-cancel-email", async (req, res) => {
 });
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`🚀 Running on ${port}`));
+app.listen(port, () => console.log(`Running on ${port}`));
