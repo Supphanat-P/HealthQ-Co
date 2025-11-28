@@ -3,6 +3,7 @@ export function buildSymptomsIntro({
   hospitals = [],
   doctors = [],
   symptomsListData = [],
+  lang = "TH",
 } = {}) {
   const hospitalList = hospitals.length
     ? hospitals.map((h) => `- ${h.hospital_name}`).join("\n")
@@ -10,7 +11,10 @@ export function buildSymptomsIntro({
 
   const doctorList = doctors.length
     ? doctors
-        .map((d) => `- (${d.doctor_name}) (${d.specialty_name})`)
+        .map(
+          (d) =>
+            `- (${d.doctor_name}) (${d.specialty.specialty_name}) (${d.hospital.hospital_name})`
+        )
         .join("\n")
     : "- ไม่มีข้อมูลแพทย์ในขณะนี้";
 
@@ -25,6 +29,48 @@ export function buildSymptomsIntro({
         )
         .join("\n")
     : "- ไม่มีข้อมูลอาการตัวอย่างในขณะนี้";
+
+  const steps = [
+    {
+      num: "1",
+      title: lang === "TH" ? "การใช้ตัวกรอง" : "Using filters",
+      desc:
+        lang === "TH"
+          ? "เลือกโรงพยาบาลเพื่อที่จะทำการนัดหมาย"
+          : "Select the hospital to make an appointment with.",
+    },
+    {
+      num: "2",
+      title:
+        lang === "TH"
+          ? "เลือกแพทย์และความชำนาญ"
+          : "Choose a doctor and their expertise",
+      desc:
+        lang === "TH"
+          ? "เลือกแพทย์ที่ต้องการจากรายชื่อแพทย์ผู้เชี่ยวชาญของเรา"
+          : "Select your desired doctor from our list of specialists.",
+    },
+    {
+      num: "3",
+      title: lang === "TH" ? "เลือกวันและเวลา" : "Select date and time",
+      desc:
+        lang === "TH"
+          ? "เลือกวันที่และเวลาที่สะดวกสำหรับคุณจากตารางที่ว่าง"
+          : "Choose a date and time that is convenient for you.",
+    },
+    {
+      num: "4",
+      title: lang === "TH" ? "ยืนยันนัดหมาย" : "Confirm appointment",
+      desc:
+        lang === "TH"
+          ? "ยืนยันการนัดหมายและรับการแจ้งเตือนก่อนถึงเวลานัด"
+          : "Confirm your appointment and get a reminder.",
+    },
+  ];
+
+  const stepList = steps
+    .map((s) => `${s.num}. ${s.title}\n${s.desc}`)
+    .join("\n\n");
 
   return `
 Introduction:
@@ -47,8 +93,8 @@ Symptoms & Suggestions:
 ฉันสามารถช่วยแนะนำแผนกหรือแพทย์ที่เหมาะสมกับอาการได้ เช่น:
 ${symptomList}
 
-How to use:
-
+How to use , วิธีใช้:
+${stepList}
 
 Why Use HealthQueue:
 1. สามารถค้นหาแพทย์และแผนกได้ด้วยตนเองอย่างง่ายดาย

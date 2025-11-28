@@ -9,6 +9,8 @@ import { Autocomplete, TextField } from "@mui/material";
 import { FileBadge, Hospital } from "lucide-react";
 
 const DoctorFilter = ({
+  selectedSearch,
+  setSelectedSearch,
   selectedDoctor,
   setSelectedDoctor,
   selectedHospital,
@@ -23,7 +25,6 @@ const DoctorFilter = ({
   const { specialties, hospitals, doctors, searchData } = useData();
   const [showSpecialtiesModal, setShowSpecialtiesModal] = useState(false);
   const [showHospitalsModal, setShowHospitalsModal] = useState(false);
-  const [selectedSearch, setSelectedSearch] = useState(null);
   const [filtersOpen, setFiltersOpen] = useState(true);
   const clearFilters = () => {
     setSelectedSpecialty(null);
@@ -33,11 +34,11 @@ const DoctorFilter = ({
     setSelectedDoctor(null);
   };
   const text = {
-    findDT : lang === "TH" ? "ค้นหาเเพทย์" : "FIND A DOCTOR",
-    allHos : lang === "TH" ? "โรงพยาบาลทั้งหมด" : "All hospitals",
-    allspec : lang === "TH" ? "ความชำนาญแพทย์ทั้งหมด" : "All medical expertise",
-    labeltext : lang === "TH" ? "ค้นหา (แพทย์ / โรงพยาบาล / ความเชี่ยวชาญ)" : "Search (doctor / hospital / specialty)",
-    langFil : lang === "TH" ? "ตัวกรอง" : "filters",
+    findDT: lang === "TH" ? "ค้นหาเเพทย์" : "FIND A DOCTOR",
+    allHos: lang === "TH" ? "โรงพยาบาลทั้งหมด" : "All hospitals",
+    allspec: lang === "TH" ? "ความชำนาญแพทย์ทั้งหมด" : "All medical expertise",
+    labeltext: lang === "TH" ? "ค้นหา (แพทย์ / โรงพยาบาล / ความเชี่ยวชาญ)" : "Search (doctor / hospital / specialty)",
+    langFil: lang === "TH" ? "ตัวกรอง" : "filters",
   }
   const options = (searchData || []).map((option) => ({
     id: option.id,
@@ -48,30 +49,15 @@ const DoctorFilter = ({
   useEffect(() => {
     if (!selectedSearch) return;
     const cat = selectedSearch.category;
-    if (cat === "Doctor") setSelectedDoctor(selectedSearch.id);
-    else if (cat === "Hospital") setSelectedHospital(selectedSearch.title);
-    else if (cat === "Specialty") setSelectedSpecialty(selectedSearch.title);
+    if (cat === "แพทย์") setSelectedDoctor(selectedSearch.id);
+    else if (cat === "โรงพยาบาล") setSelectedHospital(selectedSearch.title);
+    else if (cat === "ความชำนาญ") setSelectedSpecialty(selectedSearch.title);
   }, [selectedSearch]);
 
   const modalShow = (dataName) => {
     if (dataName === "hospitals") setShowHospitalsModal(true);
     else setShowSpecialtiesModal(true);
   };
-
-  const DateButton = forwardRef(({ value, onClick, className }, ref) => (
-    <button
-      type="button"
-      className={
-        (className || "") +
-        " btn border border-navy text-navy rounded fs-6 mt-2 p-2 d-flex align-items-center justify-content-center"
-      }
-      onClick={onClick}
-      ref={ref}
-      style={{ minWidth: "160px" }}
-    >
-      {value || "เลือกวันที่"}
-    </button>
-  ));
 
   const toggleFilters = () => setFiltersOpen((state) => !state);
   const clearHospital = () => setSelectedHospital(null);
@@ -104,7 +90,7 @@ const DoctorFilter = ({
           value={selectedSearch}
           onChange={(event, newValue) => setSelectedSearch(newValue)}
           renderInput={(params) => (
-            <TextField
+            < TextField
               {...params}
               label={text.labeltext}
               placeholder="พิมพ์ชื่อหรือเลือกจากรายการ"
@@ -123,9 +109,8 @@ const DoctorFilter = ({
       </div>
 
       <div
-        className={`${
-          filtersOpen ? "d-flex" : "d-none"
-        } gap-4 mt-0 align-items-center`}
+        className={`${filtersOpen ? "d-flex" : "d-none"
+          } gap-4 mt-0 align-items-center`}
         id="filter-div"
       >
         <Button

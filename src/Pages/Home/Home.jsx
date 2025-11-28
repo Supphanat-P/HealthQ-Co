@@ -77,8 +77,7 @@ const Home = ({ lang }) => {
   const [selectedSearch, setSelectedSearch] = useState(null);
   const handleSearch = () => {
     if (!selectedSearch) return;
-
-    navigate("/DoctorSearch", { state: { selected: selectedSearch } });
+    navigate("/DoctorSearch", { state: { selectedSearch: selectedSearch } });
   };
 
   return (
@@ -483,7 +482,7 @@ const Home = ({ lang }) => {
                   )}
                   <div className="text-center">
                     <p className="mb-0 font-bold">{sst.specialty_name}</p>
-                    <p className="mb-0">{}</p>
+                    <p className="mb-0">{ }</p>
                   </div>
                 </div>
               </div>
@@ -554,6 +553,7 @@ const Home = ({ lang }) => {
               <div
                 className="flex flex-col items-center text-center max-w-[280px] relative
                  hover:-translate-y-3 hover:scale-105 transition-all duration-300"
+                key={index}
               >
                 {/* Step Number Badge */}
                 <div

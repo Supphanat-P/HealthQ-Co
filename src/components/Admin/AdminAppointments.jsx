@@ -68,8 +68,8 @@ const AdminAppointments = () => {
         console.error("Could not find appointment details to send email.");
         return;
       }
+      
       if (newStatus === "booked") {
-
         const date = new Date(selectedDate).toLocaleDateString("th-TH", {
           day: "numeric",
           month: "long",
@@ -86,7 +86,7 @@ const AdminAppointments = () => {
         const emailResult = await sendEmailForApprove({
           to: appointment.user.email,
 
-          subject: "ยืนยันการนัดหมาย (Appointment Confirmed)",
+          subject: "การนัดหมายถูกอนุมัติแล้ว (Appointment Approved)",
 
           patientName: appointment.user.full_name,
 
@@ -107,7 +107,7 @@ const AdminAppointments = () => {
       } else if (newStatus === "cancel") {
         const emailResult = await sendEmailForCancel({
           to: appointment.user.email,
-          subject: "การจองแพทย์ของคุณถูกยกเลิกแล้ว"
+          subject: "การนัดหมายของคุณถูกปฎิเสธ"
         });
 
         if (emailResult.success) {
@@ -460,7 +460,7 @@ const AdminAppointments = () => {
           </table>
         </div>
       </div>
-              
+
       {showModal && (
         <div className="fixed inset-0 `z-[2000] flex items-center justify-center bg-black/50 backdrop-blur-sm p-8! transition-all">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
