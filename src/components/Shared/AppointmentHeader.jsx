@@ -8,9 +8,9 @@ const AppointmentHeader = ({ label }) => {
       <h1 className="text-navy text-center font-bold mb-2">
         {label ? label : t("appointmentTitle", "ทำนัดหมายแพทย์")}
       </h1>
-      
+
       <div
-        className="w-full rounded-full" 
+        className="w-full rounded-full"
         style={{
           height: "4px",
           backgroundImage:

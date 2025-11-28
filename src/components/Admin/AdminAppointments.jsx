@@ -100,7 +100,9 @@ const AdminAppointments = () => {
 
         const emailResult = await sendEmailForApprove({
           to: appointment.user.email,
-          subject: "ยืนยันการนัดหมาย (Appointment Confirmed)",
+
+          subject: "การนัดหมายถูกอนุมัติแล้ว (Appointment Approved)",
+
           patientName: appointment.user.full_name,
           doctorName: appointment.doctor.doctor_name,
           hospitalName: appointment.doctor.hospital.hospital_name,
@@ -117,7 +119,7 @@ const AdminAppointments = () => {
         // ปฏิเสธ/ยกเลิก Cancel
         const emailResult = await sendEmailForCancel({
           to: appointment.user.email,
-          subject: "การจองแพทย์ของคุณถูกยกเลิกแล้ว",
+          subject: "การนัดหมายของคุณถูกปฎิเสธ"
         });
 
         if (emailResult.success) {

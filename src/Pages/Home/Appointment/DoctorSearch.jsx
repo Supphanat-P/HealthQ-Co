@@ -21,14 +21,16 @@ const DoctorSearch = ({ lang }) => {
   const [selectedSpecialty, setSelectedSpecialty] = useState(null);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
-
+  const [selectedSearch, setSelectedSearch] = useState(null);
   // รับค่าเริ่มต้นจากหน้าอื่น
   useEffect(() => {
     if (location && location.state) {
-      const { selectedSpecialty: initSpec, selectedHospital: initHosp } =
+      const { selectedSpecialty: initSpec, selectedHospital: initHosp, selectedSearch: initSearch } =
         location.state;
       if (initSpec) setSelectedSpecialty(initSpec);
       if (initHosp) setSelectedHospital(initHosp);
+      if (initSearch) setSelectedSearch(initSearch);
+      console.log(initSearch)
     }
   }, [location]);
 
@@ -110,6 +112,8 @@ const DoctorSearch = ({ lang }) => {
           setSelectedSpecialty={setSelectedSpecialty}
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
+          selectedSearch={selectedSearch}
+          setSelectedSearch={setSelectedSearch}
           lang={lang}
         />
         <hr />
