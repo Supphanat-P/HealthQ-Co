@@ -14,12 +14,7 @@ const PatientInfo = ({ onChange } = {}) => {
   const { isLogin, usersInfo, currentUser } = useData();
 
   useEffect(() => {
-    if (
-      !isLogin ||
-      !currentUser ||
-      !usersInfo ||
-      usersInfo.length === 0
-    ) {
+    if (!isLogin || !currentUser || !usersInfo || usersInfo.length === 0) {
       toast.error("ไม่สามารถโหลดข้อมูลผู้ใช้ได้");
       return;
     }
@@ -62,7 +57,9 @@ const PatientInfo = ({ onChange } = {}) => {
                     id="gender"
                     className="form-control  shadow-sm"
                   >
-                    <option value={gender ? gender : ""}>{gender ? gender : "เลือกเพศ"}</option>
+                    <option value={gender ? gender : ""}>
+                      {gender ? gender : "เลือกเพศ"}
+                    </option>
                     <option value="ชาย">ชาย</option>
                     <option value="หญิง">หญิง</option>
                   </select>
@@ -95,16 +92,22 @@ const PatientInfo = ({ onChange } = {}) => {
               <input
                 value={phone}
                 onChange={(e) => {
-                  const value = e.target.value;
-                  if (!isNaN(value) || value === "") {
-                    setPhone(value);
+                  // 1. เอาเฉพาะตัวเลข
+                  let val = e.target.value.replace(/\D/g, "");
+
+                  // 2. เติมขีดตามความยาว
+                  if (val.length > 6) {
+                    val = val.replace(/(\d{3})(\d{3})(\d+)/, "$1-$2-$3");
+                  } else if (val.length > 3) {
+                    val = val.replace(/(\d{3})(\d+)/, "$1-$2");
                   }
+
+                  setPhone(val);
                 }}
-                maxLength="10"
-                minLength="10"
-                type="phone"
-                className="form-control  shadow-sm"
-                placeholder="กรอกเบอร์โทรติดต่อ"
+                maxLength="12"
+                type="tel"
+                className="form-control shadow-sm"
+                placeholder="กรอกเบอร์โทร"
               />
             </div>
           </div>

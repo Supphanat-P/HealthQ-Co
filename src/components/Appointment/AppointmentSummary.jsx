@@ -76,7 +76,7 @@ const AppointmentSummary = ({
         <p className="text-gray-500 text-sm flex items-center gap-2">
           <MapPin /> อาการของผู้ป่วย
         </p>
-        <p className="text-black">{patientInfo?.symptom}</p>
+        <p className="text-black wrap-break-word!">{patientInfo?.symptom}</p>
       </div>
 
       <div>

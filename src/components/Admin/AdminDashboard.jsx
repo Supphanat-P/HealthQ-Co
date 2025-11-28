@@ -1,5 +1,12 @@
 import AdminSidebar from "./AdminSidebar";
-import { Users, Calendar, CheckCircle, Hourglass, XCircle, Clock } from "lucide-react";
+import {
+  Users,
+  Calendar,
+  CheckCircle,
+  Hourglass,
+  XCircle,
+  Clock,
+} from "lucide-react";
 import { useData } from "../../Context/DataContext";
 import { Navigate } from "react-router-dom";
 
@@ -8,6 +15,7 @@ const AdminDashboard = () => {
   if (!currentUser) return <Navigate to="/login" replace />;
   if (currentUser.role !== "admin") return <Navigate to="/login" replace />;
 
+  console.log(appointments);
   const today = new Date();
   today.setHours(23, 59, 59, 999);
 
@@ -15,18 +23,22 @@ const AdminDashboard = () => {
   week.setDate(week.getDate() - 7);
   week.setHours(0, 0, 0, 0);
 
-  const appointmentsWeek = appointments.filter(a => a.status === "pending").filter(app => {
-    const created = new Date(app.created_at);
-    return created >= week && created <= today;
-  });
+  const appointmentsWeek = appointments
+    .filter((a) => a.status === "pending")
+    .filter((app) => {
+      const created = new Date(app.created_at);
+      return created >= week && created <= today;
+    });
 
+  const pendingCount = appointments.filter(
+    (a) => a.status === "pending"
+  ).length;
+  const bookedCount = appointments.filter((a) => a.status === "booked").length;
+  const cancelledCount = appointments.filter(
+    (a) => a.status === "cancelled"
+  ).length;
 
-
-  const pendingCount = appointments.filter(a => a.status === "pending").length;
-  const bookedCount = appointments.filter(a => a.status === "booked").length;
-  const cancelledCount = appointments.filter(a => a.status === "cancelled").length;
-
-  const uniquePatients = new Set(appointments.map(a => a.user_id)).size;
+  const uniquePatients = new Set(appointments.map((a) => a.user_id)).size;
 
   const cards = [
     {
@@ -71,18 +83,20 @@ const AdminDashboard = () => {
                 className="bg-white rounded-2xl border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 p-6! hover:-translate-y-1"
               >
                 <div className="flex justify-between items-start mb-4">
-                  <div className="p-3! bg-blue-50 rounded-xl">
-                    {card.icon}
-                  </div>
+                  <div className="p-3! bg-blue-50 rounded-xl">{card.icon}</div>
                 </div>
-                <p className="text-gray-600 text-sm font-medium mb-2">{card.title}</p>
+                <p className="text-gray-600 text-sm font-medium mb-2">
+                  {card.title}
+                </p>
                 <p className="text-gray-900 text-2xl font-bold">{card.value}</p>
               </div>
             ))}
           </div>
 
           <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-6!">
-            <h3 className="text-xl font-bold text-gray-900 mb-6">นัดหมายที่รอการอนุมติ</h3>
+            <h3 className="text-xl font-bold text-gray-900 mb-6">
+              นัดหมายที่รอการอนุมติ
+            </h3>
 
             {appointmentsWeek.length === 0 && (
               <div className="text-center py-12!">
@@ -108,6 +122,17 @@ const AdminDashboard = () => {
                       </span>
                       <p className="text-gray-600 text-sm mt-1">
                         หมอ: {app.doctor.doctor_name}
+                      </p>
+                      <p className="text-gray-600 text-sm mt-1">
+                        วันและเวลาที่ยื่นนัด:&nbsp;
+                        {new Date(app.created_at).toLocaleString("th-TH", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                        &nbsp;น.
                       </p>
                     </div>
 
@@ -136,7 +161,6 @@ const AdminDashboard = () => {
               ))}
             </div>
           </div>
-
         </div>
       </div>
     </div>
