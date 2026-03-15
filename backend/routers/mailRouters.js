@@ -1,15 +1,4 @@
-import express from "express";
-import bodyParser from "body-parser";
-import cors from "cors";
-import dotenv from "dotenv";
 import nodemailer from "nodemailer";
-
-dotenv.config();
-
-const app = express();
-app.use(bodyParser.json());
-app.use(cors({ origin: "*" }));
-
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 587,
@@ -19,11 +8,6 @@ const transporter = nodemailer.createTransport({
     pass: process.env.SMTP_PASS,
   },
 });
-
-app.get("/", (req, res) => {
-  res.send("HealthQ Backend is running 🚀");
-});
-
 app.post("/send-otp-email", async (req, res) => {
   const { to, text } = req.body;
 
@@ -104,6 +88,3 @@ app.post("/send-cancel-email", async (req, res) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 });
-
-const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`Running on ${port}`));

@@ -1,33 +1,35 @@
-import { supabase } from "../config/supabaseClient";
 import bcrypt from "bcryptjs";
 import toast from "react-hot-toast";
+import axios from "axios";
+
+const URL = "http://localhost:578";
 
 export const fetchDoctors = async () => {
-  const { data, error } = await supabase
-    .from("doctors")
-    .select("*, hospital:hospitals(*)");
-  if (error) {
-    throw new Error(error.message);
+  try {
+    const response = await axios.get(`${URL}/data/doctors`);
+    return response.data.doctors;
+  } catch (error) {
+    throw new Error("Failed to fetch doctors: " + error.message);
   }
-  return data;
 };
 
 export const fetchHospitals = async () => {
-  const { data, error } = await supabase.from("hospitals").select("*");
-  if (error) {
-    throw new Error(error.message);
+  try {
+    const response = await axios.get(`${URL}/data/hospitals`);
+    return response.data.hospitals;
+  } catch (error) {
+    throw new Error("Failed to fetch hospitals: " + error.message);
   }
-  return data;
 };
 
 export const fetchSpecialties = async () => {
-  const { data, error } = await supabase.from("specialties").select("*");
-  if (error) {
-    throw new Error(error.message);
+  try {
+    const response = await axios.get(`${URL}/data/specialties`);
+    return response.data.specialties;
+  } catch (error) {
+    throw new Error("Failed to fetch specialties: " + error.message);
   }
-  return data;
 };
-
 export const fetchAppointments = async () => {
   const { data, error } = await supabase
     .from("appointments")
@@ -60,7 +62,7 @@ export const createAppointment = async (
   user_id,
   doctor_id,
   appointment_slots_data,
-  note
+  note,
 ) => {
   const { data: appointmentData, error: appointmentError } = await supabase
     .from("appointments")
@@ -75,7 +77,7 @@ export const createAppointment = async (
 
   if (appointmentError) {
     throw new Error(
-      "Failed to create main appointment: " + appointmentError.message
+      "Failed to create main appointment: " + appointmentError.message,
     );
   }
 
@@ -117,7 +119,7 @@ export async function sendOtpForRegistration(to, otp) {
     const res = await fetch("http://localhost:578/send-otp-email", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ to, text: otp })
+      body: JSON.stringify({ to, text: otp }),
     });
 
     const data = await res.json();
@@ -132,7 +134,6 @@ export async function sendOtpForRegistration(to, otp) {
   }
 }
 
-
 export const sendEmailForApprove = async ({
   to,
   subject,
@@ -140,7 +141,7 @@ export const sendEmailForApprove = async ({
   doctorName,
   hospitalName,
   date,
-  time
+  time,
 }) => {
   try {
     const res = await fetch("http://localhost:578/send-approve-email", {
@@ -199,10 +200,12 @@ export const sendEmailForCancel = async ({ to, subject }) => {
 };
 
 export const createUserAccount = async (identifier, password, fName, lName) => {
-
   try {
     if (!identifier || !password || !fName || !lName) {
-      return { success: false, message: "Email, password, and name are required" };
+      return {
+        success: false,
+        message: "Email, password, and name are required",
+      };
     }
 
     const { data: existing, error: checkError } = await supabase
@@ -264,12 +267,10 @@ export const createUserAccount = async (identifier, password, fName, lName) => {
       user: userData,
       info: infoData,
     };
-
   } catch (err) {
     return { success: false, message: err.message };
   }
 };
-
 
 export const login = async (email, password) => {
   try {
