@@ -102,7 +102,7 @@ const PopupModal = ({
                         value={closestHospital.hospital.hospital_id}
                         onClick={() => {
                           setSelectedHospital(
-                            closestHospital.hospital.hospital_id
+                            closestHospital.hospital.hospital_id,
                           );
                           onSelect(closestHospital.hospital.hospital_name);
                           onClose();
@@ -129,12 +129,14 @@ const PopupModal = ({
                               {closestHospital.distance < 1000
                                 ? `${closestHospital.distance} เมตร จากตำแหน่งของคุณ`
                                 : `${(closestHospital.distance / 1000).toFixed(
-                                  2
-                                )} กิโลเมตร จากตำแหน่งของคุณ`}
+                                    2,
+                                  )} กิโลเมตร จากตำแหน่งของคุณ`}
                             </div>
                           )}
                         </div>
-                        <span className="bg-blue-800 text-white text-[14px] font-medium p-2 py-1 rounded-full">ใกล้ที่สุด</span>
+                        <span className="bg-blue-800 text-white text-[14px] font-medium p-2 py-1 rounded-full">
+                          ใกล้ที่สุด
+                        </span>
                       </button>
                     </div>
                   )}

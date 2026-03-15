@@ -2,17 +2,18 @@
   "name": "healthq-backend",
   "version": "1.0.0",
   "description": "Backend for HealthQ",
-  "main": "server.js",
+  "main": "app.js",
   "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "dependencies": {
     "@getbrevo/brevo": "^3.0.1",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^4.21.2",
+    "mysql2": "^3.19.1",
     "nodemailer": "^7.0.11",
     "resend": "2.1.0",
     "sqlite": "^5.1.1",

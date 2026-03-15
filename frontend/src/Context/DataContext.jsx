@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import dayjs from "dayjs";
-import { supabase } from "../config/supabaseClient";
 import {
   fetchSpecialties,
   fetchDoctors,
@@ -14,7 +13,7 @@ import {
   login as loginFromFetchData,
   updateUserInfo,
   sendEmailForApprove,
-  sendEmailForCancel
+  sendEmailForCancel,
 } from "./FetchData";
 import toast from "react-hot-toast";
 
@@ -70,68 +69,99 @@ export const DataProvider = ({ children }) => {
     try {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-    } catch (err) { }
+    } catch (err) {}
   };
 
+  // const fetchAndSetData = async () => {
+  //   toast.promise(
+  //     (async () => {
+  //       const specialtiesData = await fetchSpecialties();
+  //       const doctorsData = await fetchDoctors();
+  //       const hospitalsData = await fetchHospitals();
+  //       const appointmentsData = await fetchAppointments();
+  //       const usersInfoData = await fetchUsersInfo();
+  //       const symptomsListData = await fetchSymptomsList();
+
+  //       const formattedDoctors = doctorsData.map(doctor => {
+  //         const specialty = specialtiesData.find(s => s.specialty_id === doctor.specialty_id);
+  //         const hospital = hospitalsData.find(h => h.hospital_id === doctor.hospital_id);
+  //         return { ...doctor, specialty, hospital };
+  //       });
+
+  //       const formattedAppointmentsData = appointmentsData.map((appointment) => {
+  //         const user = usersInfoData.find((u) => u.user_id === appointment.user_id);
+  //         const doctor = formattedDoctors.find((d) => d.doctor_id === appointment.doctor_id);
+  //         return { ...appointment, user, doctor };
+  //       });
+
+  //       const formattedSearchData = (doctorsData || [])
+  //         .map((doctor) => ({
+  //           id: doctor.doctor_id,
+  //           name: doctor.doctor_name,
+  //           category: "แพทย์",
+  //         }))
+  //         .concat(
+  //           (hospitalsData || []).map((hospital) => ({
+  //             id: hospital.hospital_id,
+  //             name: hospital.hospital_name,
+  //             category: "โรงพยาบาล",
+  //           }))
+  //         )
+  //         .concat(
+  //           (specialtiesData || []).map((specialty) => ({
+  //             id: specialty.specialty_id,
+  //             name: specialty.specialty_name,
+  //             category: "ความชำนาญ",
+  //           }))
+  //         );
+
+  //       setSearchData(formattedSearchData);
+  //       setDoctors(formattedDoctors);
+  //       setSpecialties(specialtiesData);
+  //       setHospitals(hospitalsData);
+  //       setAppointments(formattedAppointmentsData);
+  //       setUsersInfo(usersInfoData);
+  //       setSymptomsListData(symptomsListData);
+  //     })(),
+  //     {
+  //       id: "fetch-data-toast",
+  //       loading: "กำลังโหลดข้อมูล...",
+  //       success: <b>โหลดข้อมูลสำเร็จ!</b>,
+  //       error: <b>โหลดข้อมูลล้มเหลว</b>,
+  //     }
+  //   );
+  // };
+
   const fetchAndSetData = async () => {
+    console.log("fetchAndSetData called");
     toast.promise(
       (async () => {
         const specialtiesData = await fetchSpecialties();
         const doctorsData = await fetchDoctors();
         const hospitalsData = await fetchHospitals();
-        const appointmentsData = await fetchAppointments();
-        const usersInfoData = await fetchUsersInfo();
-        const symptomsListData = await fetchSymptomsList();
 
-        const formattedDoctors = doctorsData.map(doctor => {
-          const specialty = specialtiesData.find(s => s.specialty_id === doctor.specialty_id);
-          const hospital = hospitalsData.find(h => h.hospital_id === doctor.hospital_id);
+        const formattedDoctors = doctorsData.map((doctor) => {
+          const specialty = specialtiesData.find(
+            (s) => s.specialty_id === doctor.specialty_id,
+          );
+          const hospital = hospitalsData.find(
+            (h) => h.hospital_id === doctor.hospital_id,
+          );
           return { ...doctor, specialty, hospital };
         });
-
-        const formattedAppointmentsData = appointmentsData.map((appointment) => {
-          const user = usersInfoData.find((u) => u.user_id === appointment.user_id);
-          const doctor = formattedDoctors.find((d) => d.doctor_id === appointment.doctor_id);
-          return { ...appointment, user, doctor };
-        });
-
-        const formattedSearchData = (doctorsData || [])
-          .map((doctor) => ({
-            id: doctor.doctor_id,
-            name: doctor.doctor_name,
-            category: "แพทย์",
-          }))
-          .concat(
-            (hospitalsData || []).map((hospital) => ({
-              id: hospital.hospital_id,
-              name: hospital.hospital_name,
-              category: "โรงพยาบาล",
-            }))
-          )
-          .concat(
-            (specialtiesData || []).map((specialty) => ({
-              id: specialty.specialty_id,
-              name: specialty.specialty_name,
-              category: "ความชำนาญ",
-            }))
-          );
-
-        setSearchData(formattedSearchData);
         setDoctors(formattedDoctors);
         setSpecialties(specialtiesData);
         setHospitals(hospitalsData);
-        setAppointments(formattedAppointmentsData);
-        setUsersInfo(usersInfoData);
-        setSymptomsListData(symptomsListData);
       })(),
       {
         id: "fetch-data-toast",
         loading: "กำลังโหลดข้อมูล...",
         success: <b>โหลดข้อมูลสำเร็จ!</b>,
         error: <b>โหลดข้อมูลล้มเหลว</b>,
-      }
+      },
     );
   };
+
   useEffect(() => {
     fetchAndSetData();
   }, []);
@@ -160,7 +190,7 @@ export const DataProvider = ({ children }) => {
         updateUserInfo,
         fetchAndSetData,
         sendEmailForApprove,
-        sendEmailForCancel
+        sendEmailForCancel,
       }}
     >
       {children}
