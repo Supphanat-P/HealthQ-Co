@@ -1,27 +1,45 @@
 import AppointmentHeader from "../../../components/Shared/AppointmentHeader";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useData } from "../../../Context/DataContext";
+import { useEffect } from "react";
 import toast from "react-hot-toast";
+import axios from "axios";
+
+const apiUrl = 'http://localhost:3000/users/login'
 
 const Login = () => {
-  const { login, currentUser } = useData();
-  const [identifier, setIdentifier] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  if (currentUser) return navigate("/");
 
-  const handleLogin = async () => {
-    if (!identifier || !password) {
-      toast.error("กรุณากรอกอีเมลและรหัสผ่าน");
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) navigate("/");
+  }, [navigate]);
+
+  const handleLogin = async (e) => {
+    e.preventDefault(); 
+
+    if (!email || !password) {
+      toast.error("กรุณากรอกอีเมลและรหัสผ่านให้ครบ");
       return;
     }
+
     try {
-      await login(identifier, password);
+      const response = await axios.post(apiUrl, {
+        email: email, 
+        password: password
+      });
+
+      const token = response.data.token; 
+      localStorage.setItem("token", token); 
+
       toast.success("เข้าสู่ระบบสำเร็จ");
-      navigate("/");
+      navigate("/"); 
+
     } catch (err) {
-      toast.error(err.message || "เกิดข้อผิดพลาดในการเข้าสู่ระบบ");
+      const errorMsg = err.response?.data?.message || "เกิดข้อผิดพลาด";
+      toast.error(errorMsg);
     }
   };
 
@@ -31,11 +49,11 @@ const Login = () => {
 
       <div className="w-[500px] h-40 flex flex-col justify-center items-center mt-2">
         <input
-          value={identifier}
-          onChange={(e) => setIdentifier(e.target.value)}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           type="text"
-          name="identifier"
-          id="identifier"
+          name="email"
+          id="email"
           className="w-1/2! mb-3 px-4! py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-transparent"
           placeholder="Email"
         />

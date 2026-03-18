@@ -1,28 +1,27 @@
-import React, { useEffect } from "react";
-import { useData } from "../../../Context/DataContext";
+import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 const Logout = () => {
-  const { logout } = useData();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const performLogout = async () => {
+    const performLogout = () => {
       try {
-        await logout();
+        localStorage.removeItem("token");
+
         toast.success("ออกจากระบบสำเร็จ");
 
         setTimeout(() => {
-          navigate("/");  
+          navigate("/");
         }, 600);
-      } catch (err) {
+      } catch {
         toast.error("ออกจากระบบไม่สำเร็จ");
       }
     };
 
     performLogout();
-  }, [logout, navigate]);
+  }, [navigate]);
 
   return null;
 };
