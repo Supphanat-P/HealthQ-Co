@@ -41,9 +41,9 @@ const DoctorCard = ({ doctor, selectedDate, lang}) => {
         <div className="hospital-badge w-100 bg-none">
           <img
             src={`${import.meta.env.BASE_URL}Hospitals/${
-              doctor.hospital.imgPath
+              doctor.imgPath
             }`}
-            alt={doctor.hospital.hospital_name || "hospital"}
+            alt={doctor.hospital_name || "hospital"}
             className="hospital-logo p-2"
             style={{ width: "50px", height: "50px" }}
           />
@@ -63,7 +63,7 @@ const DoctorCard = ({ doctor, selectedDate, lang}) => {
             <div className="d-flex align-items-center bg-light px-2 py-1 rounded chip">
               <FaUserDoctor />
               <small className="mb-0 ms-2">
-                {doctor.specialty.specialty_name}
+                {doctor.specialty_name}
               </small>
             </div>
           </div>
@@ -72,7 +72,7 @@ const DoctorCard = ({ doctor, selectedDate, lang}) => {
             <div className="d-flex align-items-center bg-light px-2 py-1 rounded chip">
               <FaHospital />
               <small className="mb-0 ms-2">
-                {doctor.hospital.hospital_name}
+                {doctor.hospital_name}
               </small>
             </div>
           </div>

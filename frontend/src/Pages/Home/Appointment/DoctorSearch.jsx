@@ -52,14 +52,14 @@ const DoctorSearch = ({ lang }) => {
     }
     if (selectedHospital) {
       filteredDoctors = filteredDoctors.filter(
-        (doctor) => doctor.hospital.hospital_name === selectedHospital
+        (doctor) => doctor.hospital_name === selectedHospital
       );
     }
 
     // กรองตามสาขา
     if (selectedSpecialty) {
       filteredDoctors = filteredDoctors.filter(
-        (doctor) => doctor.specialty.specialty_name === selectedSpecialty
+        (doctor) => doctor.specialty_name === selectedSpecialty
       );
     }
 
