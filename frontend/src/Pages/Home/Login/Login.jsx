@@ -8,6 +8,7 @@ import axios from "axios";
 const apiUrl = 'http://localhost:3000/users/login'
 
 const Login = () => {
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ const Login = () => {
   }, [navigate]);
 
   const handleLogin = async (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
 
     if (!email || !password) {
       toast.error("กรุณากรอกอีเมลและรหัสผ่านให้ครบ");
@@ -27,15 +28,20 @@ const Login = () => {
 
     try {
       const response = await axios.post(apiUrl, {
-        email: email, 
+        email: email,
         password: password
       });
 
-      const token = response.data.token; 
-      localStorage.setItem("token", token); 
+      const token = response.data.token;
+      const currentUser = response.data.users;
+      localStorage.setItem("token", token);
+
+      if (currentUser) {
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+      }
 
       toast.success("เข้าสู่ระบบสำเร็จ");
-      navigate("/"); 
+      navigate("/");
 
     } catch (err) {
       const errorMsg = err.response?.data?.message || "เกิดข้อผิดพลาด";
