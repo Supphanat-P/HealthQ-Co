@@ -6,7 +6,25 @@ dotenv.config();
 
 const mailRouters = Router();
 
-mailRouters.post("/sendEmail", (req, res) => {
+function generateOtp() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+const otpStore = {};
+
+// ================== 🔥 SEND OTP ==================
+mailRouters.post("/send-otp-Email", (req, res) => {
+  const { email } = req.body; //  รับ email จาก client
+
+  if (!email) {
+    return res.status(400).json({ message: "Email is required" });
+  }
+
+  const otp = generateOtp();
+
+  //  เก็บ OTP
+  otpStore[email] = otp;
+
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
@@ -19,14 +37,13 @@ mailRouters.post("/sendEmail", (req, res) => {
 
   const option = {
     from: process.env.SMTP_MAIL,
-    to: "naphat.chsasa@gmail.com",
-    subject: "test project",
-    html: `<p>nigga</p>`,
+    to: email, 
+    subject: "Your OTP Code",
+    html: `<h2>Your OTP is: ${otp}</h2>`,
   };
 
   transporter.sendMail(option, (err, info) => {
     if (err) {
-      console.log(err);
       return res.status(500).json({
         message: "failed",
         error: err,
@@ -34,16 +51,34 @@ mailRouters.post("/sendEmail", (req, res) => {
     }
 
     return res.json({
-      message: "success",
-      info,
+      message: "OTP sent",
+      //  เอา otp ออกตอนใช้จริง
+      otp, 
     });
   });
 });
 
-export default mailRouters; // ✅ สำคัญ
 
+// ================== VERIFY OTP ==================
+mailRouters.post("/verify-otp", (req, res) => {
+  const { email, otp } = req.body;
 
+  if (otpStore[email] === otp) {
+    delete otpStore[email]; //  ลบหลังใช้
 
+    return res.json({
+      success: true,
+      message: "OTP correct",
+    });
+  }
+
+  return res.status(400).json({
+    success: false,
+    message: "OTP incorrect",
+  });
+});
+
+export default mailRouters;
 // import nodemailer from "nodemailer";
 // const transporter = nodemailer.createTransport({
 //   host: "smtp.gmail.com",
