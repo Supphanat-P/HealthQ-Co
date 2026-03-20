@@ -8,6 +8,7 @@ dotenv.config();
 import { Router } from "express";
 import dataRouter from './routers/dataRouter.js'
 import usersRouter from "./routers/usersRouter.js";
+import mailRouters from "./routers/mailRouters.js";
 
 
 const app = express();
@@ -23,6 +24,7 @@ app.get("/", (req, res) => {
 app.use('/data', dataRouter);
 app.use('/users', usersRouter);
 
+app.use('/mail', mailRouters);
 
 const HOST = 'localhost'
 const PORT = process.env.PORT || 3000;
