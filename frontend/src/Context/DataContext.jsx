@@ -139,17 +139,12 @@ export const DataProvider = ({ children }) => {
         const specialtiesData = await fetchSpecialties();
         const doctorsData = await fetchDoctors();
         const hospitalsData = await fetchHospitals();
-
-        const formattedDoctors = doctorsData.map((doctor) => {
-          const specialty = specialtiesData.find(
-            (s) => s.specialty_id === doctor.specialty_id,
-          );
-          const hospital = hospitalsData.find(
-            (h) => h.hospital_id === doctor.hospital_id,
-          );
-          return { ...doctor, specialty, hospital };
-        });
-        setDoctors(formattedDoctors);
+        // const appointmentsData = await fetchAppointments();
+        // const usersInfoData = await fetchUsersInfo();
+        const symptomsListData = await fetchSymptomsList();
+        
+        setSymptomsListData(symptomsListData);
+        setDoctors(doctorsData);
         setSpecialties(specialtiesData);
         setHospitals(hospitalsData);
       })(),
