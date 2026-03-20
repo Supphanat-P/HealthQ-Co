@@ -4,7 +4,7 @@ services:
     container_name: healthq-mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: healthq
       MYSQL_USER: healthq
       MYSQL_PASSWORD: healthq
