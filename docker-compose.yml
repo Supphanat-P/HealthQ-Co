@@ -1,0 +1,37 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: healthq-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: healthq
+      MYSQL_USER: healthq
+      MYSQL_PASSWORD: healthq
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - healthq-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: healthq-phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+    ports:
+      - "8080:80"
+    networks:
+      - healthq-network
+    depends_on:
+      - db
+
+networks:
+  healthq-network:
+    name: healthq-network
+
+volumes:
+  mysql-data:
