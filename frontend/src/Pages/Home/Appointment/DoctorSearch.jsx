@@ -1,13 +1,13 @@
-import React, { use, useContext, useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
-import { DataContext } from "../../../Context/DataContext";
+import React, { useEffect, useState } from "react";
+import {useData } from "../../../Context/DataContext";
 import DoctorCard from "../../../components/DoctorSearch/DoctorCard";
 import DoctorFilter from "../../../components/DoctorSearch/DoctorFilter";
 import { Button } from "react-bootstrap";
 import dayjs from "dayjs";
 
 const DoctorSearch = ({ lang }) => {
-  const { doctors, specialties, hospitals } = useContext(DataContext);
+  const { doctors, specialties, hospitals } = useData();
   const location = useLocation();
 
   const text = {
@@ -25,12 +25,15 @@ const DoctorSearch = ({ lang }) => {
   // รับค่าเริ่มต้นจากหน้าอื่น
   useEffect(() => {
     if (location && location.state) {
-      const { selectedSpecialty: initSpec, selectedHospital: initHosp, selectedSearch: initSearch } =
-        location.state;
+      const {
+        selectedSpecialty: initSpec,
+        selectedHospital: initHosp,
+        selectedSearch: initSearch,
+      } = location.state;
       if (initSpec) setSelectedSpecialty(initSpec);
       if (initHosp) setSelectedHospital(initHosp);
       if (initSearch) setSelectedSearch(initSearch);
-      console.log(initSearch)
+      console.log(initSearch);
     }
   }, [location]);
 
@@ -47,19 +50,19 @@ const DoctorSearch = ({ lang }) => {
     // กรองตามหมอ
     if (selectedDoctor) {
       filteredDoctors = filteredDoctors.filter(
-        (doctor) => doctor.doctor_id === selectedDoctor
+        (doctor) => doctor.doctor_id === selectedDoctor,
       );
     }
     if (selectedHospital) {
       filteredDoctors = filteredDoctors.filter(
-        (doctor) => doctor.hospital_name === selectedHospital
+        (doctor) => doctor.hospital_name === selectedHospital,
       );
     }
 
     // กรองตามสาขา
     if (selectedSpecialty) {
       filteredDoctors = filteredDoctors.filter(
-        (doctor) => doctor.specialty_name === selectedSpecialty
+        (doctor) => doctor.specialty_name === selectedSpecialty,
       );
     }
 

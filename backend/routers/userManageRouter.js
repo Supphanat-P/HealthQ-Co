@@ -4,8 +4,8 @@ import db from '../config/db.js';
 const router = express.Router();
 
 // [POST] /getAppointmentsByUser - ดึงประวัติการนัดหมายของผู้ป่วย
-router.post('/getAppointmentsByUser', (req, res) => {
-    const userId = '433eac44-22ce-11f1-8430-d61288df7fa9';
+router.get('/getAppointmentsByUser', (req, res) => {
+    const userId = req.query.user_id;
 
     const sql = "SELECT * FROM appointments WHERE user_id = ?"; 
 
@@ -20,8 +20,8 @@ router.post('/getAppointmentsByUser', (req, res) => {
 });
 
 // [POST] /getUserInfo - ดึงข้อมูลส่วนตัวของผู้ป่วย
-router.post('/getUserInfo', (req, res) => {
-    const userId = '433eac44-22ce-11f1-8430-d61288df7fa9'; 
+router.get('/getUserInfo', (req, res) => {
+    const userId = req.query.user_id; 
 
     const sql = "SELECT user_id, first_name, last_name, email, phone FROM users_info WHERE user_id = ?";
 

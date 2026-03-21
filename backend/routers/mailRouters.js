@@ -1,6 +1,7 @@
 import express, { Router } from "express";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import db from '../config/db.js';
 
 dotenv.config();
 

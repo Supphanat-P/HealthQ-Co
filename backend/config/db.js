@@ -1,18 +1,19 @@
-import mysql from 'mysql2';
+import mysql from "mysql2";
 
 const db = mysql.createConnection({
-    host: '127.0.0.1',         
-    user: 'root',                
-    password: 'rootpassword',    
-    database: 'healthq'        
+  host: "localhost",
+  port: 3306,
+  user: "healthq",
+  password: "healthq",
+  database: "healthq",
 });
 
 db.connect((err) => {
-    if (err) {
-        console.error('Error connecting to MySQL:', err);
-        return;
-    }
-    console.log('Connected to MySQL Database inside Docker');
+  if (err) {
+    console.error("Error connecting to MySQL:", err.message);
+  } else {
+    console.log("Connected to the MySQL database.");
+  }
 });
 
 export default db;

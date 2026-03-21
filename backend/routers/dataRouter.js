@@ -1,23 +1,8 @@
 import { Router } from "express";
 import mysql from "mysql2";
+import db from '../config/db.js';
 
 const dataRouter = Router();
-
-const connection = mysql.createConnection({
-  host: "localhost",
-  port: 3306,
-  user: "healthq",
-  password: "healthq",
-  database: "healthq",
-});
-
-connection.connect((err) => {
-  if (err) {
-    console.error("Error connecting to MySQL:", err.message);
-  } else {
-    console.log("Connected to the MySQL database.");
-  }
-});
 
 dataRouter.get("/doctors", (req, res) => {
   const sql = `
@@ -25,7 +10,7 @@ dataRouter.get("/doctors", (req, res) => {
     JOIN specialties ON doctors.specialty_id = specialties.specialty_id 
     JOIN hospitals ON doctors.hospital_id = hospitals.hospital_id
     `;
-  connection.query(sql, (err, results) => {
+  db.query(sql, (err, results) => {
     if (err) {
       res.status(500).json({ error: err.message });
       return;
@@ -36,7 +21,7 @@ dataRouter.get("/doctors", (req, res) => {
 
 dataRouter.get("/hospitals", (req, res) => {
   const sql = "SELECT * FROM hospitals";
-  connection.query(sql, (err, results) => {
+  db.query(sql, (err, results) => {
     if (err) {
       res.status(500).json({ error: err.message });
       return;
@@ -47,7 +32,7 @@ dataRouter.get("/hospitals", (req, res) => {
 
 dataRouter.get("/specialties", (req, res) => {
   const sql = "SELECT * FROM specialties";
-  connection.query(sql, (err, results) => {
+  db.query(sql, (err, results) => {
     if (err) {
       res.status(500).json({ error: err.message });
       return;
@@ -63,7 +48,7 @@ dataRouter.get("/appointments", (req, res) => {
   JOIN hospitals ON doctors.hospital_id = hospitals.hospital_id
   JOIN specialties ON doctors.specialty_id = specialties.specialty_id
   `;
-  connection.query(sql, (err, results) => {
+  db.query(sql, (err, results) => {
     if (err) {
       res.status(500).json({ error: err.message });
       return;
@@ -74,7 +59,7 @@ dataRouter.get("/appointments", (req, res) => {
 
 dataRouter.get("/users", (req, res) => {
   const sql = "SELECT * FROM users";
-  connection.query(sql, (err, results) => {
+  db.query(sql, (err, results) => {
     if (err) {
       res.status(500).json({ error: err.message });
       return;
@@ -85,7 +70,7 @@ dataRouter.get("/users", (req, res) => {
 
 dataRouter.get("/users_info", (req, res) => {
   const sql = "SELECT * FROM users_info";
-  connection.query(sql, (err, results) => {
+  db.query(sql, (err, results) => {
     if (err) {
       res.status(500).json({ error: err.message });
       return;
@@ -96,7 +81,7 @@ dataRouter.get("/users_info", (req, res) => {
 
 dataRouter.get("/symptoms_list", (req, res) => {
   const sql = "SELECT * FROM symptoms";
-  connection.query(sql, (err, results) => {
+  db.query(sql, (err, results) => {
     if (err) {
       res.status(500).json({ error: err.message });
       return;

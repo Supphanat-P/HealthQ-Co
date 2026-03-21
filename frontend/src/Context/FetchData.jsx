@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { useData } from "./DataContext";
 
 const URL = "http://localhost:3000";
 
@@ -30,9 +31,13 @@ export const fetchSpecialties = async () => {
     throw new Error("Failed to fetch specialties: " + error.message);
   }
 };
-export const fetchAppointments = async () => {
-   try {
-    const response = await axios.get(`${URL}/data/appointments`);
+
+export const fetchAppointmentsByUser = async (userId) => {
+  try {
+    const response = await axios.get(
+      `${URL}/userManage/getAppointmentsByUser`,
+      { params: { user_id: userId } }, 
+    );
     return response.data.appointments;
   } catch (error) {
     throw new Error("Failed to fetch appointments: " + error.message);
@@ -48,7 +53,7 @@ export const fetchUsersInfo = async () => {
   }
 };
 
-// export const fetchSymptomsList = async () => { 
+// export const fetchSymptomsList = async () => {
 //   try {
 //     const response = await axios.get(`${URL}/data/symptoms_list`);
 //     return response.data.symptoms;
@@ -115,7 +120,6 @@ export const createAppointment = async (
   return { appointment: appointmentData[0], slots: slotData };
 };
 
-
 //z9
 export async function sendOtpForRegistration(to, otp) {
   try {
@@ -169,9 +173,8 @@ export const sendEmailForApprove = async ({
     if (!res.ok) {
       return { success: false, message: data.message || "Server error" };
     }
-    
-    return { success: data.success };
 
+    return { success: data.success };
   } catch (err) {
     return { success: false, message: err.message };
   }

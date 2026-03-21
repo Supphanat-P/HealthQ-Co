@@ -2,6 +2,8 @@ import { Router } from "express";
 import bcrypt from "bcryptjs";
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
+import db from '../config/db.js';
+
 dotenv.config()
 
 const JWT_SECRET = process.env.JWT_SECRET

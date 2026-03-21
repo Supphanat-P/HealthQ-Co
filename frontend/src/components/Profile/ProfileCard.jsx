@@ -16,7 +16,7 @@ const ProfileCard = ({ lang }) => {
   const [bloodValue, setBloodValue] = useState("");
 
   //jo
-  const findUserId = usersInfo.find((u) => u.user_id === currentUser?.user_id);
+  const findUserId = usersInfo.find((u) => u.user_id === currentUser);
   console.log(currentUser, findUserId, usersInfo);
 
   useEffect(() => {
