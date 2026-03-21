@@ -15,6 +15,7 @@ const ProfileCard = ({ lang }) => {
   const [isBloodOpen, setIsBloodOpen] = useState(false);
   const [bloodValue, setBloodValue] = useState("");
 
+  //jo
   const findUserId = usersInfo.find((u) => u.user_id === currentUser?.user_id);
   console.log(currentUser, findUserId, usersInfo);
 
