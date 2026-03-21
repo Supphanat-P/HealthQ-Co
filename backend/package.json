@@ -2,23 +2,28 @@
   "name": "healthq-backend",
   "version": "1.0.0",
   "description": "Backend for HealthQ",
-  "main": "server.js",
+  "main": "app.js",
+  "type": "module",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^17.2.3",
-    "express": "^4.21.2",
-    "nodemailer": "^7.0.10",
+    "@getbrevo/brevo": "^3.0.1",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^4.22.1",
+    "jsonwebtoken": "^9.0.3",
+    "mysql2": "^3.20.0",
+    "nodemailer": "^7.0.11",
+    "resend": "2.1.0",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7",
     "twilio": "^5.10.6"
   },
   "devDependencies": {
+    "nodeman": "^1.1.2",
     "nodemon": "^3.0.1"
   }
 }
