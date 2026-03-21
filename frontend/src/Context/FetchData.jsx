@@ -48,15 +48,15 @@ export const fetchUsersInfo = async () => {
   }
 };
 
-export const fetchSymptomsList = async () => { 
-  try {
-    const response = await axios.get(`${URL}/data/symptoms_list`);
-    return response.data.symptoms;
-  }
-    catch (error) {
-    throw new Error("Failed to fetch symptoms list: " + error.message);
-    }
-  };
+// export const fetchSymptomsList = async () => { 
+//   try {
+//     const response = await axios.get(`${URL}/data/symptoms_list`);
+//     return response.data.symptoms;
+//   }
+//     catch (error) {
+//     throw new Error("Failed to fetch symptoms list: " + error.message);
+//     }
+//   };
 
 //pond ทำตรงนี้
 export const createAppointment = async (

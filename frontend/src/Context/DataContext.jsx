@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import dayjs from "dayjs";
+import { jwtDecode } from "jwt-decode"
 import {
   fetchSpecialties,
   fetchDoctors,
   fetchHospitals,
   fetchAppointments,
   fetchUsersInfo,
-  fetchSymptomsList,
+  // fetchSymptomsList,
   createAppointment,
   sendOtpForRegistration,
   createUserAccount,
@@ -39,38 +40,23 @@ export const DataProvider = ({ children }) => {
 
   const [currentUser, setCurrentUser] = useState(() => {
     try {
-      const u = localStorage.getItem("user");
-      return u ? JSON.parse(u) : null;
+      const token = localStorage.getItem("token");
+
+      // ถ้าไม่มี token ก็ไม่ต้องทำอะไร คืนค่า null กลับไป
+      if (!token) return null;
+
+      // ใช้ jwtDecode แกะ token ออกมา
+      const decoded = jwtDecode(token);
+
+      // ดึงแค่ id ออกมาส่งคืนไป 
+      return decoded?.id || null;
+
     } catch (err) {
+      // ดักไว้เผื่อ Token มั่วหรือหมดอายุ เว็บจะได้ไม่พัง 
+      console.error("Token พังเว้ย แกะไม่ได้!", err);
       return null;
     }
   });
-
-  const login = async (email, password) => {
-    try {
-      const user = await loginFromFetchData(email, password);
-
-      const simulatedToken = "custom_auth_token_" + user.user_id;
-
-      setToken(simulatedToken);
-      setCurrentUser(user);
-      localStorage.setItem("token", simulatedToken);
-      localStorage.setItem("user", JSON.stringify(user));
-      return { user };
-    } catch (err) {
-      console.error("Login error:", err.message);
-      throw err;
-    }
-  };
-
-  const logout = () => {
-    setToken("");
-    setCurrentUser(null);
-    try {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-    } catch (err) {}
-  };
 
   // const fetchAndSetData = async () => {
   //   toast.promise(
@@ -140,10 +126,10 @@ export const DataProvider = ({ children }) => {
         const doctorsData = await fetchDoctors();
         const hospitalsData = await fetchHospitals();
         // const appointmentsData = await fetchAppointments();
-        // const usersInfoData = await fetchUsersInfo();
-        const symptomsListData = await fetchSymptomsList();
-        
-        setSymptomsListData(symptomsListData);
+        // const symptomsListData = await fetchSymptomsList();
+        const usersInfoData = await fetchUsersInfo();
+        // setSymptomsListData(symptomsListData);
+        setUsersInfo(usersInfoData);
         setDoctors(doctorsData);
         setSpecialties(specialtiesData);
         setHospitals(hospitalsData);
@@ -174,8 +160,6 @@ export const DataProvider = ({ children }) => {
         token,
         currentUser,
         isLogin: !!token,
-        login,
-        logout,
         searchData,
         error,
         symptomsListData,

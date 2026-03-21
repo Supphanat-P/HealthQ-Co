@@ -9,7 +9,6 @@ export function buildSymptomsIntro({
     ? hospitals.map((h) => `- ${h.hospital_name}`).join("\n")
     : "- ไม่มีข้อมูลโรงพยาบาลในขณะนี้";
 
-  console.log("doctors:", doctors);
   const doctorList = doctors.length
     ? doctors
         .map(

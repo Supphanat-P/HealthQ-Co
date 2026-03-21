@@ -2,13 +2,14 @@ import AppointmentHeader from "../../../components/Shared/AppointmentHeader";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+// import { useData } from "../../../Context/DataContext";
 import toast from "react-hot-toast";
 import axios from "axios";
-
-const apiUrl = 'http://localhost:3000/users/login'
+// import { use } from "react";
+import { jwtDecode } from "jwt-decode";
+const apiUrl = "http://localhost:3000/users/login";
 
 const Login = () => {
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -29,20 +30,20 @@ const Login = () => {
     try {
       const response = await axios.post(apiUrl, {
         email: email,
-        password: password
+        password: password,
       });
 
       const token = response.data.token;
-      const currentUser = response.data.users;
       localStorage.setItem("token", token);
 
-      if (currentUser) {
-        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+      const decoded = jwtDecode(token);
+
+      if (decoded && decoded.id) {
+        localStorage.setItem("currentUser", JSON.stringify(decoded.id));
       }
 
       toast.success("เข้าสู่ระบบสำเร็จ");
       navigate("/");
-
     } catch (err) {
       const errorMsg = err.response?.data?.message || "เกิดข้อผิดพลาด";
       toast.error(errorMsg);
