@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import dayjs from "dayjs";
+import { jwtDecode } from "jwt-decode"
 import {
   fetchSpecialties,
   fetchDoctors,
@@ -40,11 +41,19 @@ export const DataProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(() => {
     try {
       const token = localStorage.getItem("token");
+
+      // ถ้าไม่มี token ก็ไม่ต้องทำอะไร คืนค่า null กลับไป
       if (!token) return null;
 
-      const decoded = parseJwt(token);
-      return decoded;
+      // ใช้ jwtDecode แกะ token ออกมา
+      const decoded = jwtDecode(token);
+
+      // ดึงแค่ id ออกมาส่งคืนไป 
+      return decoded?.id || null;
+
     } catch (err) {
+      // ดักไว้เผื่อ Token มั่วหรือหมดอายุ เว็บจะได้ไม่พัง 
+      console.error("Token พังเว้ย แกะไม่ได้!", err);
       return null;
     }
   });
