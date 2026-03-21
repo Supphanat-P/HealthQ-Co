@@ -20,7 +20,11 @@ connection.connect((err) => {
 });
 
 dataRouter.get("/doctors", (req, res) => {
-  const sql = "SELECT * FROM doctors";
+  const sql = `
+    SELECT * FROM doctors 
+    JOIN specialties ON doctors.specialty_id = specialties.specialty_id 
+    JOIN hospitals ON doctors.hospital_id = hospitals.hospital_id
+    `;
   connection.query(sql, (err, results) => {
     if (err) {
       res.status(500).json({ error: err.message });
@@ -53,13 +57,51 @@ dataRouter.get("/specialties", (req, res) => {
 });
 
 dataRouter.get("/appointments", (req, res) => {
-  const sql = "SELECT * FROM appointments";
+  const sql = `
+  SELECT * FROM appointments 
+  JOIN doctors ON appointments.doctor_id = doctors.doctor_id
+  JOIN hospitals ON doctors.hospital_id = hospitals.hospital_id
+  JOIN specialties ON doctors.specialty_id = specialties.specialty_id
+  `;
   connection.query(sql, (err, results) => {
     if (err) {
       res.status(500).json({ error: err.message });
       return;
     }
     res.json({ appointments: results });
+  });
+});
+
+dataRouter.get("/users", (req, res) => {
+  const sql = "SELECT * FROM users";
+  connection.query(sql, (err, results) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json({ users: results });
+  });
+});
+
+dataRouter.get("/users_info", (req, res) => {
+  const sql = "SELECT * FROM users_info";
+  connection.query(sql, (err, results) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json({ users: results });
+  });
+});
+
+dataRouter.get("/symptoms_list", (req, res) => {
+  const sql = "SELECT * FROM symptoms";
+  connection.query(sql, (err, results) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json({ symptoms: results });
   });
 });
 

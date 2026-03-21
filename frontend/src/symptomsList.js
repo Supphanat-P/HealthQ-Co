@@ -13,7 +13,7 @@ export function buildSymptomsIntro({
     ? doctors
         .map(
           (d) =>
-            `- (${d.doctor_name}) (${d.specialty.specialty_name}) (${d.hospital.hospital_name})`
+            `- (${d.doctor_name}) (${d.specialty_name}) (${d.hospital_name})`,
         )
         .join("\n")
     : "- ไม่มีข้อมูลแพทย์ในขณะนี้";
@@ -25,7 +25,7 @@ export function buildSymptomsIntro({
   const symptomList = symptomsListData.length
     ? symptomsListData
         .map(
-          (item) => `- อาการ: ${item.symptom} → แผนก: ${item.specialty_name}`
+          (item) => `- อาการ: ${item.symptom} → แผนก: ${item.specialty_name}`,
         )
         .join("\n")
     : "- ไม่มีข้อมูลอาการตัวอย่างในขณะนี้";

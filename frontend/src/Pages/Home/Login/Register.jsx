@@ -1,16 +1,20 @@
 import AppointmentHeader from "../../../components/Shared/AppointmentHeader";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useData } from "../../../Context/DataContext";
 import toast from "react-hot-toast";
 import OtpInput from "react-otp-input";
 import React from "react";
 
+const apiUrl = 'http://localhost:3000/users/register';
+
 const Register = () => {
   const navigate = useNavigate();
-  const { currentUser, usersInfo } = useData();
-  if (currentUser) return navigate("/");
-  const { sendOtpForRegistration, createUserAccount, fetchAndSetData } = useData();
+
+  // Check for existing token
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) navigate("/");
+  }, [navigate]);
 
   const [identifier, setIdentifier] = useState("");
   const [step, setStep] = useState("input");
@@ -22,78 +26,54 @@ const Register = () => {
   const [fName, setFName] = useState("");
   const [lName, setLName] = useState("");
 
+  // OTP
   const sendOtp = async () => {
-
-    const existUser = usersInfo.find((u) => u.email === identifier); // หาว่ามี email ซ้ำกับที่มีอยู่แล้วไหม
-
-    if (existUser) {
-      toast.error("อีเมลนี้มีผู้ใช้แล้ว");
-      return;
-    }
-    if (!identifier) {
-      toast.error("กรุณากรอกอีเมล");
-      return;
-    }
-    try {
-      setIsSending(true);
-
-      const randomOtp = Math.floor(100000 + Math.random() * 900000).toString();
-      setOtp(randomOtp);
-
-      const result = await sendOtpForRegistration(identifier, randomOtp);
-      console.log("OTP Result:", randomOtp)
-
-      if (!result.success) {
-        throw new Error(result.message || "ส่ง OTP ล้มเหลว");
-      }
-
-      if (result.success) {
-        toast.success("ส่ง OTP สำเร็จ");
-        setStep("otp");
-      }
-
-    } catch (err) {
-      console.error("OTP Error:", err);
-      toast.error(err.message);
-    } finally {
-      setIsSending(false);
-    }
+    setIsSending(true); 
+    console.log(otp);   
+    
+    setStep("otp");
+    setIsSending(false);
   };
 
   const otpVerify = () => {
-    if (!userOtp) {
-      toast.error("กรุณากรอกรหัส OTP");
-      return;
-    }
-    if (userOtp === otp) {
-      toast.success("ยืนยันรหัส OTP สำเร็จ");
-      setStep("password");
-    } else {
-      toast.error("รหัส OTP ไม่ถูกต้อง");
-    }
+    setStep("password"); 
   };
 
+  // fetch ยิงไปหา userRouter 
   const confirmRegistration = async () => {
     if (password !== confirmPassword) {
       toast.error("รหัสผ่านไม่ตรงกัน");
       return;
     }
+
     try {
-      const result = await createUserAccount(identifier, password, fName, lName);
-      if (!result.success) {
+      // ยิง POST Request ไปหา backend เพื่อสร้าง user ใหม่
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: identifier,
+          password: password,
+          role_id: 2 // บังคับใส่ role_id ไปก่อนเพราะ Backend ต้องการ
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
         throw new Error(result.message || "สมัครสมาชิกไม่สำเร็จ");
       }
-      if (result.success) {
-        await fetchAndSetData();
-        toast.success("สมัครสมาชิกสำเร็จ");
-        setStep("done");
-        setTimeout(() => navigate("/login"), 2000);
-      }
+
+      toast.success("สมัครสมาชิกสำเร็จแล้ว");
+      setStep("done");
+      setTimeout(() => navigate("/login"), 2000);
+
     } catch (err) {
       toast.error(err.message);
     }
   };
-
   return (
     <div className="w-[500px] h-fit mx-auto shadow-xl mt-5! bg-white rounded-lg! overflow-hidden">
       <AppointmentHeader label="สมัครสมาชิก" />

@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import toast from "react-hot-toast";
 import axios from "axios";
 
-const URL = "http://localhost:578";
+const URL = "http://localhost:3000";
 
 export const fetchDoctors = async () => {
   try {
@@ -31,33 +31,34 @@ export const fetchSpecialties = async () => {
   }
 };
 export const fetchAppointments = async () => {
-  const { data, error } = await supabase
-    .from("appointments")
-    .select("*, appointment_slots(slot_datetime)");
-  if (error) {
-    throw new Error(error.message);
+   try {
+    const response = await axios.get(`${URL}/data/appointments`);
+    return response.data.appointments;
+  } catch (error) {
+    throw new Error("Failed to fetch appointments: " + error.message);
   }
-  return data;
 };
 
 export const fetchUsersInfo = async () => {
-  const { data, error } = await supabase
-    .from("users_info")
-    .select("*, users(*)");
-  if (error) {
-    throw new Error(error.message);
+  try {
+    const response = await axios.get(`${URL}/data/users_info`);
+    return response.data.users;
+  } catch (error) {
+    throw new Error("Failed to fetch users info: " + error.message);
   }
-  return data;
 };
 
-export const fetchSymptomsList = async () => {
-  const { data, error } = await supabase.from("symptoms").select("*");
-  if (error) {
-    throw new Error(error.message);
-  }
-  return data;
-};
+// export const fetchSymptomsList = async () => { 
+//   try {
+//     const response = await axios.get(`${URL}/data/symptoms_list`);
+//     return response.data.symptoms;
+//   }
+//     catch (error) {
+//     throw new Error("Failed to fetch symptoms list: " + error.message);
+//     }
+//   };
 
+//pond ทำตรงนี้
 export const createAppointment = async (
   user_id,
   doctor_id,
@@ -114,6 +115,8 @@ export const createAppointment = async (
   return { appointment: appointmentData[0], slots: slotData };
 };
 
+
+//z9
 export async function sendOtpForRegistration(to, otp) {
   try {
     const res = await fetch("http://localhost:578/send-otp-email", {
@@ -199,6 +202,7 @@ export const sendEmailForCancel = async ({ to, subject }) => {
   }
 };
 
+//map
 export const createUserAccount = async (identifier, password, fName, lName) => {
   try {
     if (!identifier || !password || !fName || !lName) {
@@ -296,6 +300,7 @@ export const login = async (email, password) => {
   }
 };
 
+//jo
 export const updateUserInfo = async (user_id, data) => {
   const { data: userData, error: userError } = await supabase
     .from("users")
