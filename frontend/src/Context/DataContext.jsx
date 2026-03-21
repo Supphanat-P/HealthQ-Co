@@ -6,7 +6,7 @@ import {
   fetchHospitals,
   fetchAppointments,
   fetchUsersInfo,
-  fetchSymptomsList,
+  // fetchSymptomsList,
   createAppointment,
   sendOtpForRegistration,
   createUserAccount,
@@ -39,38 +39,15 @@ export const DataProvider = ({ children }) => {
 
   const [currentUser, setCurrentUser] = useState(() => {
     try {
-      const u = localStorage.getItem("user");
-      return u ? JSON.parse(u) : null;
+      const token = localStorage.getItem("token");
+      if (!token) return null;
+
+      const decoded = parseJwt(token);
+      return decoded;
     } catch (err) {
       return null;
     }
   });
-
-  const login = async (email, password) => {
-    try {
-      const user = await loginFromFetchData(email, password);
-
-      const simulatedToken = "custom_auth_token_" + user.user_id;
-
-      setToken(simulatedToken);
-      setCurrentUser(user);
-      localStorage.setItem("token", simulatedToken);
-      localStorage.setItem("user", JSON.stringify(user));
-      return { user };
-    } catch (err) {
-      console.error("Login error:", err.message);
-      throw err;
-    }
-  };
-
-  const logout = () => {
-    setToken("");
-    setCurrentUser(null);
-    try {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-    } catch (err) {}
-  };
 
   // const fetchAndSetData = async () => {
   //   toast.promise(
@@ -140,10 +117,10 @@ export const DataProvider = ({ children }) => {
         const doctorsData = await fetchDoctors();
         const hospitalsData = await fetchHospitals();
         // const appointmentsData = await fetchAppointments();
-        // const usersInfoData = await fetchUsersInfo();
-        const symptomsListData = await fetchSymptomsList();
-        
-        setSymptomsListData(symptomsListData);
+        // const symptomsListData = await fetchSymptomsList();
+        const usersInfoData = await fetchUsersInfo();
+        // setSymptomsListData(symptomsListData);
+        setUsersInfo(usersInfoData);
         setDoctors(doctorsData);
         setSpecialties(specialtiesData);
         setHospitals(hospitalsData);
@@ -174,8 +151,6 @@ export const DataProvider = ({ children }) => {
         token,
         currentUser,
         isLogin: !!token,
-        login,
-        logout,
         searchData,
         error,
         symptomsListData,
