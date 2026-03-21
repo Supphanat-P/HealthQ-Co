@@ -5,10 +5,10 @@ import dotenv from "dotenv";
 dotenv.config();
 
 //Routers import
-import { Router } from "express";
 import dataRouter from './routers/dataRouter.js'
 import usersRouter from "./routers/usersRouter.js";
 import mailRouters from "./routers/mailRouters.js";
+import userManageRouter from "./routers/userManageRouter.js"
 
 
 const app = express();
@@ -23,7 +23,7 @@ app.get("/", (req, res) => {
 
 app.use('/data', dataRouter);
 app.use('/users', usersRouter);
-
+app.use('/userManage', userManageRouter);
 app.use('/mail', mailRouters);
 
 const HOST = 'localhost'
