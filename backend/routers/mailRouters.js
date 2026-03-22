@@ -6,7 +6,7 @@ dotenv.config();
 
 const mailRouters = Router();
 
-// ================== 🔥 CREATE TRANSPORTER (ใช้ร่วมกัน) ==================
+// ==================  CREATE TRANSPORTER (ใช้ร่วมกัน) ==================
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 465,
@@ -17,7 +17,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// ================== 🔥 OTP FUNCTION ==================
+// ==================  OTP FUNCTION ==================
 function generateOtp() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
@@ -25,7 +25,7 @@ function generateOtp() {
 // เก็บ OTP + expire
 const otpStore = {};
 
-// ================== 🔥 SEND OTP ==================
+// ==================  SEND OTP ==================
 // {
 //   "email": "email@gmail.com"
 // }
@@ -63,7 +63,7 @@ mailRouters.post("/send-otp-email", async (req, res) => {
   }
 });
 
-// ================== 🔥 VERIFY OTP ==================
+// ==================  VERIFY OTP ==================
 // {
 //   "email": "email@gmail.com",
 //   "otp": ""
@@ -101,7 +101,7 @@ mailRouters.post("/verify-otp", (req, res) => {
   });
 });
 
-// ================== 🔥 APPROVE EMAIL ==================
+// ==================  APPROVE EMAIL ==================
 // {
 //   "to": "email@gmail.com",
 //   "details": {
@@ -137,7 +137,7 @@ mailRouters.post("/send-approve-email", async (req, res) => {
   }
 });
 
-// ================== 🔥 CANCEL EMAIL ==================
+// ==================  CANCEL EMAIL ==================
 // {
 //   "to": "emailมึง@gmail.com"
 // }
