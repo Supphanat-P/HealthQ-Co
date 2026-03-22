@@ -57,4 +57,4 @@ appointmentRouter.get("/hello", async (req, res) => {
  console.log("hello")
 });
 
-export default router;
+export default appointmentRouter;
