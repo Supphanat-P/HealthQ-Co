@@ -25,6 +25,8 @@ app.get("/", (req, res) => {
   res.send("HealthQ Backend is running");
 });
 
+/// Swagger setup
+
 const swaggerOptions = {
   definition: {
     openapi: "3.0.0",
@@ -41,6 +43,8 @@ const swaggerOptions = {
 const swaggerSpec = swaggerJsDoc(swaggerOptions);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+///
 
 app.use("/data", dataRouter);
 app.use("/users", usersRouter);
