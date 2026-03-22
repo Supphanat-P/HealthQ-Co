@@ -1,19 +1,14 @@
-import mysql from "mysql2";
+import mysql from "mysql2/promise";
 
-const db = mysql.createConnection({
+const db = mysql.createPool({
   host: "localhost",
   port: 3306,
   user: "healthq",
   password: "healthq",
   database: "healthq",
-});
-
-db.connect((err) => {
-  if (err) {
-    console.error("Error connecting to MySQL:", err.message);
-  } else {
-    console.log("Connected to the MySQL database.");
-  }
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
 });
 
 export default db;
