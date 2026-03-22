@@ -17,7 +17,6 @@ const transporter = nodemailer.createTransport({
 });
 
 const otpStore = {};
-// { email: { otp, expiresAt } }
 
 function generateOtp() {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -29,6 +28,19 @@ function generateOtp() {
  *   post:
  *     summary: Send OTP to email
  *     tags: [Mail]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: test@gmail.com
+ *     responses:
+ *       200:
+ *         description: OTP sent successfully
  */
 mailRouters.post("/send-otp-email", async (req, res) => {
   try {
@@ -52,9 +64,8 @@ mailRouters.post("/send-otp-email", async (req, res) => {
       html: `<h2>Your OTP is: ${otp}</h2>`,
     });
 
-    return res.json({
-      message: "OTP sent successfully",
-    });
+    return res.json({ message: "OTP sent successfully" });
+
   } catch (error) {
     return res.status(500).json({
       message: "Send OTP failed",
@@ -69,6 +80,21 @@ mailRouters.post("/send-otp-email", async (req, res) => {
  *   post:
  *     summary: Verify OTP
  *     tags: [Mail]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               otp:
+ *                 type: string
+ *                 example: "123456"
+ *     responses:
+ *       200:
+ *         description: OTP verified
  */
 mailRouters.post("/verify-otp", (req, res) => {
   const { email, otp } = req.body;
@@ -100,6 +126,37 @@ mailRouters.post("/verify-otp", (req, res) => {
   });
 });
 
+/**
+ * @swagger
+ * /mail/send-approve-email:
+ *   post:
+ *     summary: Send approve email
+ *     tags: [Mail]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               to:
+ *                 type: string
+ *                 example: user@gmail.com
+ *               details:
+ *                 type: object
+ *                 properties:
+ *                   hospitalName:
+ *                     type: string
+ *                   doctorName:
+ *                     type: string
+ *                   date:
+ *                     type: string
+ *                   time:
+ *                     type: string
+ *     responses:
+ *       200:
+ *         description: Email sent
+ */
 mailRouters.post("/send-approve-email", async (req, res) => {
   const { to, details } = req.body;
 
@@ -121,11 +178,32 @@ mailRouters.post("/send-approve-email", async (req, res) => {
     });
 
     return res.json({ success: true });
+
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 });
 
+/**
+ * @swagger
+ * /mail/send-cancel-email:
+ *   post:
+ *     summary: Send cancel email
+ *     tags: [Mail]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               to:
+ *                 type: string
+ *                 example: user@gmail.com
+ *     responses:
+ *       200:
+ *         description: Email sent
+ */
 mailRouters.post("/send-cancel-email", async (req, res) => {
   const { to } = req.body;
 
@@ -142,6 +220,7 @@ mailRouters.post("/send-cancel-email", async (req, res) => {
     });
 
     return res.json({ success: true });
+
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
