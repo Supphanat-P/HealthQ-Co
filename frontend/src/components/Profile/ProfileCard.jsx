@@ -164,7 +164,7 @@ const ProfileCard = ({ lang }) => {
           ? form.regular_med.split(",").map((w) => w.trim())
           : [],
       };
-
+      //jo
       const { error } = await supabase
         .from("users_info")
         .update(updateData)

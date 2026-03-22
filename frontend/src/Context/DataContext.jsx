@@ -58,6 +58,7 @@ export const DataProvider = ({ children }) => {
         setDoctors(doctorsData);
         setHospitals(hospitalsData);
         setAppointments(appointmentsData);
+        console.log(appointmentsData);
         setUsersInfo(usersInfoData);
       })(),
       {
