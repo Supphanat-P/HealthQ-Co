@@ -26,6 +26,9 @@ function generateOtp() {
 const otpStore = {};
 
 // ================== 🔥 SEND OTP ==================
+// {
+//   "email": "email@gmail.com"
+// }
 mailRouters.post("/send-otp-email", async (req, res) => {
   const { email } = req.body;
 
@@ -61,6 +64,10 @@ mailRouters.post("/send-otp-email", async (req, res) => {
 });
 
 // ================== 🔥 VERIFY OTP ==================
+// {
+//   "email": "email@gmail.com",
+//   "otp": ""
+// }
 mailRouters.post("/verify-otp", (req, res) => {
   const { email, otp } = req.body;
 
@@ -95,6 +102,15 @@ mailRouters.post("/verify-otp", (req, res) => {
 });
 
 // ================== 🔥 APPROVE EMAIL ==================
+// {
+//   "to": "email@gmail.com",
+//   "details": {
+//     "hospitalName": "ABC",
+//     "doctorName": "Dr.X",
+//     "date": "2026-03-22",
+//     "time": "10:00"
+//   }
+// }
 mailRouters.post("/send-approve-email", async (req, res) => {
   const { to, details } = req.body;
 
@@ -122,6 +138,9 @@ mailRouters.post("/send-approve-email", async (req, res) => {
 });
 
 // ================== 🔥 CANCEL EMAIL ==================
+// {
+//   "to": "emailมึง@gmail.com"
+// }
 mailRouters.post("/send-cancel-email", async (req, res) => {
   const { to } = req.body;
 
