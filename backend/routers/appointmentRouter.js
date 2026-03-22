@@ -1,4 +1,3 @@
-import express from "express";
 import Router from "express";
 const appointmentRouter = Router();
 
@@ -53,8 +52,4 @@ appointmentRouter.put("/cancelAppointment", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-appointmentRouter.get("/hello", async (req, res) => {
- console.log("hello")
-});
-
-export default router;
+export default appointmentRouter;
