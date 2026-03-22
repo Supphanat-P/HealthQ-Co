@@ -1,21 +1,33 @@
 import express, { Router } from "express";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
-import db from '../config/db.js';
 
 dotenv.config();
 
 const mailRouters = Router();
 
+// ================== 🔥 CREATE TRANSPORTER (ใช้ร่วมกัน) ==================
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: process.env.SMTP_MAIL,
+    pass: process.env.SMTP_PASS,
+  },
+});
+
+// ================== 🔥 OTP FUNCTION ==================
 function generateOtp() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
+// เก็บ OTP + expire
 const otpStore = {};
 
 // ================== 🔥 SEND OTP ==================
-mailRouters.post("/send-otp-Email", (req, res) => {
-  const { email } = req.body; //  รับ email จาก client
+mailRouters.post("/send-otp-email", async (req, res) => {
+  const { email } = req.body;
 
   if (!email) {
     return res.status(400).json({ message: "Email is required" });
@@ -23,150 +35,112 @@ mailRouters.post("/send-otp-Email", (req, res) => {
 
   const otp = generateOtp();
 
-  //  เก็บ OTP
-  otpStore[email] = otp;
-
-  const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    auth: {
-      user: process.env.SMTP_MAIL,
-      pass: process.env.SMTP_PASS,
-    },
-  });
-
-  const option = {
-    from: process.env.SMTP_MAIL,
-    to: email, 
-    subject: "Your OTP Code",
-    html: `<h2>Your OTP is: ${otp}</h2>`,
+  // เก็บ OTP + อายุ 5 นาที
+  otpStore[email] = {
+    otp,
+    expire: Date.now() + 5 * 60 * 1000,
   };
 
-  transporter.sendMail(option, (err, info) => {
-    if (err) {
-      return res.status(500).json({
-        message: "failed",
-        error: err,
-      });
-    }
+  try {
+    await transporter.sendMail({
+      from: process.env.SMTP_MAIL,
+      to: email,
+      subject: "Your OTP Code",
+      html: `<h2>Your OTP is: ${otp}</h2>`,
+    });
 
     return res.json({
       message: "OTP sent",
-      //  เอา otp ออกตอนใช้จริง
-      otp, 
     });
-  });
+  } catch (error) {
+    return res.status(500).json({
+      message: "failed",
+      error: error.message,
+    });
+  }
 });
 
-
-// ================== VERIFY OTP ==================
+// ================== 🔥 VERIFY OTP ==================
 mailRouters.post("/verify-otp", (req, res) => {
   const { email, otp } = req.body;
 
-  if (otpStore[email] === otp) {
-    delete otpStore[email]; //  ลบหลังใช้
-
-    return res.json({
-      success: true,
-      message: "OTP correct",
-    });
+  if (!email || !otp) {
+    return res.status(400).json({ message: "Missing data" });
   }
 
-  return res.status(400).json({
-    success: false,
-    message: "OTP incorrect",
+  const data = otpStore[email];
+
+  if (!data) {
+    return res.status(400).json({ message: "No OTP found" });
+  }
+
+  // เช็คหมดอายุ
+  if (Date.now() > data.expire) {
+    delete otpStore[email];
+    return res.status(400).json({ message: "OTP expired" });
+  }
+
+  // เช็ค OTP
+  if (data.otp !== otp) {
+    return res.status(400).json({ message: "OTP incorrect" });
+  }
+
+  // ใช้แล้วลบ
+  delete otpStore[email];
+
+  return res.json({
+    success: true,
+    message: "OTP correct",
   });
 });
 
+// ================== 🔥 APPROVE EMAIL ==================
+mailRouters.post("/send-approve-email", async (req, res) => {
+  const { to, details } = req.body;
+
+  if (!to || !details) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  try {
+    await transporter.sendMail({
+      from: `"HealthQ" <${process.env.SMTP_MAIL}>`,
+      to,
+      subject: "Appointment Approved",
+      html: `
+        <p>Hospital: ${details.hospitalName}</p>
+        <p>Doctor: ${details.doctorName}</p>
+        <p>Date: ${details.date}</p>
+        <p>Time: ${details.time}</p>
+      `,
+    });
+
+    return res.json({ success: true });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+// ================== 🔥 CANCEL EMAIL ==================
+mailRouters.post("/send-cancel-email", async (req, res) => {
+  const { to } = req.body;
+
+  if (!to) {
+    return res.status(400).json({ message: "Missing email" });
+  }
+
+  try {
+    await transporter.sendMail({
+      from: `"HealthQ" <${process.env.SMTP_MAIL}>`,
+      to,
+      subject: "Appointment Cancelled",
+      html: `<p>Your appointment has been cancelled</p>`,
+    });
+
+    return res.json({ success: true });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
 export default mailRouters;
-// import nodemailer from "nodemailer";
-// const transporter = nodemailer.createTransport({
-//   host: "smtp.gmail.com",
-//   port: 587,
-//   secure: false,
-//   auth: {
-//     user: process.env.SMTP_USER,
-//     pass: process.env.SMTP_PASS,
-//   },
-// });
-// app.post("/send-otp-email", async (req, res) => {
-//   const { to, text } = req.body;
-
-//   if (!to || !text) {
-//     return res.status(400).json({ message: "Missing required fields" });
-//   }
-
-//   const mailOptions = {
-//     from: `"HealthQ" <${process.env.SMTP_USER}>`,
-//     to,
-//     subject: "Your OTP Code",
-//     html: `<p>Your verification code is: <strong>${text}</strong></p>`,
-//   };
-
-//   try {
-//     const result = await transporter.sendMail(mailOptions);
-//     console.log("Email sent:", result);
-
-//     return res.json({ message: "Email sent", success: true });
-//   } catch (error) {
-//     console.error("Email error:", error);
-
-//     return res.status(500).json({
-//       success: false,
-//       message: error.message || "Email sending failed",
-//     });
-//   }
-// });
-
-// app.post("/send-approve-email", async (req, res) => {
-//   const { to, details } = req.body;
-
-//   if (!to || !details) {
-//     return res.status(400).json({ message: "Missing required fields" });
-//   }
-
-//   const mailOptions = {
-//     from: `"HealthQ" <${process.env.SMTP_USER}>`,
-//     to,
-//     subject: details.title || "Your Appointment Has Been Approved",
-//     html: `
-//       <p>Hospital Name: <strong>${details.hospitalName}</strong></p>
-//       <p>Doctor Name: <strong>${details.doctorName}</strong></p>
-//       <p>Patient Name: <strong>${details.patientName}</strong></p>
-//       <p>Date: <strong>${details.date}</strong></p>
-//       <p>Time: <strong>${details.time}</strong></p>
-//     `,
-//   };
-
-//   try {
-//     const result = await transporter.sendMail(mailOptions);
-//     return res.json({ success: true, message: "Email sent" });
-//   } catch (error) {
-//     return res.status(500).json({ success: false, message: error.message });
-//   }
-// });
-
-// app.post("/send-cancel-email", async (req, res) => {
-//   const { to, details } = req.body;
-
-//   if (!to || !details) {
-//     return res.status(400).json({ message: "Missing required fields" });
-//   }
-
-//   const mailOptions = {
-//     from: `"HealthQ" <${process.env.SMTP_USER}>`,
-//     to,
-//     subject: details.title || "Your Appointment Has Been Cancelled",
-//     html: `
-//       <p>Sorrry!. your appointment has been cancelled</p>
-//     `,
-//   };
-
-//   try {
-//     const result = await transporter.sendMail(mailOptions);
-//     return res.json({ success: true, message: "Email sent" });
-//   } catch (error) {
-//     return res.status(500).json({ success: false, message: error.message });
-//   }
-// });
