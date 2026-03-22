@@ -10,16 +10,22 @@ const Profile = ({ lang }) => {
   const [selectedTab, setSelectedTab] = useState("1");
   const { isLogin } = useData();
   if (isLogin === false) {
-    return (Navigate({ to: "/login" }));
+    return <Navigate to="/login" />;
   }
   return (
     <>
-      <AppointmentHeader label={lang === "TH" ? "ข้อมูลส่วนตัว" : "PERSONAL INFO"} lang={lang} />
+      <AppointmentHeader
+        label={lang === "TH" ? "ข้อมูลส่วนตัว" : "PERSONAL INFO"}
+        lang={lang}
+      />
 
       <ProfileCard lang={lang} />
 
-      <AppointmentHeader label={lang === "TH" ? "ประวัติการนัดหมาย" : "APPOINTMENT HISTORY"} lang={lang} />
-      <AppointmentHistory lang={lang}/>
+      <AppointmentHeader
+        label={lang === "TH" ? "ประวัติการนัดหมาย" : "APPOINTMENT HISTORY"}
+        lang={lang}
+      />
+      <AppointmentHistory lang={lang} />
     </>
   );
 };

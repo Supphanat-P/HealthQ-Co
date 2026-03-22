@@ -73,10 +73,10 @@ const Doctorinfo = () => {
             <Col md={8}>
               <h2 className="text-navy fw-bold">{doctor?.doctor_name}</h2>
               <p className="text-secondary mb-1">
-                สาขา/ความชำนาญ: {doctor?.specialty.specialty_name}
+                สาขา/ความชำนาญ: {doctor?.specialty_name}
               </p>
               <p className="text-secondary mb-1">
-                โรงพยาบาล: {doctor?.hospital.hospital_name}
+                โรงพยาบาล: {doctor?.hospital_name}
               </p>
             </Col>
           </Row>
@@ -86,8 +86,10 @@ const Doctorinfo = () => {
               <p className="text-dark fw-bold fs-4">การศึกษาและใบรับรอง</p>
               <hr style={{ border: "1px solid #737373" }} />
 
-              <p>แพทย์ผู้เชี่ยวชาญด้าน: {doctor?.specialty.specialty_name}</p>
-              <p>จบการศึกษาที่: <b>{selectedUniversity}</b></p>
+              <p>แพทย์ผู้เชี่ยวชาญด้าน: {doctor?.specialty_name}</p>
+              <p>
+                จบการศึกษาที่: <b>{selectedUniversity}</b>
+              </p>
             </Col>
           </Row>
 

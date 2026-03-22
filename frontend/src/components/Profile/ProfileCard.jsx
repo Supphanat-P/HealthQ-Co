@@ -15,7 +15,9 @@ const ProfileCard = ({ lang }) => {
   const [isBloodOpen, setIsBloodOpen] = useState(false);
   const [bloodValue, setBloodValue] = useState("");
 
-  const findUserId = usersInfo.find((u) => u.user_id === currentUser?.user_id);
+  //jo
+  const findUserId = usersInfo.find((u) => u.user_id === currentUser);
+  console.log(currentUser, findUserId, usersInfo);
 
   useEffect(() => {
     if (!findUserId) return;
@@ -49,7 +51,7 @@ const ProfileCard = ({ lang }) => {
   const filteredNation = nations.filter((n) =>
     (lang === "TH" ? n.th : n.en)
       .toLowerCase()
-      .includes(nationValue.toLowerCase())
+      .includes(nationValue.toLowerCase()),
   );
 
   const displayGender = {
@@ -245,9 +247,10 @@ const ProfileCard = ({ lang }) => {
             onClick={() => setSelectedTab(tab)}
             className={`
               px-5! py-3! text-base! font-semibold! transition-all! relative! rounded-xl!
-              ${selectedTab === tab
-                ? "text-indigo-900! after:w-full!"
-                : "text-gray-400! hover:text-indigo-600! hover:bg-gray-50! after:w-0!"
+              ${
+                selectedTab === tab
+                  ? "text-indigo-900! after:w-full!"
+                  : "text-gray-400! hover:text-indigo-600! hover:bg-gray-50! after:w-0!"
               }
               after:content-['']! after:absolute! after:bottom-0! after:left-0! after:h-1! after:bg-indigo-900! after:rounded-full! after:transition-all! after:duration-300!
             `}
@@ -516,7 +519,7 @@ const ProfileCard = ({ lang }) => {
                 <DisplayValue>
                   {String(form.phone || text.notSpecified).replace(
                     /(\d{3})(\d{3})(\d{4})/,
-                    "$1-$2-$3"
+                    "$1-$2-$3",
                   )}
                 </DisplayValue>
               ) : (
@@ -551,7 +554,7 @@ const ProfileCard = ({ lang }) => {
                 <DisplayValue>
                   {String(form.emergency || text.notSpecified).replace(
                     /(\d{3})(\d{3})(\d{4})/,
-                    "$1-$2-$3"
+                    "$1-$2-$3",
                   )}
                 </DisplayValue>
               ) : (

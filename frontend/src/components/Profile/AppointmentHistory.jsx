@@ -80,6 +80,7 @@ const AppointmentHistory = ({ lang }) => {
     today.getDate() + 7
   );
 
+  //jo
   const userAppointments = useMemo(() => {
     return (appointments || []).filter(
       (a) => String(a.user_id) === String(user?.user_id)
