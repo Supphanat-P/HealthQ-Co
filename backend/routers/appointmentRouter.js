@@ -10,7 +10,6 @@ appointmentRouter.post("/create", async (req, res) => {
     if (!doctorId || !patientId || !date || !time) {
       return res.status(400).json({ message: "Missing data" });
     }
-
     const newAppointment = new Appointment({
       doctorId,
       patientId,
@@ -51,7 +50,7 @@ appointmentRouter.put("/cancelAppointment", async (req, res) => {
   }
 });
 
-appointmentRouter.post("/phone", async (req, res) => {
+appointmentRouter.get("/phone", async (req, res) => {
   console.log("📱 phone HIT");
   res.send("phone OK");
 });

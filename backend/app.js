@@ -12,6 +12,7 @@ import usersRouter from "./routers/usersRouter.js";
 import mailRouters from "./routers/mailRouters.js";
 import userManageRouter from "./routers/userManageRouter.js";
 import { version } from "react";
+import appointmentRouter from "./routers/appointmentRouter.js";
 
 const app = express();
 app.use(bodyParser.json());
@@ -50,6 +51,7 @@ app.use("/data", dataRouter);
 app.use("/users", usersRouter);
 app.use("/userManage", userManageRouter);
 app.use("/mail", mailRouters);
+app.use("/appointment" , appointmentRouter);
 
 const HOST = "localhost";
 const PORT = process.env.PORT || 3000;
