@@ -1,10 +1,35 @@
-import express from 'express';
-import db from '../config/db.js';
+import { Router } from "express";
+import db from "../config/db.js";
 
-const router = express.Router();
+const userManageRouter = Router();
 
-// [POST] /getAppointmentsByUser - ดึงประวัติการนัดหมายของผู้ป่วย
-router.get('/getAppointmentsByUser', (req, res) => {
+/**
+ * @swagger
+ * tags:
+ *   - name: userManage
+ *     description: User and Appointment management APIs
+ */
+
+/**
+ * @swagger
+ * /userManage/getAppointmentsByUser:
+ *   get:
+ *     summary: ดึงประวัติการนัดหมายของผู้ป่วย (Get appointment history by user ID)
+ *     tags: [userManage]
+ *     parameters:
+ *       - in: query
+ *         name: user_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID ของผู้ป่วย
+ *     responses:
+ *       200:
+ *         description: Success
+ *       500:
+ *         description: Server error
+ */
+userManageRouter.get('/getAppointmentsByUser', (req, res) => {
     const userId = req.query.user_id;
 
     const sql = "SELECT * FROM appointments WHERE user_id = ?"; 
@@ -19,8 +44,26 @@ router.get('/getAppointmentsByUser', (req, res) => {
     });
 });
 
-// [POST] /getUserInfo - ดึงข้อมูลส่วนตัวของผู้ป่วย
-router.get('/getUserInfo', (req, res) => {
+/**
+ * @swagger
+ * /userManage/getUserInfo:
+ *   get:
+ *     summary: ดึงข้อมูลส่วนตัวของผู้ป่วย (Get user information)
+ *     tags: [userManage]
+ *     parameters:
+ *       - in: query
+ *         name: user_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID ของผู้ป่วย
+ *     responses:
+ *       200:
+ *         description: Success
+ *       500:
+ *         description: Server error
+ */
+userManageRouter.get('/getUserInfo', (req, res) => {
     const userId = req.query.user_id; 
 
     const sql = "SELECT user_id, first_name, last_name, email, phone FROM users_info WHERE user_id = ?";
@@ -35,8 +78,38 @@ router.get('/getUserInfo', (req, res) => {
     });
 });
 
-// [POST] /updateUserInfo - แก้ไขข้อมูลส่วนตัวของผู้ป่วย
-router.post('/updateUserInfo', (req, res) => {
+/**
+ * @swagger
+ * /userManage/updateUserInfo:
+ *   post:
+ *     summary: แก้ไขข้อมูลส่วนตัวของผู้ป่วย (Update user information)
+ *     tags: [userManage]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               phone:
+ *                 type: string
+ *                 example: "0812345678"
+ *               emergency_contact:
+ *                 type: string
+ *                 example: "0898765432"
+ *               weight:
+ *                 type: number
+ *                 example: 65.5
+ *               height:
+ *                 type: number
+ *                 example: 170
+ *     responses:
+ *       200:
+ *         description: User information updated successfully
+ *       500:
+ *         description: Update Failed
+ */
+userManageRouter.post('/updateUserInfo', (req, res) => {
     const userId = req.user?.id || '433eac44-22ce-11f1-8430-d61288df7fa9'; 
     const { phone, emergency_contact, weight, height } = req.body;
 
@@ -59,4 +132,4 @@ router.post('/updateUserInfo', (req, res) => {
     });
 });
 
-export default router;
+export default userManageRouter;
