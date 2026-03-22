@@ -15,7 +15,6 @@ import Loading from "./components/Shared/Loading";
 import DoctorSearch from "./Pages/Home/Appointment/DoctorSearch";
 import Doctorinfo from "./Pages/Home/Doctorinfo";
 import Home from "./Pages/Home/Home";
-import ShowData from "./Pages/Adminstrator/ShowData";
 import AppoitmentData from "./Pages/Adminstrator/AppointmentData";
 import AllDataDisplay from "./Pages/AllDataDisplay";
 import Login from "./Pages/Home/Login/Login";
@@ -77,7 +76,6 @@ function AppContent() {
         <Route path="/appointment" element={<Appointment lang={lang} setLang={setLang} />} />
         <Route path="/doctorsearch" element={<DoctorSearch lang={lang} setLang={setLang} />} />
         <Route path="/doctorinfo" element={<Doctorinfo lang={lang} setLang={setLang} />} />
-        <Route path="/showdata" element={<ShowData lang={lang} setLang={setLang} />} />
         <Route path="/admindoctorschedule" element={<AdminDoctorSchedule lang={lang} setLang={setLang} />} />
         <Route path="/appointments" element={<AppoitmentData lang={lang} setLang={setLang} />} />
         <Route path="/alldata" element={<AllDataDisplay lang={lang} setLang={setLang} />} />

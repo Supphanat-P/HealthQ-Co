@@ -1,107 +1,153 @@
 import { Router } from "express";
-import mysql from "mysql2";
+import db from "../config/db.js";
 
 const dataRouter = Router();
 
-const connection = mysql.createConnection({
-  host: "localhost",
-  port: 3306,
-  user: "healthq",
-  password: "healthq",
-  database: "healthq",
-});
+/**
+ * @swagger
+ * tags:
+ *   name: Data
+ *   description: Data management APIs
+ */
 
-connection.connect((err) => {
-  if (err) {
-    console.error("Error connecting to MySQL:", err.message);
-  } else {
-    console.log("Connected to the MySQL database.");
-  }
-});
 
+
+/**
+ * @swagger
+ * /data/doctors:
+ *   get:
+ *     summary: Get all doctors with specialties and hospitals
+ *     tags: [Data]
+ *     responses:
+ *       200:
+ *         description: List of doctors
+ *       500:
+ *         description: Server error
+ */
 dataRouter.get("/doctors", (req, res) => {
   const sql = `
     SELECT * FROM doctors 
     JOIN specialties ON doctors.specialty_id = specialties.specialty_id 
     JOIN hospitals ON doctors.hospital_id = hospitals.hospital_id
-    `;
-  connection.query(sql, (err, results) => {
+  `;
+  db.query(sql, (err, results) => {
     if (err) {
-      res.status(500).json({ error: err.message });
-      return;
+      return res.status(500).json({ error: err.message });
     }
-    res.json({ doctors: results });
+    res.json(results);
   });
 });
 
+/**
+ * @swagger
+ * /data/hospitals:
+ *   get:
+ *     summary: Get all hospitals
+ *     tags: [Data]
+ *     responses:
+ *       200:
+ *         description: List of hospitals
+ */
 dataRouter.get("/hospitals", (req, res) => {
   const sql = "SELECT * FROM hospitals";
-  connection.query(sql, (err, results) => {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
-    }
-    res.json({ hospitals: results });
+  db.query(sql, (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(results);
   });
 });
 
+/**
+ * @swagger
+ * /data/specialties:
+ *   get:
+ *     summary: Get all specialties
+ *     tags: [Data]
+ *     responses:
+ *       200:
+ *         description: List of specialties
+ */
 dataRouter.get("/specialties", (req, res) => {
   const sql = "SELECT * FROM specialties";
-  connection.query(sql, (err, results) => {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
-    }
-    res.json({ specialties: results });
+  db.query(sql, (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(results);
   });
 });
 
+/**
+ * @swagger
+ * /data/appointments:
+ *   get:
+ *     summary: Get all appointments with doctor, hospital, and specialty
+ *     tags: [Data]
+ *     responses:
+ *       200:
+ *         description: List of appointments
+ */
 dataRouter.get("/appointments", (req, res) => {
   const sql = `
-  SELECT * FROM appointments 
-  JOIN doctors ON appointments.doctor_id = doctors.doctor_id
-  JOIN hospitals ON doctors.hospital_id = hospitals.hospital_id
-  JOIN specialties ON doctors.specialty_id = specialties.specialty_id
+    SELECT * FROM appointments 
+    JOIN doctors ON appointments.doctor_id = doctors.doctor_id
+    JOIN hospitals ON doctors.hospital_id = hospitals.hospital_id
+    JOIN specialties ON doctors.specialty_id = specialties.specialty_id
   `;
-  connection.query(sql, (err, results) => {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
-    }
-    res.json({ appointments: results });
+  db.query(sql, (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(results);
   });
 });
 
+/**
+ * @swagger
+ * /data/users:
+ *   get:
+ *     summary: Get all users
+ *     tags: [Data]
+ *     responses:
+ *       200:
+ *         description: List of users
+ */
 dataRouter.get("/users", (req, res) => {
   const sql = "SELECT * FROM users";
-  connection.query(sql, (err, results) => {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
-    }
-    res.json({ users: results });
+  db.query(sql, (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(results);
   });
 });
 
+/**
+ * @swagger
+ * /data/users_info:
+ *   get:
+ *     summary: Get all users info
+ *     tags: [Data]
+ *     responses:
+ *       200:
+ *         description: List of user info
+ */
 dataRouter.get("/users_info", (req, res) => {
   const sql = "SELECT * FROM users_info";
-  connection.query(sql, (err, results) => {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
-    }
-    res.json({ users: results });
+  db.query(sql, (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(results);
   });
 });
 
+/**
+ * @swagger
+ * /data/symptoms_list:
+ *   get:
+ *     summary: Get all symptoms
+ *     tags: [Data]
+ *     responses:
+ *       200:
+ *         description: List of symptoms
+ */
 dataRouter.get("/symptoms_list", (req, res) => {
   const sql = "SELECT * FROM symptoms";
-  connection.query(sql, (err, results) => {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
-    }
-    res.json({ symptoms: results });
+  db.query(sql, (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(results);
   });
 });
 
