@@ -1,11 +1,9 @@
-import Router from "express";
-const appointmentRouter = Router();
-
-import Appointment from "../models/Appointment.js";
+import express from "express";
+const appointmentRouter = express.Router();
 
 // CREATE
 appointmentRouter.post("/create", async (req, res) => {
-  console.log("🔥 CREATE API HIT");
+  console.log(" CREATE HIT ");
   try {
     const { doctorId, patientId, date, time } = req.body;
 
@@ -52,4 +50,10 @@ appointmentRouter.put("/cancelAppointment", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+appointmentRouter.post("/phone", async (req, res) => {
+  console.log("📱 phone HIT");
+  res.send("phone OK");
+});
+
 export default appointmentRouter;
