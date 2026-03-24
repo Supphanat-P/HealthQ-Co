@@ -67,6 +67,6 @@ app.use("/appointment", appointmentRouter);
 
 // --- Start Server ---
 app.listen(PORT, HOST, () => {
-  console.log(`🚀 Server is running on http://${HOST}:${PORT}`);
-  console.log(`📖 Swagger Docs: http://${HOST}:${PORT}/api-docs`);
+  console.log(`Server is running on http://${HOST}:${PORT}`);
+  console.log(`Swagger Docs: http://${HOST}:${PORT}/api-docs`);
 });
