@@ -1,6 +1,8 @@
 import { Router } from "express";
 import db from "../config/db.js";
 
+import { getAllDoctors, getDoctorById } from "../models/dataModels.js";
+
 const dataRouter = Router();
 
 /**
@@ -10,13 +12,11 @@ const dataRouter = Router();
  *   description: Data management APIs
  */
 
-
-
 /**
  * @swagger
  * /data/doctors:
  *   get:
- *     summary: Get all doctors with specialties and hospitals
+ *     summary: Get all doctors
  *     tags: [Data]
  *     responses:
  *       200:
@@ -24,18 +24,48 @@ const dataRouter = Router();
  *       500:
  *         description: Server error
  */
-dataRouter.get("/doctors", (req, res) => {
-  const sql = `
-    SELECT * FROM doctors 
-    JOIN specialties ON doctors.specialty_id = specialties.specialty_id 
-    JOIN hospitals ON doctors.hospital_id = hospitals.hospital_id
-  `;
-  db.query(sql, (err, results) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
+dataRouter.get("/doctors", async (req, res) => {
+  try {
+    const doctors = await getAllDoctors();
+    res.status(200).json(doctors);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * @swagger
+ * /data/doctors/{doctor_id}:
+ *   get:
+ *     summary: Get Doctor by ID with specialty and hospital
+ *     tags: [Data]
+ *     parameters:
+ *       - in: path
+ *         name: doctor_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID Doctor ที่ต้องการ
+ *     responses:
+ *       200:
+ *         description: Doctor data
+ *       404:
+ *         description: Doctor not found
+ *       500:
+ *         description: Server error
+ */
+dataRouter.get("/doctors/:id", async (req, res) => {
+  try {
+    const doctor = await getDoctorById(req.params.id);
+
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found" });
     }
-    res.json(results);
-  });
+
+    res.status(200).json(doctor);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 /**
@@ -47,13 +77,18 @@ dataRouter.get("/doctors", (req, res) => {
  *     responses:
  *       200:
  *         description: List of hospitals
+ *       500:
+ *         description: List of symptoms
  */
-dataRouter.get("/hospitals", (req, res) => {
+dataRouter.get("/hospitals", async (req, res) => {
   const sql = "SELECT * FROM hospitals";
-  db.query(sql, (err, results) => {
-    if (err) return res.status(500).json({ error: err.message });
+
+  try {
+    const [results] = await db.query(sql);
     res.json(results);
-  });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 /**
@@ -65,13 +100,17 @@ dataRouter.get("/hospitals", (req, res) => {
  *     responses:
  *       200:
  *         description: List of specialties
+ *       500:
+ *         description: List of symptoms
  */
-dataRouter.get("/specialties", (req, res) => {
+dataRouter.get("/specialties", async (req, res) => {
   const sql = "SELECT * FROM specialties";
-  db.query(sql, (err, results) => {
-    if (err) return res.status(500).json({ error: err.message });
+  try {
+    const [results] = await db.query(sql);
     res.json(results);
-  });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 /**
@@ -83,18 +122,22 @@ dataRouter.get("/specialties", (req, res) => {
  *     responses:
  *       200:
  *         description: List of appointments
+ *       500:
+ *         description: List of symptoms
  */
-dataRouter.get("/appointments", (req, res) => {
+dataRouter.get("/appointments", async (req, res) => {
   const sql = `
     SELECT * FROM appointments 
     JOIN doctors ON appointments.doctor_id = doctors.doctor_id
     JOIN hospitals ON doctors.hospital_id = hospitals.hospital_id
     JOIN specialties ON doctors.specialty_id = specialties.specialty_id
   `;
-  db.query(sql, (err, results) => {
-    if (err) return res.status(500).json({ error: err.message });
+  try {
+    const [results] = await db.query(sql);
     res.json(results);
-  });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 /**
@@ -106,13 +149,17 @@ dataRouter.get("/appointments", (req, res) => {
  *     responses:
  *       200:
  *         description: List of users
+ *       500:
+ *         description: Server error
  */
-dataRouter.get("/users", (req, res) => {
-  const sql = "SELECT * FROM users";
-  db.query(sql, (err, results) => {
-    if (err) return res.status(500).json({ error: err.message });
+dataRouter.get("/users", async (req, res) => {
+  const sql = "SELECT user_id, email, full_name, created_at, updated_at, role_id FROM users";
+  try {
+    const [results] = await db.query(sql);
     res.json(results);
-  });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 /**
@@ -124,13 +171,17 @@ dataRouter.get("/users", (req, res) => {
  *     responses:
  *       200:
  *         description: List of user info
+ *       500:
+ *         description: List of symptoms
  */
-dataRouter.get("/users_info", (req, res) => {
+dataRouter.get("/users_info", async (req, res) => {
   const sql = "SELECT * FROM users_info";
-  db.query(sql, (err, results) => {
-    if (err) return res.status(500).json({ error: err.message });
+  try {
+    const [results] = await db.query(sql);
     res.json(results);
-  });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 /**
@@ -142,13 +193,17 @@ dataRouter.get("/users_info", (req, res) => {
  *     responses:
  *       200:
  *         description: List of symptoms
+ *       500:
+ *         description: List of symptoms
  */
-dataRouter.get("/symptoms_list", (req, res) => {
+dataRouter.get("/symptoms_list", async (req, res) => {
   const sql = "SELECT * FROM symptoms";
-  db.query(sql, (err, results) => {
-    if (err) return res.status(500).json({ error: err.message });
+  try {
+    const [results] = await db.query(sql);
     res.json(results);
-  });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 export default dataRouter;
