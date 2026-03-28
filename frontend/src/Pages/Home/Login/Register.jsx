@@ -28,18 +28,68 @@ const Register = () => {
 
   // OTP
   const sendOtp = async () => {
-    setIsSending(true); 
-    console.log(otp);   
-    
-    setStep("otp");
-    setIsSending(false);
+    if (!identifier) {
+      toast.error("กรุณากรอกอีเมล");
+      return;
+    }
+
+    setIsSending(true);
+
+    try {
+      const res = await fetch("http://localhost:3000/mail/send-otp-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: identifier }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.message);
+
+      toast.success("ส่ง OTP แล้ว");
+      setStep("otp");
+
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setIsSending(false);
+    }
   };
 
-  const otpVerify = () => {
-    setStep("password"); 
+  // 🔥 verify OTP
+  const otpVerify = async () => {
+    if (!userOtp) {
+      toast.error("กรุณากรอก OTP");
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:3000/mail/verify-otp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: identifier,
+          otp: userOtp,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.message);
+
+      toast.success("OTP ถูกต้อง");
+      setStep("password");
+
+    } catch (err) {
+      toast.error(err.message);
+    }
   };
 
-  // fetch ยิงไปหา userRouter 
+  // 🔥 สมัครจริง
   const confirmRegistration = async () => {
     if (password !== confirmPassword) {
       toast.error("รหัสผ่านไม่ตรงกัน");
@@ -47,7 +97,6 @@ const Register = () => {
     }
 
     try {
-      // ยิง POST Request ไปหา backend เพื่อสร้าง user ใหม่
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
@@ -56,7 +105,7 @@ const Register = () => {
         body: JSON.stringify({
           email: identifier,
           password: password,
-          role_id: 2 // บังคับใส่ role_id ไปก่อนเพราะ Backend ต้องการ
+          role_id: 2
         }),
       });
 
@@ -74,6 +123,7 @@ const Register = () => {
       toast.error(err.message);
     }
   };
+
   return (
     <div className="w-[500px] h-fit mx-auto shadow-xl mt-5! bg-white rounded-lg! overflow-hidden">
       <AppointmentHeader label="สมัครสมาชิก" />
