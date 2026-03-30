@@ -90,7 +90,7 @@ const Register = () => {
     }
   };
 
-  // fetch ยิงไปหา userRouter 
+  // 🔥 สมัครจริง
   const confirmRegistration = async () => {
     if (password !== confirmPassword) {
       toast.error("รหัสผ่านไม่ตรงกัน");
@@ -98,7 +98,6 @@ const Register = () => {
     }
 
     try {
-      // ยิง POST Request ไปหา backend เพื่อสร้าง user ใหม่
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
@@ -107,7 +106,7 @@ const Register = () => {
         body: JSON.stringify({
           email: identifier,
           password: password,
-          role_id: 2 // บังคับใส่ role_id ไปก่อนเพราะ Backend ต้องการ
+          role_id: 2
         }),
       });
 
