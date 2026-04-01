@@ -586,9 +586,8 @@ dataRouter.delete("/specialties/:id", async (req, res) => {
 
     return res.status(200).json({
       message: "ลบความชำนาญแพทย์เรียบร้อย",
-      deletedId: id
+      deletedId: id,
     });
-
   } catch (err) {
     console.error("[DELETE] Error:", err);
     return res.status(500).json({ error: err.message });
@@ -637,9 +636,11 @@ dataRouter.put("/updateSpecialty/:id", async (req, res) => {
     const { specialty_name } = req.body;
 
     const result = await updateSpecialtyById(specialtyId, {
-      specialty_name
+      specialty_name,
     });
-    res.status(200).json({ message: "Specialty updated successfully", ...result });
+    res
+      .status(200)
+      .json({ message: "Specialty updated successfully", ...result });
   } catch (err) {
     console.error("Update specialty error:", err);
     res.status(500).json({ error: err.message });
@@ -682,35 +683,34 @@ dataRouter.post("/specialties", async (req, res) => {
 
     if (!specialty_name) {
       return res.status(400).json({
-        message: "specialty_name ห้ามเป็นค่าว่าง"
+        message: "specialty_name ห้ามเป็นค่าว่าง",
       });
     }
 
     console.log(`[POST] Create specialty -> Name: ${specialty_name}`);
 
     const result = await insertSpecialties({
-      specialty_name
+      specialty_name,
     });
 
     return res.status(201).json({
       message: "สร้างข้อมูลสำเร็จ",
       data: {
-        specialty_name
-      }
+        specialty_name,
+      },
     });
-
   } catch (err) {
     console.error("[POST] Error:", err);
 
     if (err.code === "ER_DUP_ENTRY") {
       return res.status(409).json({
-        message: "specialty_id นี้มีอยู่แล้ว"
+        message: "specialty_id นี้มีอยู่แล้ว",
       });
     }
 
     return res.status(500).json({
       message: "เกิดข้อผิดพลาดในระบบ",
-      error: err.message
+      error: err.message,
     });
   }
 });
