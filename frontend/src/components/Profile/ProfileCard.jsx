@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useData } from "../../Context/DataContext";
-import { supabase } from "../../config/supabaseClient";
 import toast from "react-hot-toast";
 import dayjs from "dayjs";
 import { SquarePen, X, Save } from "lucide-react";
@@ -17,9 +16,6 @@ const ProfileCard = ({ lang }) => {
 
   //jo
   const findUserId = usersInfoByUserId;
-  console.log(
-    `currentUser: ${currentUser}, findUserId: ${JSON.stringify(findUserId)}`,
-  );
 
   useEffect(() => {
     if (!findUserId) return;

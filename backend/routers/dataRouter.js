@@ -133,9 +133,9 @@ dataRouter.delete("/deleteDoctor/:id", async (req, res) => {
 /**
  * @swagger
  * /data/updateDoctor/{id}:
- *   put:
- *     summary: แก้ไขข้อมูลแพทย์
- *     description: อัปเดตข้อมูลแพทย์ตาม ID
+ *   patch:
+ *     summary: แก้ไขข้อมูลแพทย์บางส่วน
+ *     description: อัปเดตเฉพาะ field ที่ส่งมา
  *     tags: [Doctors]
  *     parameters:
  *       - in: path
@@ -165,25 +165,34 @@ dataRouter.delete("/deleteDoctor/:id", async (req, res) => {
  *       200:
  *         description: แก้ไขข้อมูลแพทย์สำเร็จ
  *       400:
- *         description: ข้อมูลไม่ถูกต้อง
+ *         description: ไม่มีข้อมูลให้อัปเดต
  *       404:
  *         description: ไม่พบข้อมูลแพทย์
  *       500:
  *         description: เกิดข้อผิดพลาดที่เซิร์ฟเวอร์
  */
-dataRouter.put("/updateDoctor/:id", async (req, res) => {
+dataRouter.patch("/updateDoctor/:id", async (req, res) => {
   try {
     const doctorId = req.params.id;
-    const { doctor_name, specialty_id, hospital_id } = req.body;
+    const data = req.body;
 
-    const result = await updateDoctorById(doctorId, {
-      doctor_name,
-      specialty_id,
-      hospital_id,
+    if (!data || Object.keys(data).length === 0) {
+      return res.status(404).json({ message: "Missing data for update" });
+    }
+
+    const result = await updateDoctorById(doctorId, data);
+
+    res.status(200).json({
+      message: "Doctor updated successfully",
+      ...result,
     });
-    res.status(200).json({ message: "Doctor updated successfully", ...result });
   } catch (err) {
     console.error("Update doctor error:", err);
+
+    if (err.message === "No fields to update") {
+      return res.status(400).json({ error: err.message });
+    }
+
     res.status(500).json({ error: err.message });
   }
 });
@@ -239,10 +248,12 @@ dataRouter.post("/insertDoctor", async (req, res) => {
       doctor_id: result.insertId,
     });
   } catch (err) {
-    console.error("❌ Insert doctor error:", err);
+    console.error("Insert doctor error:", err);
     res.status(500).json({ error: err.message });
   }
 });
+
+///Doctors Endpoints
 
 /**
  * @swagger

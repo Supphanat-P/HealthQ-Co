@@ -19,42 +19,39 @@ export const DataProvider = ({ children }) => {
   const [hospitals, setHospitals] = useState([]);
   const [appointments, setAppointments] = useState([]);
   const [usersInfo, setUsersInfo] = useState([]);
-  const [usersInfoByUserId, setUsersInfoByUserId] = useState([]);
+  const [usersInfoByUserId, setUsersInfoByUserId] = useState(null);
 
-  const [token, setToken] = useState(() => {
-    return localStorage.getItem("token") || "";
-  });
+  const [token, setToken] = useState(localStorage.getItem("token") || "");
 
   const [currentUser, setCurrentUser] = useState(() => {
     try {
       const token = localStorage.getItem("token");
       if (!token) return null;
-
-      const decoded = jwtDecode(token);
-      return decoded?.id || null;
+      return jwtDecode(token)?.id || null;
     } catch {
       return null;
     }
   });
 
-  const fetchAndSetData = async () => {
+  const fetchAndSetData = async (userId = currentUser) => {
     try {
       toast.loading("กำลังโหลดข้อมูล...", { id: "fetchData" });
 
+      setUsersInfoByUserId(null);
+      setAppointments([]);
+
       const specialtiesData = await fetchSpecialties();
-
       const doctorsData = await fetchDoctors();
-
       const hospitalsData = await fetchHospitals();
 
-      const appointmentsData = currentUser
-        ? await fetchAppointmentsByUser(currentUser)
+      const appointmentsData = userId
+        ? await fetchAppointmentsByUser(userId)
         : [];
 
       const usersInfoData = await fetchUsersInfo();
 
-      const usersInfoByUserIdData = currentUser
-        ? await fetchUsersInfoByUserId(currentUser)
+      const usersInfoByUserIdData = userId
+        ? await fetchUsersInfoByUserId(userId)
         : null;
 
       setSpecialties(specialtiesData);
@@ -72,8 +69,14 @@ export const DataProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    fetchAndSetData();
+    fetchAndSetData(currentUser);
   }, []);
+
+  useEffect(() => {
+    if (currentUser) {
+      fetchAndSetData(currentUser);
+    }
+  }, [currentUser]);
 
   return (
     <DataContext.Provider
@@ -85,7 +88,9 @@ export const DataProvider = ({ children }) => {
         usersInfo,
         usersInfoByUserId,
         currentUser,
+        setCurrentUser,
         token,
+        setToken,
         isLogin: !!token,
         fetchAndSetData,
       }}

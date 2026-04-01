@@ -36,12 +36,30 @@ export const getDoctorById = async (id) => {
   return result[0];
 };
 
-export const updateDoctorById = async (
-  id,
-  { doctor_name, specialty_id, hospital_id },
-) => {
-  const sql = `UPDATE doctors SET doctor_name = ?, specialty_id = ?, hospital_id = ? WHERE doctor_id = ?`;
-  const params = [doctor_name, specialty_id, hospital_id, id];
+export const updateDoctorById = async (id, data) => {
+  let fields = [];
+  let params = [];
+
+  if (data.doctor_name !== undefined) {
+    fields.push("doctor_name = ?");
+    params.push(data.doctor_name);
+  }
+  if (data.specialty_id !== undefined) {
+    fields.push("specialty_id = ?");
+    params.push(data.specialty_id);
+  }
+  if (data.hospital_id !== undefined) {
+    fields.push("hospital_id = ?");
+    params.push(data.hospital_id);
+  }
+
+  if (fields.length === 0) {
+    throw new Error("No fields to update");
+  }
+
+  const sql = `UPDATE doctors SET ${fields.join(", ")} WHERE doctor_id = ?`;
+  params.push(id);
+
   const result = await query(sql, params);
   return result;
 };

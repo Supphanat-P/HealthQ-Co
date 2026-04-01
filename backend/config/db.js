@@ -1,3 +1,4 @@
+import { Connection } from "mysql2";
 import mysql from "mysql2/promise";
 
 const db = mysql.createPool({
@@ -6,9 +7,6 @@ const db = mysql.createPool({
   user: "root",
   password: "root",
   database: "healthq",
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
 });
 
 export default db;

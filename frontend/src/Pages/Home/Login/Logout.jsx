@@ -1,8 +1,15 @@
 import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { useData } from "../../../Context/DataContext";
 
 const Logout = () => {
+  const {
+    setCurrentUser,
+    setToken,
+    fetchAndSetData,
+  } = useData();
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -11,11 +18,16 @@ const Logout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("currentUser");
 
+        setToken("");
+        setCurrentUser(null);
+
+        fetchAndSetData(null);
+
         toast.success("ออกจากระบบสำเร็จ");
 
         setTimeout(() => {
           navigate("/");
-        }, 600);
+        }, 500);
       } catch {
         toast.error("ออกจากระบบไม่สำเร็จ");
       }
