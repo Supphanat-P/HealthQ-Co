@@ -209,7 +209,7 @@ dataRouter.get("/hospitals", async (req, res) => {
  * /data/hospitals/{hospital_id}:
  *   delete:
  *     summary: Delete hospital
- *     tags: [Hospitals]
+ *     tags: [Data]
  *     parameters:
  *       - in: path
  *         name: id
@@ -261,7 +261,7 @@ dataRouter.delete("/hospitals/:id", async (req, res) => {
  *   post:
  *     summary: Insert new hospital
  *     description: เพิ่มข้อมูลโรงพยาบาลใหม่
- *     tags: [Hospitals]
+ *     tags: [Data]
  *     requestBody:
  *       required: true
  *       content:

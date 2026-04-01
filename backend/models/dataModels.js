@@ -43,6 +43,21 @@ export const deleteDoctorById = async (id) => {
   return result;
 };
 
+export const getAllHospital = async () => {
+  const sql = `SELECT * FROM hospitals`
+
+  const result = await query(sql);
+  return result;
+};
+
+export const getHospitalById = async (id) => {
+  const sql = `SELECT * FROM hospitals 
+  WHERE hospital_id`
+    const params = [id];
+  const result = await query(sql, params);
+  return result[0];
+}
+
 export const deleteHospitalById = async (id) => {
   const sql = `DELETE FROM Hospitals WHERE hospital_id = ?`;
   const params = [id];
