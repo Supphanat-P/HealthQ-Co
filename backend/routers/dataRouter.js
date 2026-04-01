@@ -8,6 +8,7 @@ import {
   insertDoctor,
   insertHospital,
   deleteHospitalById,
+  updateHospitalById,
 } from "../models/dataModels.js";
 
 const dataRouter = Router();
@@ -250,7 +251,7 @@ dataRouter.post("/insertDoctor", async (req, res) => {
  * /data/hospitals:
  *   get:
  *     summary: Get all hospitals
- *     tags: [Data]
+ *     tags: [Hospital]
  *     responses:
  *       200:
  *         description: List of hospitals
@@ -270,10 +271,85 @@ dataRouter.get("/hospitals", async (req, res) => {
 
 /**
  * @swagger
+ * /data/updateHospital/{id}:
+ *   put:
+ *     summary: Update hospital by ID
+ *     description: อัปเดตข้อมูลโรงพยาบาลตาม ID
+ *     tags: [Hospital]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: รหัสโรงพยาบาล
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - hospital_name
+ *               - imgPath
+ *               - lat
+ *               - lang
+ *             properties:
+ *               hospital_name:
+ *                 type: string
+ *                 example: Bangkok Hospital
+ *               imgPath:
+ *                 type: string
+ *                 example: /images/hospital.jpg
+ *               lat:
+ *                 type: number
+ *                 format: float
+ *                 example: 13.7563
+ *               lang:
+ *                 type: number
+ *                 format: float
+ *                 example: 100.5018
+ *     responses:
+ *       200:
+ *         description: อัปเดตสำเร็จ
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: Hospital updated successfully
+ *               result:
+ *                 affectedRows: 1
+ *       500:
+ *         description: Server error
+ */
+dataRouter.put("/updateHospital/:id", async (req, res) => {
+  try {
+    const hospitalId = req.params.id;
+    const { hospital_name, imgPath, lat, lang } = req.body;
+
+    const result = await updateHospitalById(hospitalId, {
+      hospital_name,
+      imgPath,
+      lat,
+      lang,
+    });
+
+    res.status(200).json({
+      message: "Hospital updated successfully",
+      result,
+    });
+  } catch (err) {
+    console.error("Update Hospital error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * @swagger
  * /data/hospitals/{hospital_id}:
  *   delete:
  *     summary: Delete hospital
- *     tags: [Data]
+ *     tags: [Hospital]
  *     parameters:
  *       - in: path
  *         name: id
@@ -325,7 +401,7 @@ dataRouter.delete("/hospitals/:id", async (req, res) => {
  *   post:
  *     summary: Insert new hospital
  *     description: เพิ่มข้อมูลโรงพยาบาลใหม่
- *     tags: [Data]
+ *     tags: [Hospital]
  *     requestBody:
  *       required: true
  *       content:
