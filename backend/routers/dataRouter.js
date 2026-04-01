@@ -12,6 +12,11 @@ import {
   deleteSpecialtiesById,
   insertSpecialties,
   updateSpecialtyById,
+  insertHospital,
+  deleteHospitalById,
+  updateHospitalById,
+  getAllHospital,
+  getHospitalById,
 } from "../models/dataModels.js";
 
 const dataRouter = Router();
@@ -254,7 +259,7 @@ dataRouter.post("/insertDoctor", async (req, res) => {
  * /data/hospitals:
  *   get:
  *     summary: Get all hospitals
- *     tags: [Data]
+ *     tags: [Hospital]
  *     responses:
  *       200:
  *         description: List of hospitals
@@ -262,12 +267,207 @@ dataRouter.post("/insertDoctor", async (req, res) => {
  *         description: List of symptoms
  */
 dataRouter.get("/hospitals", async (req, res) => {
-  const sql = "SELECT * FROM hospitals";
-
   try {
-    const [results] = await db.query(sql);
-    res.json(results);
+    const result = await getAllHospital();
+    res.json(result);
   } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * @swagger
+ * /data/updateHospital/{id}:
+ *   put:
+ *     summary: Update hospital by ID
+ *     description: อัปเดตข้อมูลโรงพยาบาลตาม ID
+ *     tags: [Hospital]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: รหัสโรงพยาบาล
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - hospital_name
+ *               - imgPath
+ *               - lat
+ *               - lang
+ *             properties:
+ *               hospital_name:
+ *                 type: string
+ *                 example: Bangkok Hospital
+ *               imgPath:
+ *                 type: string
+ *                 example: /images/hospital.jpg
+ *               lat:
+ *                 type: number
+ *                 format: float
+ *                 example: 13.7563
+ *               lang:
+ *                 type: number
+ *                 format: float
+ *                 example: 100.5018
+ *     responses:
+ *       200:
+ *         description: อัปเดตสำเร็จ
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: Hospital updated successfully
+ *               result:
+ *                 affectedRows: 1
+ *       500:
+ *         description: Server error
+ */
+dataRouter.put("/updateHospital/:id", async (req, res) => {
+  try {
+    const hospitalId = req.params.id;
+    const { hospital_name, imgPath, lat, lang } = req.body;
+
+    const result = await updateHospitalById(hospitalId, {
+      hospital_name,
+      imgPath,
+      lat,
+      lang,
+    });
+
+    res.status(200).json({
+      message: "Hospital updated successfully",
+      result,
+    });
+  } catch (err) {
+    console.error("Update Hospital error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * @swagger
+ * /data/hospitals/{hospital_id}:
+ *   delete:
+ *     summary: Delete hospital
+ *     tags: [Hospital]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *     responses:
+ *       200:
+ *         description: Hospital deleted successfully
+ *       400:
+ *         description: Invalid hospital id
+ *       404:
+ *         description: Hospital not found
+ *       500:
+ *         description: Server error
+ */
+dataRouter.delete("/hospitals/:id", async (req, res) => {
+  try {
+    const hospitalId = req.params.id;
+
+    if (!hospitalId || isNaN(hospitalId)) {
+      return res.status(400).json({ message: "Invalid hospital id" });
+    }
+
+    const deletedInfo = await getHospitalById(hospitalId);
+
+    if (!deletedInfo) {
+      return res.status(404).json({ message: "Hospital not found" });
+    }
+
+    const result = await deleteHospitalById(hospitalId);
+    const affectedRows = result.affectedRows ?? result[0]?.affectedRows;
+
+    res.status(200).json({
+      message: "Hospital deleted successfully",
+      deletedInfo,
+      affectedRows,
+    });
+  } catch (err) {
+    console.error("Delete hospital error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * @swagger
+ * /data/insertHospital:
+ *   post:
+ *     summary: Create new hospital
+ *     description: เพิ่มข้อมูลโรงพยาบาลใหม่
+ *     tags: [Hospital]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - hospital_name
+ *               - imgPath
+ *               - lat
+ *               - lang
+ *             properties:
+ *               hospital_name:
+ *                 type: string
+ *                 example: Bangkok Hospital
+ *               imgPath:
+ *                 type: string
+ *                 example: /images/hospital.jpg
+ *               lat:
+ *                 type: number
+ *                 format: float
+ *                 example: 13.7563
+ *               lang:
+ *                 type: number
+ *                 format: float
+ *                 example: 100.5018
+ *     responses:
+ *       200:
+ *         description: Hospital inserted successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: Hospital inserted successfully
+ *               hospital_id: 1
+ *       400:
+ *         description: Missing required fields
+ *       500:
+ *         description: Server error
+ */
+dataRouter.post("/insertHospital", async (req, res) => {
+  try {
+    const { hospital_name, imgPath, lat, lang } = req.body;
+
+    if (!hospital_name || !imgPath || lat == null || lang == null) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    const result = await insertHospital({
+      hospital_name,
+      imgPath,
+      lat,
+      lang,
+    });
+
+    res.status(200).json({
+      message: "Hospital inserted successfully",
+      hospital_id: result.insertId,
+    });
+  } catch (err) {
+    console.error("❌ Insert Hospital error:", err);
     res.status(500).json({ error: err.message });
   }
 });
