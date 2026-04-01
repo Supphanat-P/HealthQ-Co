@@ -5,7 +5,8 @@ import toast from "react-hot-toast";
 import OtpInput from "react-otp-input";
 import React from "react";
 
-const apiUrl = 'http://localhost:3000/users/register';
+const apiBaseUrl = 'http://localhost:3000';
+const apiUrl = `${apiBaseUrl}/users/register`;
 
 const Register = () => {
   const navigate = useNavigate();
@@ -19,27 +20,77 @@ const Register = () => {
   const [identifier, setIdentifier] = useState("");
   const [step, setStep] = useState("input");
   const [isSending, setIsSending] = useState(false);
-  const [otp, setOtp] = useState("");
   const [userOtp, setUserOtp] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [fName, setFName] = useState("");
   const [lName, setLName] = useState("");
 
-  // OTP
+  // OTP - ยิงไป API ส่งอีเมล
   const sendOtp = async () => {
-    setIsSending(true); 
-    console.log(otp);   
-    
-    setStep("otp");
-    setIsSending(false);
+    if (!identifier) {
+      toast.error("ใส่อีเมลมาก่อนสิพี่!");
+      return;
+    }
+
+    setIsSending(true);
+    try {
+      const response = await fetch(`${apiBaseUrl}/mail/send-otp-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: identifier }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "ส่ง OTP ไม่สำเร็จ");
+      }
+
+      toast.success("ส่ง OTP ไปแล้วนะ เช็คเมลด้วย!");
+      setStep("otp");
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setIsSending(false);
+    }
   };
 
-  const otpVerify = () => {
-    setStep("password"); 
+  // ยิงไป API ยืนยัน OTP
+  const otpVerify = async () => {
+    if (!userOtp || userOtp.length < 6) {
+      toast.error("ใส่ OTP ให้ครบ 6 ตัวก่อนปะล่ะ!");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${apiBaseUrl}/mail/verify-otp`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: identifier,
+          otp: userOtp
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "OTP ไม่ถูกต้อง");
+      }
+
+      toast.success("ยืนยัน OTP ผ่านละ!");
+      setStep("password");
+    } catch (err) {
+      toast.error(err.message);
+    }
   };
 
-  // fetch ยิงไปหา userRouter 
+  // 🔥 สมัครจริง
   const confirmRegistration = async () => {
     if (password !== confirmPassword) {
       toast.error("รหัสผ่านไม่ตรงกัน");
@@ -47,7 +98,6 @@ const Register = () => {
     }
 
     try {
-      // ยิง POST Request ไปหา backend เพื่อสร้าง user ใหม่
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
@@ -56,7 +106,7 @@ const Register = () => {
         body: JSON.stringify({
           email: identifier,
           password: password,
-          role_id: 2 // บังคับใส่ role_id ไปก่อนเพราะ Backend ต้องการ
+          role_id: 2
         }),
       });
 
@@ -74,6 +124,7 @@ const Register = () => {
       toast.error(err.message);
     }
   };
+
   return (
     <div className="w-[500px] h-fit mx-auto shadow-xl mt-5! bg-white rounded-lg! overflow-hidden">
       <AppointmentHeader label="สมัครสมาชิก" />
@@ -132,7 +183,7 @@ const Register = () => {
               </button>
               <button
                 className="bg-white text-gray-700 px-6! py-2 rounded-lg! border border-gray-300 hover:bg-gray-50 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
-                onClick={() => { setStep("input"); setOtp(""); }}
+                onClick={() => { setStep("input"); setUserOtp(""); }}
               >
                 แก้ไขอีเมล
               </button>
