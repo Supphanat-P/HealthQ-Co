@@ -1,8 +1,8 @@
-import express from "express";
+import { Router } from "express";
 import db from "../config/db.js";
 import { v4 as uuidv4 } from "uuid";
 
-const appointmentRouter = express.Router();
+const appointmentRouter = Router();
 
 // CREATE
 /**
@@ -28,7 +28,7 @@ const appointmentRouter = express.Router();
  *                 example: 1
  *               patientId:
  *                 type: string
- *                 example: "abc-123-xyz"
+ *                 example: "2"
  *               date:
  *                 type: string
  *                 example: "2026-03-25"
@@ -166,4 +166,72 @@ appointmentRouter.put("/cancelAppointment", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+//delete
+/**
+ * @swagger
+ * /appointment/delete:
+ *   delete:
+ *     summary: Delete appointment
+ *     tags: [Appointment]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - appointmentId
+ *             properties:
+ *               appointmentId:
+ *                 type: string
+ *                 example: "uuid-xxxx"
+ *     responses:
+ *       200:
+ *         description: Delete success
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Deleted successfully"
+ *       400:
+ *         description: Missing appointmentId
+ *       404:
+ *         description: Appointment not found
+ *       500:
+ *         description: Internal server error
+ */
+appointmentRouter.delete("/delete", async (req, res) => {
+  try {
+    const { appointmentId } = req.body;
+
+    if (!appointmentId) {
+      return res.status(400).json({ message: "Missing appointmentId" });
+    }
+
+    //  ลบ slot ก่อน (กัน foreign key error)
+    await db.query(
+      "DELETE FROM appointment_slots WHERE app_id = ?",
+      [appointmentId]
+    );
+
+    //  ลบ appointment
+    const [result] = await db.query(
+      "DELETE FROM appointments WHERE app_id = ?",
+      [appointmentId]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    res.json({ message: "Deleted successfully" });
+
+  } catch (error) {
+    console.error("DELETE ERROR:", error);
+    res.status(500).json({
+      message: error.message || "Internal Server Error"
+    });
+  }
+});
+
+
 export default appointmentRouter;
