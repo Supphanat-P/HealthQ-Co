@@ -89,30 +89,41 @@ dataRouter.get("/doctors/:id", async (req, res) => {
  *     responses:
  *       200:
  *         description: Doctor deleted successfully
+ *       400:
+ *        description: Invalid doctor id
  *       404:
  *         description: Doctor not found
  *       500:
  *         description: Server error
  */
-dataRouter.delete("/deleteDoctor/:id", async (req, res) => {
+dataRouter.delete("/doctors/:id", async (req, res) => {
   try {
     const doctorId = req.params.id;
 
-    if (!doctorId) {
-      return res.status(400).json({ message: "Missing doctor id" });
+    if (!doctorId || isNaN(doctorId)) {
+      return res.status(400).json({ message: "Invalid doctor id" });
+    }
+
+    const deletedInfo = await getDoctorById(doctorId);
+
+    if (!deletedInfo) {
+      return res.status(404).json({ message: "Doctor not found" });
     }
 
     const result = await deleteDoctorById(doctorId);
+    const affectedRows = result.affectedRows ?? result[0]?.affectedRows;
 
     res.status(200).json({
       message: "Doctor deleted successfully",
-      affectedRows: result[0]?.affectedRows || result.affectedRows,
+      deletedInfo,
+      affectedRows,
     });
   } catch (err) {
-    console.error("❌ Delete doctor error:", err);
+    console.error("Delete doctor error:", err);
     res.status(500).json({ error: err.message });
   }
 });
+
 /**
  * @swagger
  * /data/insertDoctor:
