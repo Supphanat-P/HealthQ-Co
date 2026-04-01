@@ -53,3 +53,32 @@ export const insertDoctor = async ({
   const result = await query(sql, params);
   return result;
 };
+
+export const getAllSpecialties = async () => {
+  const sql = `SELECT * FROM specialties`;
+  const result = await query(sql);
+  return result;
+};
+
+export const getSpecialtyById = async (id) => {
+  const sql = `SELECT * FROM specialties WHERE specialty_id = ?`;
+  const params = [id];
+  const result = await query(sql, params);
+  return result[0];
+};
+
+export const deleteSpecialtiesById = async (id) => {
+  const sql = `DELETE FROM specialties WHERE specialty_id = ?`;
+  const params = [id];
+  const result = await query(sql, params);
+  return result;
+};
+
+export const insertSpecialties = async ({
+  specialty_name,
+}) => {
+  const sql = `INSERT INTO specialties (specialty_name) VALUES (?)`;
+  const params = [specialty_name];
+  const result = await query(sql, params);
+  return result;
+};

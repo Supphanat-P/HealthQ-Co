@@ -6,6 +6,10 @@ import {
   getDoctorById,
   deleteDoctorById,
   insertDoctor,
+  getAllSpecialties,
+  getSpecialtyById,
+  deleteSpecialtiesById,
+  insertSpecialties,
 } from "../models/dataModels.js";
 
 const dataRouter = Router();
@@ -206,21 +210,180 @@ dataRouter.get("/hospitals", async (req, res) => {
  * @swagger
  * /data/specialties:
  *   get:
- *     summary: Get all specialties
+ *     summary: ดึงรายการ specialty ทั้งหมด
  *     tags: [Data]
  *     responses:
  *       200:
- *         description: List of specialties
+ *         description: ดึงข้อมูลสำเร็จ
  *       500:
- *         description: List of symptoms
+ *         description: เกิดข้อผิดพลาดในระบบ
  */
 dataRouter.get("/specialties", async (req, res) => {
-  const sql = "SELECT * FROM specialties";
   try {
-    const [results] = await db.query(sql);
-    res.json(results);
+    const specialties = await getAllSpecialties();
+    res.status(200).json(specialties);
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * @swagger
+ * /data/specialties/{specialty_id}:
+ *   get:
+ *     summary: ดึงข้อมูล specialty ตาม ID
+ *     tags: [Data]
+ *     parameters:
+ *       - name: specialty_id
+ *         in: path
+ *         required: true
+ *         description: รหัส specialty
+ *         schema:
+ *           type: integer
+ *           example: 101
+ *     responses:
+ *       200:
+ *         description: ดึงข้อมูลสำเร็จ
+ *       404:
+ *         description: ไม่พบข้อมูล
+ *       500:
+ *         description: เกิดข้อผิดพลาดในระบบ
+ */
+dataRouter.get("/specialties/:id", async (req, res) => {
+  try {
+    const specialtyId = req.params.id;
+    const specialty = await getSpecialtyById(specialtyId);
+
+    if (!specialty) {
+      return res.status(404).json({ message: "Specialty not found" });
+    }
+
+    res.status(200).json(specialty);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * @swagger
+ * /data/specialties/{specialty_id}:
+ *   delete:
+ *     summary: ลบ specialty ตาม ID
+ *     tags: [Data]
+ *     parameters:
+ *       - name: specialty_id
+ *         in: path
+ *         required: true
+ *         description: รหัส specialty (ต้องเป็นตัวเลข)
+ *         schema:
+ *           type: integer
+ *           example: 101
+ *     responses:
+ *       200:
+ *         description: ลบข้อมูลสำเร็จ
+ *       400:
+ *         description: ID ไม่ถูกต้อง
+ *       404:
+ *         description: ไม่พบข้อมูล
+ *       500:
+ *         description: เกิดข้อผิดพลาดในระบบ
+ */
+dataRouter.delete("/specialties/:id", async (req, res) => {
+  const { id } = req.params;
+
+  if (!id || isNaN(id)) {
+    return res.status(400).json({ message: "ID ไม่ถูกต้อง" });
+  }
+
+  console.log(`[DELETE] Request to delete specialty_id: ${id}`);
+
+  try {
+    const result = await deleteSpecialtiesById(id);
+
+    if (result.affectedRows === 0) {
+      console.warn(`[DELETE] Not found: ${id}`);
+      return res.status(404).json({ message: "ไม่พบข้อมูล" });
+    }
+
+    console.log(`[DELETE] Success: ${id}`);
+
+    return res.status(200).json({
+      message: "ลบความชำนาญแพทย์เรียบร้อย",
+      deletedId: id
+    });
+
+  } catch (err) {
+    console.error("[DELETE] Error:", err);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * @swagger
+ * /data/specialties:
+ *   post:
+ *     summary: สร้าง specialty ใหม่
+ *     tags: [Data]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - specialty_name
+ *             properties:
+ *               specialty_name:
+ *                 type: string
+ *                 example: Cardiology
+ *     responses:
+ *       201:
+ *         description: สร้างข้อมูลสำเร็จ
+ *       400:
+ *         description: ข้อมูลไม่ถูกต้อง
+ *       409:
+ *         description: ข้อมูลซ้ำ
+ *       500:
+ *         description: เกิดข้อผิดพลาดในระบบ
+ */
+dataRouter.post("/specialties", async (req, res) => {
+  try {
+    let { specialty_name } = req.body;
+
+    specialty_name = specialty_name?.trim();
+
+    if (!specialty_name) {
+      return res.status(400).json({
+        message: "specialty_name ห้ามเป็นค่าว่าง"
+      });
+    }
+
+    console.log(`[POST] Create specialty -> Name: ${specialty_name}`);
+
+    const result = await insertSpecialties({
+      specialty_name
+    });
+
+    return res.status(201).json({
+      message: "สร้างข้อมูลสำเร็จ",
+      data: {
+        specialty_name
+      }
+    });
+
+  } catch (err) {
+    console.error("[POST] Error:", err);
+
+    if (err.code === "ER_DUP_ENTRY") {
+      return res.status(409).json({
+        message: "specialty_id นี้มีอยู่แล้ว"
+      });
+    }
+
+    return res.status(500).json({
+      message: "เกิดข้อผิดพลาดในระบบ",
+      error: err.message
+    });
   }
 });
 
