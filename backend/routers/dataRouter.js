@@ -15,6 +15,8 @@ import {
   insertHospital,
   deleteHospitalById,
   updateHospitalById,
+  getAllHospital,
+  getHospitalById,
 } from "../models/dataModels.js";
 
 const dataRouter = Router();
@@ -265,11 +267,9 @@ dataRouter.post("/insertDoctor", async (req, res) => {
  *         description: List of symptoms
  */
 dataRouter.get("/hospitals", async (req, res) => {
-  const sql = "SELECT * FROM hospitals";
-
   try {
-    const [results] = await db.query(sql);
-    res.json(results);
+    const result = await getAllHospital();
+    res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -405,7 +405,7 @@ dataRouter.delete("/hospitals/:id", async (req, res) => {
  * @swagger
  * /data/insertHospital:
  *   post:
- *     summary: Insert new hospital
+ *     summary: Create new hospital
  *     description: เพิ่มข้อมูลโรงพยาบาลใหม่
  *     tags: [Hospital]
  *     requestBody:
@@ -422,30 +422,26 @@ dataRouter.delete("/hospitals/:id", async (req, res) => {
  *             properties:
  *               hospital_name:
  *                 type: string
- *                
+ *                 example: Bangkok Hospital
  *               imgPath:
  *                 type: string
- *                
+ *                 example: /images/hospital.jpg
  *               lat:
  *                 type: number
- *               
+ *                 format: float
+ *                 example: 13.7563
  *               lang:
  *                 type: number
- *                 
+ *                 format: float
+ *                 example: 100.5018
  *     responses:
  *       200:
  *         description: Hospital inserted successfully
  *         content:
  *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Hospital inserted successfully
- *                 hospital_id:
- *                   type: integer
- *                   example: 1
+ *             example:
+ *               message: Hospital inserted successfully
+ *               hospital_id: 1
  *       400:
  *         description: Missing required fields
  *       500:

@@ -54,19 +54,18 @@ export const deleteDoctorById = async (id) => {
 };
 
 export const getAllHospital = async () => {
-  const sql = `SELECT * FROM hospitals`
-
+  const sql = `SELECT * FROM hospitals`;
   const result = await query(sql);
   return result;
 };
 
 export const getHospitalById = async (id) => {
-  const sql = `SELECT * FROM hospitals 
-  WHERE hospital_id`
-    const params = [id];
+  const sql = `SELECT * FROM hospitals WHERE hospital_id = ?`;
+  const params = [id];
+
   const result = await query(sql, params);
   return result[0];
-}
+};
 
 export const updateHospitalById = async (
   id,
@@ -87,6 +86,19 @@ export const updateHospitalById = async (
 export const deleteHospitalById = async (id) => {
   const sql = `DELETE FROM Hospitals WHERE hospital_id = ?`;
   const params = [id];
+  const result = await query(sql, params);
+  return result;
+};
+
+export const insertHospital = async ({
+ 
+ hospital_name,
+ imgPath,
+ lat,
+  lang,
+}) => {
+  const sql = `INSERT INTO hospitals (hospital_name,imgPath, lat,lang) VALUES (?, ?, ?, ?)`;
+  const params = [hospital_name, imgPath, lat,lang];
   const result = await query(sql, params);
   return result;
 };
@@ -140,16 +152,5 @@ export const insertSpecialties = async ({
   const result = await query(sql, params);
   return result;
 };
-export const insertHospital = async ({
- 
- hospital_name,
- imgPath,
- lat,
-  lang,
-}) => {
-  const sql = `INSERT INTO hospitals (hospital_name,imgPath, lat,lang) VALUES (?, ?, ?, ?)`;
-  const params = [hospital_name, imgPath, lat,lang];
-  const result = await query(sql, params);
-  return result;
-};
+
 
