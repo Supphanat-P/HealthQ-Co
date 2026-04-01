@@ -7,7 +7,7 @@ import { SquarePen, X, Save } from "lucide-react";
 
 const ProfileCard = ({ lang }) => {
   const [selectedTab, setSelectedTab] = useState("1");
-  const { currentUser, usersInfo } = useData();
+  const { currentUser, usersInfoByUserId } = useData();
   const [isEdit, setIsEdit] = useState(false);
   const [form, setForm] = useState(null);
   const [nationValue, setNationValue] = useState("");
@@ -16,8 +16,10 @@ const ProfileCard = ({ lang }) => {
   const [bloodValue, setBloodValue] = useState("");
 
   //jo
-  const findUserId = usersInfo.find((u) => u.user_id === currentUser);
-  console.log(currentUser, findUserId, usersInfo);
+  const findUserId = usersInfoByUserId;
+  console.log(
+    `currentUser: ${currentUser}, findUserId: ${JSON.stringify(findUserId)}`,
+  );
 
   useEffect(() => {
     if (!findUserId) return;
@@ -129,7 +131,7 @@ const ProfileCard = ({ lang }) => {
       food_allergies: findUserId.food_allergies?.join(", ") || "",
       regular_med: findUserId.regular_med?.join(", ") || "",
     });
-  }, [usersInfo, currentUser]);
+  }, [usersInfoByUserId, currentUser]);
 
   const handleChange = (key, value) => {
     setForm({ ...form, [key]: value });

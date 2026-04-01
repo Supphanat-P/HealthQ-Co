@@ -19,9 +19,9 @@ const app = express();
 
 // --- Middleware ---
 app.use(cors({ origin: "*" }));
-app.use(express.json()); 
+app.use(express.json());
 
-const HOST = "localhost";
+const HOST = process.env.HOST || "localhost";
 const PORT = process.env.PORT || 3000;
 
 // --- Routes ---
@@ -66,7 +66,7 @@ app.use("/mail", mailRouters);
 app.use("/appointment", appointmentRouter);
 
 // --- Start Server ---
-app.listen(PORT, HOST, () => {
-  console.log(`Server is running on http://${HOST}:${PORT}`);
-  console.log(`Swagger Docs: http://${HOST}:${PORT}/api-docs`);
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Swagger Docs: http://localhost:${PORT}/api-docs`);
 });

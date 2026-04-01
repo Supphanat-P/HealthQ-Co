@@ -9,6 +9,7 @@ const Logout = () => {
     const performLogout = () => {
       try {
         localStorage.removeItem("token");
+        localStorage.removeItem("currentUser");
 
         toast.success("ออกจากระบบสำเร็จ");
 

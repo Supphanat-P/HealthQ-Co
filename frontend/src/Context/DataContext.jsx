@@ -8,6 +8,7 @@ import {
   fetchHospitals,
   fetchAppointmentsByUser,
   fetchUsersInfo,
+  fetchUsersInfoByUserId,
 } from "./FetchData";
 
 const DataContext = createContext(null);
@@ -18,6 +19,7 @@ export const DataProvider = ({ children }) => {
   const [hospitals, setHospitals] = useState([]);
   const [appointments, setAppointments] = useState([]);
   const [usersInfo, setUsersInfo] = useState([]);
+  const [usersInfoByUserId, setUsersInfoByUserId] = useState([]);
 
   const [token, setToken] = useState(() => {
     return localStorage.getItem("token") || "";
@@ -36,42 +38,42 @@ export const DataProvider = ({ children }) => {
   });
 
   const fetchAndSetData = async () => {
-    if (!currentUser) return;
+    try {
+      toast.loading("กำลังโหลดข้อมูล...", { id: "fetchData" });
 
-    toast.promise(
-      (async () => {
-        const [
-          specialtiesData,
-          doctorsData,
-          hospitalsData,
-          appointmentsData,
-          usersInfoData,
-        ] = await Promise.all([
-          fetchSpecialties(),
-          fetchDoctors(),
-          fetchHospitals(),
-          fetchAppointmentsByUser(currentUser),
-          fetchUsersInfo(),
-        ]);
+      const specialtiesData = await fetchSpecialties();
 
-        setSpecialties(specialtiesData);
-        setDoctors(doctorsData);
-        setHospitals(hospitalsData);
-        setAppointments(appointmentsData);
-        console.log(appointmentsData);
-        setUsersInfo(usersInfoData);
-      })(),
-      {
-        loading: "กำลังโหลดข้อมูล...",
-        success: "โหลดสำเร็จ",
-        error: "โหลดล้มเหลว",
-      },
-    );
+      const doctorsData = await fetchDoctors();
+
+      const hospitalsData = await fetchHospitals();
+
+      const appointmentsData = currentUser
+        ? await fetchAppointmentsByUser(currentUser)
+        : [];
+
+      const usersInfoData = await fetchUsersInfo();
+
+      const usersInfoByUserIdData = currentUser
+        ? await fetchUsersInfoByUserId(currentUser)
+        : null;
+
+      setSpecialties(specialtiesData);
+      setDoctors(doctorsData);
+      setHospitals(hospitalsData);
+      setAppointments(appointmentsData);
+      setUsersInfo(usersInfoData);
+      setUsersInfoByUserId(usersInfoByUserIdData);
+
+      toast.success("โหลดสำเร็จ", { id: "fetchData" });
+    } catch (error) {
+      console.error("❌ Fetch error:", error);
+      toast.error("โหลดล้มเหลว", { id: "fetchData" });
+    }
   };
 
   useEffect(() => {
     fetchAndSetData();
-  }, [currentUser]);
+  }, []);
 
   return (
     <DataContext.Provider
@@ -81,6 +83,7 @@ export const DataProvider = ({ children }) => {
         hospitals,
         appointments,
         usersInfo,
+        usersInfoByUserId,
         currentUser,
         token,
         isLogin: !!token,

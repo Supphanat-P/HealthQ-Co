@@ -1,7 +1,12 @@
 import { Router } from "express";
 import db from "../config/db.js";
 
-import { getAllDoctors, getDoctorById } from "../models/dataModels.js";
+import {
+  getAllDoctors,
+  getDoctorById,
+  deleteDoctorById,
+  insertDoctor,
+} from "../models/dataModels.js";
 
 const dataRouter = Router();
 
@@ -64,6 +69,101 @@ dataRouter.get("/doctors/:id", async (req, res) => {
 
     res.status(200).json(doctor);
   } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * @swagger
+ * /data/doctors/{doctor_id}:
+ *   delete:
+ *     summary: Delete Doctor by ID
+ *     tags: [Data]
+ *     parameters:
+ *       - in: path
+ *         name: doctor_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID Doctor ที่ต้องการ
+ *     responses:
+ *       200:
+ *         description: Doctor deleted successfully
+ *       404:
+ *         description: Doctor not found
+ *       500:
+ *         description: Server error
+ */
+dataRouter.delete("/deleteDoctor/:id", async (req, res) => {
+  try {
+    const doctorId = req.params.id;
+
+    if (!doctorId) {
+      return res.status(400).json({ message: "Missing doctor id" });
+    }
+
+    const result = await deleteDoctorById(doctorId);
+
+    res.status(200).json({
+      message: "Doctor deleted successfully",
+      affectedRows: result[0]?.affectedRows || result.affectedRows,
+    });
+  } catch (err) {
+    console.error("❌ Delete doctor error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+/**
+ * @swagger
+ * /data/insertDoctor:
+ *   post:
+ *     summary: Insert a new doctor
+ *     tags: [Data]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - doctor_name
+ *               - hospital_id
+ *               - specialty_id
+ *             properties:
+ *               doctor_name:
+ *                 type: string
+ *               hospital_id:
+ *                 type: integer
+ *               specialty_id:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: Doctor inserted successfully
+ *       400:
+ *         description: Missing required fields
+ *       500:
+ *         description: Server error
+ */
+dataRouter.post("/insertDoctor", async (req, res) => {
+  try {
+    const { doctor_name, hospital_id, specialty_id } = req.body;
+
+    if (!doctor_name || !hospital_id || !specialty_id) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    const result = await insertDoctor({
+      doctor_name,
+      hospital_id,
+      specialty_id,
+    });
+
+    res.status(200).json({
+      message: "Doctor inserted successfully",
+      doctor_id: result.insertId,
+    });
+  } catch (err) {
+    console.error("❌ Insert doctor error:", err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -153,7 +253,8 @@ dataRouter.get("/appointments", async (req, res) => {
  *         description: Server error
  */
 dataRouter.get("/users", async (req, res) => {
-  const sql = "SELECT user_id, email, full_name, created_at, updated_at, role_id FROM users";
+  const sql =
+    "SELECT user_id, email, full_name, created_at, updated_at, role_id FROM users";
   try {
     const [results] = await db.query(sql);
     res.json(results);
@@ -205,5 +306,4 @@ dataRouter.get("/symptoms_list", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
 export default dataRouter;

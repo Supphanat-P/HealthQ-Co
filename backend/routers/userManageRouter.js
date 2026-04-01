@@ -29,24 +29,27 @@ const userManageRouter = Router();
  *       500:
  *         description: Server error
  */
-userManageRouter.get('/getAppointmentsByUser', (req, res) => {
+userManageRouter.get("/getAppointmentsByUser", async (req, res) => {
+  try {
     const userId = req.query.user_id;
 
-    const sql = "SELECT * FROM appointments WHERE user_id = ?"; 
+    const [rows] = await db.query(
+      "SELECT * FROM appointments WHERE user_id = ?",
+      [userId],
+    );
 
-    db.query(sql, [userId], (err, result) => {
-        if (err) return res.status(500).json({ message: "Error", error: err });
-        
-        res.status(200).json({ 
-            message: "Success", 
-            appointments: result 
-        });
+    return res.status(200).json({
+      message: "Success",
+      appointments: rows,
     });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Error", error: err.message });
+  }
 });
-
 /**
  * @swagger
- * /userManage/getUserInfo:
+ * /userManage/getUserInfoByUserId:
  *   get:
  *     summary: ดึงข้อมูลส่วนตัวของผู้ป่วย (Get user information)
  *     tags: [userManage]
@@ -60,22 +63,28 @@ userManageRouter.get('/getAppointmentsByUser', (req, res) => {
  *     responses:
  *       200:
  *         description: Success
+ *       400:
+ *         description: Missing user_id
  *       500:
  *         description: Server error
  */
-userManageRouter.get('/getUserInfo', (req, res) => {
-    const userId = req.query.user_id; 
+userManageRouter.get("/getUserInfoByUserId", async (req, res) => {
+  try {
+    const userId = req.query.user_id;
 
-    const sql = "SELECT user_id, first_name, last_name, email, phone FROM users_info WHERE user_id = ?";
+    const [rows] = await db.query(
+      "SELECT * FROM users_info WHERE user_id = ?",
+      [userId],
+    );
 
-    db.query(sql, [userId], (err, result) => {
-        if (err) return res.status(500).json({ message: "Error", error: err });
-        
-        res.status(200).json({ 
-            message: "Success", 
-            userInfo: result[0] 
-        });
+    return res.status(200).json({
+      message: "Success",
+      userInfo: rows[0],
     });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Error", error: err.message });
+  }
 });
 
 /**
@@ -109,11 +118,11 @@ userManageRouter.get('/getUserInfo', (req, res) => {
  *       500:
  *         description: Update Failed
  */
-userManageRouter.post('/updateUserInfo', (req, res) => {
-    const userId = req.user?.id || '433eac44-22ce-11f1-8430-d61288df7fa9'; 
-    const { phone, emergency_contact, weight, height } = req.body;
+userManageRouter.post("/updateUserInfo", (req, res) => {
+  const userId = req.user?.id || "433eac44-22ce-11f1-8430-d61288df7fa9";
+  const { phone, emergency_contact, weight, height } = req.body;
 
-    const sql = `
+  const sql = `
         UPDATE users_info 
         SET phone = ?, 
             emergency_contact = ?, 
@@ -122,14 +131,19 @@ userManageRouter.post('/updateUserInfo', (req, res) => {
         WHERE user_id = ?
     `;
 
-    db.query(sql, [phone, emergency_contact, weight, height, userId], (err, result) => {
-        if (err) return res.status(500).json({ message: "Update Failed", error: err });
-        
-        res.status(200).json({ 
-            message: "Success", 
-            detail: "User information updated successfully" 
-        });
-    });
+  db.query(
+    sql,
+    [phone, emergency_contact, weight, height, userId],
+    (err, result) => {
+      if (err)
+        return res.status(500).json({ message: "Update Failed", error: err });
+
+      res.status(200).json({
+        message: "Success",
+        detail: "User information updated successfully",
+      });
+    },
+  );
 });
 
 export default userManageRouter;
