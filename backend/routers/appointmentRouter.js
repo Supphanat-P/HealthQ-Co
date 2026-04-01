@@ -9,7 +9,7 @@ const appointmentRouter = Router();
  * @swagger
  * /appointment/create:
  *   post:
- *     summary: Create new appointment
+ *     summary: สร้างใบนัดหมาย
  *     tags: [Appointment]
  *     requestBody:
  *       required: true
@@ -51,56 +51,31 @@ const appointmentRouter = Router();
 appointmentRouter.post("/create", async (req, res) => {
   try {
     const { doctorId, patientId, date, time } = req.body;
-
     if (!doctorId || !patientId || !date || !time) {
-      return res.status(400).json({ message: "Missing data" });
-    }
-
-    //  1. เช็ค doctor
+      return res.status(400).json({ message: "Missing data" });}
     const [doctor] = await db.query(
       "SELECT * FROM doctors WHERE doctor_id = ?",
-      [doctorId]
-    );
-
+      [doctorId]);
     if (doctor.length === 0) {
-      return res.status(400).json({ message: "Doctor not found" });
-    }
-
-    //  2. เช็ค user
+      return res.status(400).json({ message: "Doctor not found" });}
     const [user] = await db.query(
       "SELECT * FROM users WHERE user_id = ?",
-      [patientId]
-    );
-
+      [patientId]);
     if (user.length === 0) {
-      return res.status(400).json({ message: "User not found" });
-    }
-
-    //  3. สร้าง UUID เอง (ดีที่สุด)
+      return res.status(400).json({ message: "User not found" });}
     const appId = uuidv4();
-
-    // 4. insert appointment
     await db.query(
       `INSERT INTO appointments (app_id, doctor_id, user_id, status)
        VALUES (?, ?, ?, 'pending')`,
-      [appId, doctorId, patientId]
-    );
-
-    // 5. รวม date + time
+      [appId, doctorId, patientId]);
     const slotDatetime = `${date} ${time}:00`;
-
-    // 6. insert slot
     await db.query(
       `INSERT INTO appointment_slots (app_id, slot_datetime)
        VALUES (?, ?)`,
-      [appId, slotDatetime]
-    );
-
+      [appId, slotDatetime]);
     res.json({
       message: "Success",
-      appointmentId: appId,
-    });
-
+      appointmentId: appId,});
   } catch (error) {
     console.error("CREATE ERROR:", error);
     res.status(500).json({
@@ -114,7 +89,7 @@ appointmentRouter.post("/create", async (req, res) => {
  * @swagger
  * /appointment/cancelAppointment:
  *   put:
- *     summary: Cancel appointment
+ *     summary: ยกเลิกใบนัดหมาย
  *     tags: [Appointment]
  *     requestBody:
  *       required: true
@@ -171,7 +146,7 @@ appointmentRouter.put("/cancelAppointment", async (req, res) => {
  * @swagger
  * /appointment/delete:
  *   delete:
- *     summary: Delete appointment
+ *     summary: ลบใบนัดหมาย
  *     tags: [Appointment]
  *     requestBody:
  *       required: true
@@ -206,8 +181,6 @@ appointmentRouter.delete("/delete", async (req, res) => {
     if (!appointmentId) {
       return res.status(400).json({ message: "Missing appointmentId" });
     }
-
-    //  ลบ slot ก่อน (กัน foreign key error)
     await db.query(
       "DELETE FROM appointment_slots WHERE app_id = ?",
       [appointmentId]
