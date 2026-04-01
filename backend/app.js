@@ -4,11 +4,11 @@ import dotenv from "dotenv";
 import swaggerUi from "swagger-ui-express";
 import swaggerJsDoc from "swagger-jsdoc";
 
-import db from "./config/db.js"; // ✅ เพิ่มตรงนี้
+import db from "./config/db.js";
 
 dotenv.config();
 
-// Routers
+// --- Routers ---
 import dataRouter from "./routers/dataRouter.js";
 import usersRouter from "./routers/usersRouter.js";
 import mailRouters from "./routers/mailRouters.js";
@@ -17,38 +17,38 @@ import appointmentRouter from "./routers/appointmentRouter.js";
 
 const app = express();
 
-// Middleware
+// --- Middleware ---
 app.use(cors({ origin: "*" }));
-app.use(express.json()); // ❌ ไม่ต้องใช้ bodyParser แล้ว
+app.use(express.json());
 
-const HOST = "localhost";
+const HOST = process.env.HOST || "localhost";
 const PORT = process.env.PORT || 3000;
 
-// Test route
+// --- Routes ---
+
+// 1. Test route
 app.get("/", (req, res) => {
   res.send("HealthQ Backend is running");
 });
 
-
-// ✅ เพิ่ม: test DB
+// 2. Test DB Connection
 app.get("/test-db", async (req, res) => {
   try {
     await db.query("SELECT 1");
-    res.json({ message: "DB OK" });
+    res.json({ message: "Database connection is OK" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-
-// Swagger
+// --- Swagger API Documentation ---
 const swaggerOptions = {
   definition: {
     openapi: "3.0.0",
     info: {
       title: "HealthQ Backend API",
       version: "1.0.0",
-      description: "API Documentation",
+      description: "API Documentation for HealthQ system",
     },
     servers: [{ url: `http://${HOST}:${PORT}` }],
   },
@@ -58,16 +58,15 @@ const swaggerOptions = {
 const swaggerSpec = swaggerJsDoc(swaggerOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-
-// Routes
+// --- API Endpoints ---
 app.use("/data", dataRouter);
 app.use("/users", usersRouter);
 app.use("/userManage", userManageRouter);
 app.use("/mail", mailRouters);
 app.use("/appointment", appointmentRouter);
 
-
-// Start server
-app.listen(PORT, HOST, () => {
-  console.log(`🚀 Running on http://${HOST}:${PORT}`);
+// --- Start Server ---
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Swagger Docs: http://localhost:${PORT}/api-docs`);
 });
