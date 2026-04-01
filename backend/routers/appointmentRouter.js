@@ -56,7 +56,7 @@ appointmentRouter.post("/create", async (req, res) => {
       return res.status(400).json({ message: "Missing data" });
     }
 
-    // 🔥 1. เช็ค doctor
+    //  1. เช็ค doctor
     const [doctor] = await db.query(
       "SELECT * FROM doctors WHERE doctor_id = ?",
       [doctorId]
