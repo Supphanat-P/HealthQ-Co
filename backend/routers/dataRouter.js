@@ -277,7 +277,7 @@ dataRouter.get("/hospitals", async (req, res) => {
  * /data/specialties:
  *   get:
  *     summary: ดึงรายการ specialty ทั้งหมด
- *     tags: [Data]
+ *     tags: [Specialty]
  *     responses:
  *       200:
  *         description: ดึงข้อมูลสำเร็จ
@@ -298,7 +298,7 @@ dataRouter.get("/specialties", async (req, res) => {
  * /data/specialties/{specialty_id}:
  *   get:
  *     summary: ดึงข้อมูล specialty ตาม ID
- *     tags: [Data]
+ *     tags: [Specialty]
  *     parameters:
  *       - name: specialty_id
  *         in: path
@@ -335,7 +335,7 @@ dataRouter.get("/specialties/:id", async (req, res) => {
  * /data/specialties/{specialty_id}:
  *   delete:
  *     summary: ลบ specialty ตาม ID
- *     tags: [Data]
+ *     tags: [Specialty]
  *     parameters:
  *       - name: specialty_id
  *         in: path
@@ -384,6 +384,42 @@ dataRouter.delete("/specialties/:id", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /data/updateSpecialty/{specialty_id}:
+ *   put:
+ *     summary: อัปเดตชื่อ specialty ตาม ID
+ *     tags: [Specialty]
+ *     parameters:
+ *       - name: specialty_id
+ *         in: path
+ *         required: true
+ *         description: รหัส specialty ที่ต้องการแก้ไข
+ *         schema:
+ *           type: integer
+ *           example: 101
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - specialty_name
+ *             properties:
+ *               specialty_name:
+ *                 type: string
+ *                 example: Cardiology Updated
+ *     responses:
+ *       200:
+ *         description: อัปเดตสำเร็จ
+ *       400:
+ *         description: ข้อมูลไม่ถูกต้อง
+ *       404:
+ *         description: ไม่พบ specialty
+ *       500:
+ *         description: เกิดข้อผิดพลาดในระบบ
+ */
 dataRouter.put("/updateSpecialty/:id", async (req, res) => {
   try {
     const specialtyId = req.params.id;
@@ -404,7 +440,7 @@ dataRouter.put("/updateSpecialty/:id", async (req, res) => {
  * /data/specialties:
  *   post:
  *     summary: สร้าง specialty ใหม่
- *     tags: [Data]
+ *     tags: [Specialty]
  *     requestBody:
  *       required: true
  *       content:

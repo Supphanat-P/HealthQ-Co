@@ -77,6 +77,16 @@ export const getSpecialtyById = async (id) => {
   return result[0];
 };
 
+export const updateSpecialtyById = async (
+  id,
+  { specialty_name },
+) => {
+  const sql = `UPDATE specialties SET specialty_name = ? WHERE specialty_id = ?`;
+  const params = [specialty_name, id];
+  const result = await query(sql, params);
+  return result;
+};
+
 export const deleteSpecialtiesById = async (id) => {
   const sql = `DELETE FROM specialties WHERE specialty_id = ?`;
   const params = [id];
