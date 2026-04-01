@@ -10,6 +10,7 @@ const Profile = ({ lang }) => {
   const [selectedTab, setSelectedTab] = useState("1");
   const { isLogin } = useData();
   if (isLogin === false) {
+    console.log("User is not logged in, redirecting to login page...");
     return <Navigate to="/login" />;
   }
   return (

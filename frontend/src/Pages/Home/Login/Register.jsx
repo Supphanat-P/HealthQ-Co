@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import OtpInput from "react-otp-input";
 import React from "react";
 
-const apiBaseUrl = 'http://localhost:3000';
+const apiBaseUrl = "http://localhost:3000";
 const apiUrl = `${apiBaseUrl}/users/register`;
 
 const Register = () => {
@@ -36,9 +36,9 @@ const Register = () => {
     setIsSending(true);
     try {
       const response = await fetch(`${apiBaseUrl}/mail/send-otp-email`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email: identifier }),
       });
@@ -67,13 +67,13 @@ const Register = () => {
 
     try {
       const response = await fetch(`${apiBaseUrl}/mail/verify-otp`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: identifier,
-          otp: userOtp
+          otp: userOtp,
         }),
       });
 
@@ -90,7 +90,6 @@ const Register = () => {
     }
   };
 
-  // 🔥 สมัครจริง
   const confirmRegistration = async () => {
     if (password !== confirmPassword) {
       toast.error("รหัสผ่านไม่ตรงกัน");
@@ -99,14 +98,15 @@ const Register = () => {
 
     try {
       const response = await fetch(apiUrl, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: identifier,
           password: password,
-          role_id: 2
+          role_id: 2,
+          full_name: `${fName} ${lName}`,
         }),
       });
 
@@ -119,7 +119,6 @@ const Register = () => {
       toast.success("สมัครสมาชิกสำเร็จแล้ว");
       setStep("done");
       setTimeout(() => navigate("/login"), 2000);
-
     } catch (err) {
       toast.error(err.message);
     }
@@ -159,7 +158,9 @@ const Register = () => {
 
         {step === "otp" && (
           <>
-            <p className="text-center! text-gray-600 mb-4!">ส่งรหัส OTP ไปยัง {identifier}</p>
+            <p className="text-center! text-gray-600 mb-4!">
+              ส่งรหัส OTP ไปยัง {identifier}
+            </p>
             <div className="mb-4! justify-center flex">
               <OtpInput
                 value={userOtp}
@@ -183,7 +184,10 @@ const Register = () => {
               </button>
               <button
                 className="bg-white text-gray-700 px-6! py-2 rounded-lg! border border-gray-300 hover:bg-gray-50 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
-                onClick={() => { setStep("input"); setUserOtp(""); }}
+                onClick={() => {
+                  setStep("input");
+                  setUserOtp("");
+                }}
               >
                 แก้ไขอีเมล
               </button>
@@ -194,7 +198,9 @@ const Register = () => {
             >
               ส่งใหม่
             </button>
-            <small className="text-gray-500 text-center mt-2 block">* รหัสใช้งานได้ภายใน 5 นาที</small>
+            <small className="text-gray-500 text-center mt-2 block">
+              * รหัสใช้งานได้ภายใน 5 นาที
+            </small>
           </>
         )}
 
@@ -217,7 +223,6 @@ const Register = () => {
               />
             </div>
             <div className="flex gap-2! justify-center mb-3! w-full px-8!">
-
               <input
                 type="password"
                 value={password}
@@ -244,7 +249,9 @@ const Register = () => {
 
         {step === "done" && (
           <div className="text-center py-4">
-            <p className="font-bold text-xl text-blue-900 mb-2">สมัครสมาชิกสำเร็จ</p>
+            <p className="font-bold text-xl text-blue-900 mb-2">
+              สมัครสมาชิกสำเร็จ
+            </p>
             <p className="text-gray-600">กำลังพาไปหน้าล็อกอิน...</p>
           </div>
         )}

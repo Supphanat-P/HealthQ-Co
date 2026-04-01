@@ -1,52 +1,50 @@
 import AppointmentHeader from "../../../components/Shared/AppointmentHeader";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-// import { useData } from "../../../Context/DataContext";
+import { useData } from "../../../Context/DataContext";
 import toast from "react-hot-toast";
 import axios from "axios";
-// import { use } from "react";
 import { jwtDecode } from "jwt-decode";
+
 const apiUrl = "http://localhost:3000/users/login";
 
 const Login = () => {
+  const { setCurrentUser, setToken, fetchAndSetData } = useData();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) navigate("/");
+    if (localStorage.getItem("token")) {
+      navigate("/");
+    }
   }, [navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     if (!email || !password) {
-      toast.error("กรุณากรอกอีเมลและรหัสผ่านให้ครบ");
-      return;
+      return toast.error("กรุณากรอกข้อมูล");
     }
 
     try {
-      const response = await axios.post(apiUrl, {
-        email: email,
-        password: password,
-      });
+      const res = await axios.post(apiUrl, { email, password });
 
-      const token = response.data.token;
-      localStorage.setItem("token", token);
-
+      const token = res.data.token;
       const decoded = jwtDecode(token);
 
-      if (decoded && decoded.id) {
-        localStorage.setItem("currentUser", JSON.stringify(decoded.id));
-      }
+      localStorage.setItem("token", token);
+
+      setToken(token);
+      setCurrentUser(decoded.id);
+
+      await fetchAndSetData(decoded.id);
 
       toast.success("เข้าสู่ระบบสำเร็จ");
       navigate("/");
     } catch (err) {
-      const errorMsg = err.response?.data?.message || "เกิดข้อผิดพลาด";
-      toast.error(errorMsg);
+      toast.error(err.response?.data?.message || "Login failed");
     }
   };
 

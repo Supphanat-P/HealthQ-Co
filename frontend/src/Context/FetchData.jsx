@@ -1,14 +1,12 @@
 import bcrypt from "bcryptjs";
-import toast from "react-hot-toast";
 import axios from "axios";
-import { useData } from "./DataContext";
 
 const URL = "http://localhost:3000";
 
 export const fetchDoctors = async () => {
   try {
-    const response = await axios.get(`${URL}/data/doctors`);
-    return response.data.doctors;
+    const response = await axios.get(`${URL}/data/getAllDoctors`);
+    return response.data;
   } catch (error) {
     throw new Error("Failed to fetch doctors: " + error.message);
   }
@@ -17,7 +15,7 @@ export const fetchDoctors = async () => {
 export const fetchHospitals = async () => {
   try {
     const response = await axios.get(`${URL}/data/hospitals`);
-    return response.data.hospitals;
+    return response.data;
   } catch (error) {
     throw new Error("Failed to fetch hospitals: " + error.message);
   }
@@ -26,7 +24,7 @@ export const fetchHospitals = async () => {
 export const fetchSpecialties = async () => {
   try {
     const response = await axios.get(`${URL}/data/specialties`);
-    return response.data.specialties;
+    return response.data;
   } catch (error) {
     throw new Error("Failed to fetch specialties: " + error.message);
   }
@@ -36,7 +34,7 @@ export const fetchAppointmentsByUser = async (userId) => {
   try {
     const response = await axios.get(
       `${URL}/userManage/getAppointmentsByUser`,
-      { params: { user_id: userId } }, 
+      { params: { user_id: userId } },
     );
     return response.data.appointments;
   } catch (error) {
@@ -48,6 +46,17 @@ export const fetchUsersInfo = async () => {
   try {
     const response = await axios.get(`${URL}/data/users_info`);
     return response.data.users;
+  } catch (error) {
+    throw new Error("Failed to fetch users info: " + error.message);
+  }
+};
+
+export const fetchUsersInfoByUserId = async (userId) => {
+  try {
+    const response = await axios.get(`${URL}/userManage/getUserInfoByUserId`, {
+      params: { user_id: userId },
+    });
+    return response.data.userInfo;
   } catch (error) {
     throw new Error("Failed to fetch users info: " + error.message);
   }
