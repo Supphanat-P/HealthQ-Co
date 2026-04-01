@@ -1,13 +1,11 @@
 import bcrypt from "bcryptjs";
-import toast from "react-hot-toast";
 import axios from "axios";
-import { useData } from "./DataContext";
 
 const URL = "http://localhost:3000";
 
 export const fetchDoctors = async () => {
   try {
-    const response = await axios.get(`${URL}/data/doctors`);
+    const response = await axios.get(`${URL}/data/getAllDoctors`);
     return response.data;
   } catch (error) {
     throw new Error("Failed to fetch doctors: " + error.message);

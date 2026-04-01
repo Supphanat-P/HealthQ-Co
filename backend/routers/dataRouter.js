@@ -21,17 +21,18 @@ const dataRouter = Router();
 
 /**
  * @swagger
- * /data/doctors:
+ * /data/getAllDoctors:
  *   get:
- *     summary: Get all doctors
- *     tags: [Data]
+ *     summary: ดึงข้อมูลแพทย์ทั้งหมด
+ *     description: ใช้สำหรับดึงรายการแพทย์ทั้งหมดในระบบ
+ *     tags: [Doctors]
  *     responses:
  *       200:
- *         description: List of doctors
+ *         description: ดึงข้อมูลแพทย์สำเร็จ
  *       500:
- *         description: Server error
+ *         description: เกิดข้อผิดพลาดที่เซิร์ฟเวอร์
  */
-dataRouter.get("/doctors", async (req, res) => {
+dataRouter.get("/getAllDoctors", async (req, res) => {
   try {
     const doctors = await getAllDoctors();
     res.status(200).json(doctors);
@@ -42,26 +43,28 @@ dataRouter.get("/doctors", async (req, res) => {
 
 /**
  * @swagger
- * /data/doctors/{doctor_id}:
+ * /data/getDoctor/{id}:
  *   get:
- *     summary: Get Doctor by ID with specialty and hospital
- *     tags: [Data]
+ *     summary: ดึงข้อมูลแพทย์ตามรหัส
+ *     description: ดึงข้อมูลแพทย์ตาม ID พร้อมข้อมูลสาขาและโรงพยาบาล
+ *     tags: [Doctors]
  *     parameters:
  *       - in: path
- *         name: doctor_id
+ *         name: id
  *         required: true
+ *         description: รหัสแพทย์
  *         schema:
- *           type: string
- *         description: ID Doctor ที่ต้องการ
+ *           type: integer
+ *           example: 1
  *     responses:
  *       200:
- *         description: Doctor data
+ *         description: ดึงข้อมูลแพทย์สำเร็จ
  *       404:
- *         description: Doctor not found
+ *         description: ไม่พบข้อมูลแพทย์
  *       500:
- *         description: Server error
+ *         description: เกิดข้อผิดพลาดที่เซิร์ฟเวอร์
  */
-dataRouter.get("/doctors/:id", async (req, res) => {
+dataRouter.get("/getDoctor/:id", async (req, res) => {
   try {
     const doctor = await getDoctorById(req.params.id);
 
@@ -77,28 +80,30 @@ dataRouter.get("/doctors/:id", async (req, res) => {
 
 /**
  * @swagger
- * /data/doctors/{doctor_id}:
+ * /data/deleteDoctor/{id}:
  *   delete:
- *     summary: Delete Doctor by ID
- *     tags: [Data]
+ *     summary: ลบข้อมูลแพทย์
+ *     description: ลบข้อมูลแพทย์ตาม ID
+ *     tags: [Doctors]
  *     parameters:
  *       - in: path
- *         name: doctor_id
+ *         name: id
  *         required: true
+ *         description: รหัสแพทย์
  *         schema:
- *           type: string
- *         description: ID Doctor ที่ต้องการ
+ *           type: integer
+ *           example: 1
  *     responses:
  *       200:
- *         description: Doctor deleted successfully
+ *         description: ลบข้อมูลแพทย์สำเร็จ
  *       400:
- *        description: Invalid doctor id
+ *         description: รหัสแพทย์ไม่ถูกต้อง
  *       404:
- *         description: Doctor not found
+ *         description: ไม่พบข้อมูลแพทย์
  *       500:
- *         description: Server error
+ *         description: เกิดข้อผิดพลาดที่เซิร์ฟเวอร์
  */
-dataRouter.delete("/doctors/:id", async (req, res) => {
+dataRouter.delete("/deleteDoctor/:id", async (req, res) => {
   try {
     const doctorId = req.params.id;
 
@@ -128,10 +133,69 @@ dataRouter.delete("/doctors/:id", async (req, res) => {
 
 /**
  * @swagger
+ * /data/updateDoctor/{id}:
+ *   put:
+ *     summary: แก้ไขข้อมูลแพทย์
+ *     description: อัปเดตข้อมูลแพทย์ตาม ID
+ *     tags: [Doctors]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: รหัสแพทย์
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               doctor_name:
+ *                 type: string
+ *                 example: นายแพทย์สมชาย ใจดี
+ *               specialty_id:
+ *                 type: integer
+ *                 example: 2
+ *               hospital_id:
+ *                 type: integer
+ *                 example: 5
+ *     responses:
+ *       200:
+ *         description: แก้ไขข้อมูลแพทย์สำเร็จ
+ *       400:
+ *         description: ข้อมูลไม่ถูกต้อง
+ *       404:
+ *         description: ไม่พบข้อมูลแพทย์
+ *       500:
+ *         description: เกิดข้อผิดพลาดที่เซิร์ฟเวอร์
+ */
+dataRouter.put("/updateDoctor/:id", async (req, res) => {
+  try {
+    const doctorId = req.params.id;
+    const { doctor_name, specialty_id, hospital_id } = req.body;
+
+    const result = await updateDoctorById(doctorId, {
+      doctor_name,
+      specialty_id,
+      hospital_id,
+    });
+    res.status(200).json({ message: "Doctor updated successfully", ...result });
+  } catch (err) {
+    console.error("Update doctor error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * @swagger
  * /data/insertDoctor:
  *   post:
- *     summary: Insert a new doctor
- *     tags: [Data]
+ *     summary: เพิ่มข้อมูลแพทย์
+ *     description: ใช้สำหรับเพิ่มข้อมูลแพทย์ใหม่
+ *     tags: [Doctors]
  *     requestBody:
  *       required: true
  *       content:
@@ -151,11 +215,11 @@ dataRouter.delete("/doctors/:id", async (req, res) => {
  *                 type: integer
  *     responses:
  *       200:
- *         description: Doctor inserted successfully
+ *         description: เพิ่มข้อมูลแพทย์สำเร็จ
  *       400:
- *         description: Missing required fields
+ *         description: ข้อมูลไม่ครบถ้วน
  *       500:
- *         description: Server error
+ *         description: เกิดข้อผิดพลาดที่เซิร์ฟเวอร์
  */
 dataRouter.post("/insertDoctor", async (req, res) => {
   try {

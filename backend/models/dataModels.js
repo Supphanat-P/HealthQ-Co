@@ -36,6 +36,16 @@ export const getDoctorById = async (id) => {
   return result[0];
 };
 
+export const updateDoctorById = async (
+  id,
+  { doctor_name, specialty_id, hospital_id },
+) => {
+  const sql = `UPDATE doctors SET doctor_name = ?, specialty_id = ?, hospital_id = ? WHERE doctor_id = ?`;
+  const params = [doctor_name, specialty_id, hospital_id, id];
+  const result = await query(sql, params);
+  return result;
+};
+
 export const deleteDoctorById = async (id) => {
   const sql = `DELETE FROM doctors WHERE doctor_id = ?`;
   const params = [id];
