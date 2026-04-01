@@ -66,7 +66,7 @@ appointmentRouter.post("/create", async (req, res) => {
       return res.status(400).json({ message: "Doctor not found" });
     }
 
-    // 🔥 2. เช็ค user
+    //  2. เช็ค user
     const [user] = await db.query(
       "SELECT * FROM users WHERE user_id = ?",
       [patientId]
@@ -76,7 +76,7 @@ appointmentRouter.post("/create", async (req, res) => {
       return res.status(400).json({ message: "User not found" });
     }
 
-    // 🔥 3. สร้าง UUID เอง (ดีที่สุด)
+    //  3. สร้าง UUID เอง (ดีที่สุด)
     const appId = uuidv4();
 
     // 4. insert appointment
