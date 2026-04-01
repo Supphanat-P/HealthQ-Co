@@ -1,5 +1,6 @@
 import { Router } from "express";
 import db from "../config/db.js";
+import crypto from "crypto";
 
 const userManageRouter = Router();
 
@@ -7,14 +8,16 @@ const userManageRouter = Router();
  * @swagger
  * tags:
  *   - name: userManage
- *     description: User and Appointment management APIs
+ *     description: User and Appointment management APIs (Patient Side)
  */
-
+// =================================================
+// 2️⃣ GET APPOINTMENTS
+// =================================================
 /**
  * @swagger
  * /userManage/getAppointmentsByUser:
  *   get:
- *     summary: ดึงประวัติการนัดหมายของผู้ป่วย (Get appointment history by user ID)
+ *     summary: ดึงข้อมูลการนัดหมายของผู้ใช้
  *     tags: [userManage]
  *     parameters:
  *       - in: query
@@ -22,36 +25,36 @@ const userManageRouter = Router();
  *         required: true
  *         schema:
  *           type: string
- *         description: ID ของผู้ป่วย
  *     responses:
  *       200:
  *         description: Success
- *       500:
- *         description: Server error
  */
 userManageRouter.get("/getAppointmentsByUser", async (req, res) => {
   try {
-    const userId = req.query.user_id;
+    const { user_id } = req.query;
 
     const [rows] = await db.query(
       "SELECT * FROM appointments WHERE user_id = ?",
-      [userId],
+      [user_id]
     );
 
-    return res.status(200).json({
+    res.status(200).json({
       message: "Success",
       appointments: rows,
     });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: "Error", error: err.message });
+    res.status(500).json({ message: "Error", error: err.message });
   }
 });
+
+// =================================================
+// 3️⃣ GET USER INFO
+// =================================================
 /**
  * @swagger
- * /userManage/getUserInfoByUserId:
+ * /userManage/getUserInfo:
  *   get:
- *     summary: ดึงข้อมูลส่วนตัวของผู้ป่วย (Get user information)
+ *     summary: ดึงข้อมูลผู้ใช้
  *     tags: [userManage]
  *     parameters:
  *       - in: query
@@ -59,39 +62,39 @@ userManageRouter.get("/getAppointmentsByUser", async (req, res) => {
  *         required: true
  *         schema:
  *           type: string
- *         description: ID ของผู้ป่วย
  *     responses:
  *       200:
  *         description: Success
- *       400:
- *         description: Missing user_id
- *       500:
- *         description: Server error
  */
-userManageRouter.get("/getUserInfoByUserId", async (req, res) => {
+userManageRouter.get("/getUserInfo", async (req, res) => {
   try {
-    const userId = req.query.user_id;
+    const { user_id } = req.query;
 
     const [rows] = await db.query(
-      "SELECT * FROM users_info WHERE user_id = ?",
-      [userId],
+      `SELECT u.user_id, ui.first_name, ui.last_name, u.email, ui.phone
+       FROM users u
+       JOIN users_info ui ON u.user_id = ui.user_id
+       WHERE u.user_id = ?`,
+      [user_id]
     );
 
-    return res.status(200).json({
+    res.status(200).json({
       message: "Success",
       userInfo: rows[0],
     });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: "Error", error: err.message });
+    res.status(500).json({ message: "Error", error: err.message });
   }
 });
 
+// =================================================
+// 4️⃣ UPDATE USER INFO
+// =================================================
 /**
  * @swagger
  * /userManage/updateUserInfo:
- *   post:
- *     summary: แก้ไขข้อมูลส่วนตัวของผู้ป่วย (Update user information)
+ *   put:
+ *     summary: แก้ไขข้อมูลผู้ใช้
  *     tags: [userManage]
  *     requestBody:
  *       required: true
@@ -100,50 +103,83 @@ userManageRouter.get("/getUserInfoByUserId", async (req, res) => {
  *           schema:
  *             type: object
  *             properties:
+ *               user_id:
+ *                 type: string
  *               phone:
  *                 type: string
- *                 example: "0812345678"
  *               emergency_contact:
  *                 type: string
- *                 example: "0898765432"
  *               weight:
  *                 type: number
- *                 example: 65.5
  *               height:
  *                 type: number
- *                 example: 170
  *     responses:
  *       200:
  *         description: User information updated successfully
- *       500:
- *         description: Update Failed
  */
-userManageRouter.post("/updateUserInfo", (req, res) => {
-  const userId = req.user?.id || "433eac44-22ce-11f1-8430-d61288df7fa9";
-  const { phone, emergency_contact, weight, height } = req.body;
+userManageRouter.put("/updateUserInfo", async (req, res) => {
+  try {
+    const { user_id, phone, emergency_contact, weight, height } = req.body;
 
-  const sql = `
-        UPDATE users_info 
-        SET phone = ?, 
-            emergency_contact = ?, 
-            weight = ?, 
-            height = ? 
-        WHERE user_id = ?
-    `;
+    const [result] = await db.query(
+      `UPDATE users_info
+       SET phone=?, emergency_contact=?, weight=?, height=?
+       WHERE user_id=?`,
+      [phone, emergency_contact, weight, height, user_id]
+    );
 
-  db.query(
-    sql,
-    [phone, emergency_contact, weight, height, userId],
-    (err, result) => {
-      if (err)
-        return res.status(500).json({ message: "Update Failed", error: err });
+    if (result.affectedRows === 0)
+      return res.status(404).json({ message: "User not found" });
 
-      res.status(200).json({
-        message: "Success",
-        detail: "User information updated successfully",
-      });
-    },
-  );
+    res.status(200).json({
+      message: "Success",
+      detail: "User information updated successfully",
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Update Failed", error: err.message });
+  }
+});
+
+// =================================================
+// 5️⃣ DELETE USER
+// =================================================
+/**
+ * @swagger
+ * /userManage/deleteUser:
+ *   delete:
+ *     summary: ลบบัญชีผู้ใช้งาน
+ *     tags: [userManage]
+ *     parameters:
+ *       - in: query
+ *         name: user_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: User deleted successfully
+ */
+userManageRouter.delete("/deleteUser", async (req, res) => {
+  try {
+    const { user_id } = req.query;
+
+    await db.query("DELETE FROM users_info WHERE user_id = ?", [user_id]);
+
+    const [result] = await db.query(
+      "DELETE FROM users WHERE user_id = ?",
+      [user_id]
+    );
+
+    if (result.affectedRows === 0)
+      return res.status(404).json({ message: "User not found" });
+
+    res.status(200).json({
+      message: "Success",
+      detail: "User deleted successfully",
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Delete Failed", error: err.message });
+  }
 });
 
 export default userManageRouter;
