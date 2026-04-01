@@ -29,19 +29,18 @@ const userManageRouter = Router();
  *       500:
  *         description: Server error
  */
-userManageRouter.get('/getAppointmentsByUser', (req, res) => {
-    const userId = req.query.user_id;
-
-    const sql = "SELECT * FROM appointments WHERE user_id = ?"; 
-
-    db.query(sql, [userId], (err, result) => {
-        if (err) return res.status(500).json({ message: "Error", error: err });
+userManageRouter.get('/getAppointmentsByUser', async (req, res) => {
+    try {
+        const userId = req.query.user_id;
+        const sql = "SELECT * FROM appointments WHERE user_id = ?"; 
         
-        res.status(200).json({ 
-            message: "Success", 
-            appointments: result 
-        });
-    });
+        const [rows] = await db.query(sql, [userId]);
+        
+        res.status(200).json({ message: "Success", appointments: rows });
+    } catch (err) {
+        console.error("Error getAppointmentsByUser:", err);
+        res.status(500).json({ message: "Error", error: err.message });
+    }
 });
 
 /**
@@ -63,19 +62,18 @@ userManageRouter.get('/getAppointmentsByUser', (req, res) => {
  *       500:
  *         description: Server error
  */
-userManageRouter.get('/getUserInfo', (req, res) => {
-    const userId = req.query.user_id; 
+userManageRouter.get('/getUserInfo', async (req, res) => {
+    try {
+        const userId = req.query.user_id; 
+        const sql = "SELECT user_id, first_name, last_name, email, phone FROM users_info WHERE user_id = ?";
 
-    const sql = "SELECT user_id, first_name, last_name, email, phone FROM users_info WHERE user_id = ?";
-
-    db.query(sql, [userId], (err, result) => {
-        if (err) return res.status(500).json({ message: "Error", error: err });
+        const [rows] = await db.query(sql, [userId]);
         
-        res.status(200).json({ 
-            message: "Success", 
-            userInfo: result[0] 
-        });
-    });
+        res.status(200).json({ message: "Success", userInfo: rows[0] });
+    } catch (err) {
+        console.error("Error getUserInfo:", err);
+        res.status(500).json({ message: "Error", error: err.message });
+    }
 });
 
 /**
@@ -109,27 +107,28 @@ userManageRouter.get('/getUserInfo', (req, res) => {
  *       500:
  *         description: Update Failed
  */
-userManageRouter.post('/updateUserInfo', (req, res) => {
-    const userId = req.user?.id || '433eac44-22ce-11f1-8430-d61288df7fa9'; 
-    const { phone, emergency_contact, weight, height } = req.body;
+userManageRouter.post('/updateUserInfo', async (req, res) => {
+    try {
+        const userId = req.user?.id || '433eac44-22ce-11f1-8430-d61288df7fa9'; 
+        const { phone, emergency_contact, weight, height } = req.body;
 
-    const sql = `
-        UPDATE users_info 
-        SET phone = ?, 
-            emergency_contact = ?, 
-            weight = ?, 
-            height = ? 
-        WHERE user_id = ?
-    `;
+        const sql = `
+            UPDATE users_info 
+            SET phone = ?, emergency_contact = ?, weight = ?, height = ? 
+            WHERE user_id = ?
+        `;
 
-    db.query(sql, [phone, emergency_contact, weight, height, userId], (err, result) => {
-        if (err) return res.status(500).json({ message: "Update Failed", error: err });
+        const [result] = await db.query(sql, [phone, emergency_contact, weight, height, userId]);
         
-        res.status(200).json({ 
-            message: "Success", 
-            detail: "User information updated successfully" 
-        });
-    });
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: "User not found or no changes made" });
+        }
+
+        res.status(200).json({ message: "Success", detail: "User information updated successfully" });
+    } catch (err) {
+        console.error("Error updateUserInfo:", err);
+        res.status(500).json({ message: "Update Failed", error: err.message });
+    }
 });
 
 export default userManageRouter;
