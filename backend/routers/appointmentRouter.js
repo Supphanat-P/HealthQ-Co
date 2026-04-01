@@ -35,6 +35,9 @@ const appointmentRouter = Router();
  *               time:
  *                 type: string
  *                 example: "09:00"
+ *               note:
+ *                 type: string
+ *                 example: "มีอาการปวดหัวและไข้สูง"
  *     responses:
  *       200:
  *         description: Appointment created successfully
@@ -50,40 +53,41 @@ const appointmentRouter = Router();
  */
 appointmentRouter.post("/create", async (req, res) => {
   try {
-    const { doctorId, patientId, date, time } = req.body;
+    const { doctorId, patientId, date, time, note } = req.body;
 
-    if (!doctorId || !patientId || !date || !time) {
+    if (!doctorId || !patientId || !date || !time || !note) {
       return res.status(400).json({ message: "Missing data" });
     }
 
     //  1. เช็ค doctor
     const [doctor] = await db.query(
       "SELECT * FROM doctors WHERE doctor_id = ?",
-      [doctorId]
+      [doctorId],
     );
 
     if (doctor.length === 0) {
       return res.status(400).json({ message: "Doctor not found" });
     }
 
+    const hospitalId = doctor[0].hospital_id;
+
     //  2. เช็ค user
-    const [user] = await db.query(
-      "SELECT * FROM users WHERE user_id = ?",
-      [patientId]
-    );
+    const [user] = await db.query("SELECT * FROM users WHERE user_id = ?", [
+      patientId,
+    ]);
 
     if (user.length === 0) {
       return res.status(400).json({ message: "User not found" });
     }
 
-    //  3. สร้าง UUID เอง (ดีที่สุด)
+    //  3. สร้าง UUID เอง
     const appId = uuidv4();
 
     // 4. insert appointment
     await db.query(
-      `INSERT INTO appointments (app_id, doctor_id, user_id, status)
-       VALUES (?, ?, ?, 'pending')`,
-      [appId, doctorId, patientId]
+      `INSERT INTO appointments (app_id, user_id,doctor_id, hospital_id, status,note)
+       VALUES (?, ?, ?, ?, 'pending', ?)`,
+      [appId, patientId, doctorId, hospitalId, note],
     );
 
     // 5. รวม date + time
@@ -93,18 +97,17 @@ appointmentRouter.post("/create", async (req, res) => {
     await db.query(
       `INSERT INTO appointment_slots (app_id, slot_datetime)
        VALUES (?, ?)`,
-      [appId, slotDatetime]
+      [appId, slotDatetime],
     );
 
     res.json({
       message: "Success",
       appointmentId: appId,
     });
-
   } catch (error) {
     console.error("CREATE ERROR:", error);
     res.status(500).json({
-      message: error.message || "Internal Server Error"
+      message: error.message || "Internal Server Error",
     });
   }
 });
@@ -152,7 +155,7 @@ appointmentRouter.put("/cancelAppointment", async (req, res) => {
 
     const [result] = await db.query(
       `UPDATE appointments SET status = 'cancelled' WHERE app_id = ?`,
-      [appointmentId]
+      [appointmentId],
     );
 
     if (result.affectedRows === 0) {
@@ -160,7 +163,6 @@ appointmentRouter.put("/cancelAppointment", async (req, res) => {
     }
 
     res.json({ message: "Success" });
-
   } catch (error) {
     console.error("CANCEL ERROR:", error);
     res.status(500).json({ message: error.message });
@@ -208,15 +210,14 @@ appointmentRouter.delete("/delete", async (req, res) => {
     }
 
     //  ลบ slot ก่อน (กัน foreign key error)
-    await db.query(
-      "DELETE FROM appointment_slots WHERE app_id = ?",
-      [appointmentId]
-    );
+    await db.query("DELETE FROM appointment_slots WHERE app_id = ?", [
+      appointmentId,
+    ]);
 
     //  ลบ appointment
     const [result] = await db.query(
       "DELETE FROM appointments WHERE app_id = ?",
-      [appointmentId]
+      [appointmentId],
     );
 
     if (result.affectedRows === 0) {
@@ -224,14 +225,12 @@ appointmentRouter.delete("/delete", async (req, res) => {
     }
 
     res.json({ message: "Deleted successfully" });
-
   } catch (error) {
     console.error("DELETE ERROR:", error);
     res.status(500).json({
-      message: error.message || "Internal Server Error"
+      message: error.message || "Internal Server Error",
     });
   }
 });
-
 
 export default appointmentRouter;

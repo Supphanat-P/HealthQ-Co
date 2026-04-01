@@ -52,16 +52,19 @@ const usersRouter = Router();
  *     responses:
  *       200:
  *         description: Success
- *       400: 
+ *       400:
  *         description: Bad Request (ขาดข้อมูลที่จำเป็น)
  *       500:
  *         description: Internal Server Error
  */
 usersRouter.post("/register", async (req, res) => {
+
   const { email, password, role_id, full_name } = req.body;
+
   if (!email || !password || !role_id || !full_name) {
     return res.status(400).json({ message: "Missing required fields" });
   }
+  
   try {
     await createUser({ email, password, role_id, full_name });
 

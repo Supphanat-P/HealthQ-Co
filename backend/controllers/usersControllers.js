@@ -52,7 +52,7 @@ export const createUser = async ({ email, password, role_id, full_name }) => {
     throw error;
   }
 
-  return result.insertId; // ✅ return user_id
+  return result;
 };
 
 export const getUserByEmail = async (email) => {
