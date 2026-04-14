@@ -6,7 +6,7 @@ import { Navigate } from "react-router-dom";
 const AdminSidebar = () => {
   const { currentUser } = useData();
   if (!currentUser) return <Navigate to="/login" replace />;
-  if (currentUser.role !== "admin") return <Navigate to="/login" replace />;
+  // if (currentUser.role !== "admin") return <Navigate to="/login" replace />;
 
   const navItems = [
     {

@@ -143,7 +143,7 @@ const PatientInfo = ({ onChange } = {}) => {
           </div>
         </div>
 
-        <div className="col-md-5 d-flex justify-content-center align-items-start">
+        {/* <div className="col-md-5 d-flex justify-content-center align-items-start">
           <div
             className="card shadow p-4 text-center w-100"
             style={{ borderRadius: "20px", backgroundColor: "#f9fbff" }}
@@ -230,7 +230,7 @@ const PatientInfo = ({ onChange } = {}) => {
               </div>
             )}
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );

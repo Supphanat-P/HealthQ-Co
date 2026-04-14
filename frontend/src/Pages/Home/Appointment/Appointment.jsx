@@ -15,11 +15,17 @@ export default function Appointment() {
   const location = useLocation();
   const { doctor } = location.state || {};
 
-  const [selectedDoctorId, setSelectedDoctorId] = useState(doctor?.doctor_id || null);
+  const [selectedDoctorId, setSelectedDoctorId] = useState(
+    doctor?.doctor_id || null,
+  );
+
   const [selectedTimes, setSelectedTimes] = useState({});
   const [selectedDates, setSelectedDates] = useState([]);
   const [mapDatesTimes, setMapDatesTimes] = useState([]);
   const [patientInfo, setPatientInfo] = useState({});
+  
+  console.log("Selected Dates:", selectedDates);
+  console.log("Selected Times:", selectedTimes);
 
   if (!doctor) {
     return <Navigate to="/doctorsearch" />;
@@ -29,7 +35,6 @@ export default function Appointment() {
     toast.error("กรุณาเข้าสู่ระบบก่อนทำการนัดหมาย", { duration: 2000 });
     return <Navigate to="/login" />;
   }
-
 
   return (
     <>
@@ -42,15 +47,25 @@ export default function Appointment() {
       <BackToNavigate label="กลับไปหน้าค้นหาแพทย์" linkTo="doctorsearch" />
       <AppointmentHeader />
 
-      <div className="flex flex-col md:flex-row justify-self-center mt-6 px-4 md:px-8 gap-4">
-        <div className="flex-1 flex flex-col space-y-6">
+      <div className="flex flex-col md:flex-row justify-content-center mt-6 px-4 md:px-8 gap-4 w-full">
+        <div
+          className="flex-1 flex flex-col space-y-6"
+          style={{ maxWidth: "750px" }}
+        >
           <div className="bg-white shadow-sm rounded-2xl p-4 mb-3">
-            <h4 className="text-center text-2xl font-semibold mb-4">ข้อมูลผู้แพทย์</h4>
+            <h4 className="text-center text-2xl font-semibold mb-4">
+              ข้อมูลผู้แพทย์
+            </h4>
             <AppointmentDoctor selectedDoctor={doctor} />
           </div>
 
-          <div className="bg-white shadow-sm rounded-2xl p-4 mb-3">
-            <h4 className="text-center text-2xl font-semibold mb-4">เลือกวันและเวลานัดหมาย</h4>
+          <div
+            className="bg-white shadow-sm rounded-2xl p-4 mb-3"
+            style={{ maxWidth: "750px" }}
+          >
+            <h4 className="text-center text-2xl font-semibold mb-4">
+              เลือกวันและเวลานัดหมาย
+            </h4>
             <div className="flex flex-col md:flex-row gap-5">
               <Calendar
                 selectedDates={selectedDates}
@@ -64,20 +79,23 @@ export default function Appointment() {
             </div>
           </div>
 
-          <div className="bg-white shadow-sm rounded-2xl p-4 mb-3" style={{ maxWidth: "750px" }}>
+          <div
+            className="bg-white shadow-sm rounded-2xl p-4 mb-3"
+            style={{ maxWidth: "750px" }}
+          >
             <PatientInfo onChange={(data) => setPatientInfo(data)} />
           </div>
         </div>
 
-        <div className="w-full md:w-96" >
+        <div className="w-full md:w-96">
           <AppointmentSummary
             selectedDates={selectedDates}
             selectedTimes={selectedTimes}
             patientInfo={patientInfo}
             doctorId={doctor?.doctor_id}
             doctorName={doctor?.doctor_name || "กรุณาเลือกแพทย์"}
-            doctorHospital={doctor?.hospital.hospital_name || "กรุณาเลือกโรงพยาบาล"}
-            doctorSpecialty={doctor?.specialty.specialty_name || "กรุณาเลือกสาขาเฉพาะทาง"}
+            doctorHospital={doctor?.hospital_name || "กรุณาเลือกโรงพยาบาล"}
+            doctorSpecialty={doctor?.specialty_name || "กรุณาเลือกสาขาเฉพาะทาง"}
           />
         </div>
       </div>

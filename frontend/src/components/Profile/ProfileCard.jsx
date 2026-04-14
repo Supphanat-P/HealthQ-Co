@@ -15,6 +15,7 @@ const ProfileCard = ({ lang }) => {
   const [bloodValue, setBloodValue] = useState("");
 
   //jo
+  console.log("usersInfoByUserId in ProfileCard:", usersInfoByUserId);
   const findUserId = usersInfoByUserId;
 
   useEffect(() => {

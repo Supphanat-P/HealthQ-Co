@@ -66,7 +66,6 @@ const Home = ({ lang }) => {
     socialM: lang === "TH" ? "โซเชียลมีเดีย" : "Social Media",
   };
   const { specialties, hospitals, doctors, searchData } = useData();
-  console.log(specialties);
 
   const [view, setView] = useState(false);
   const navigate = useNavigate();

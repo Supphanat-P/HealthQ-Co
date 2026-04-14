@@ -30,6 +30,15 @@ export const fetchSpecialties = async () => {
   }
 };
 
+export const fetchAppointments = async () => {
+  try {
+    const response = await axios.get(`${URL}/data/appointments`);
+    return response.data;
+  } catch (error) {
+    throw new Error("Failed to fetch appointments: " + error.message);
+  }
+};
+
 export const fetchAppointmentsByUser = async (userId) => {
   try {
     const response = await axios.get(
@@ -80,6 +89,7 @@ export const createAppointment = async (
   note,
 ) => {
   const { data: appointmentData, error: appointmentError } = await supabase
+
     .from("appointments")
     .insert([
       {

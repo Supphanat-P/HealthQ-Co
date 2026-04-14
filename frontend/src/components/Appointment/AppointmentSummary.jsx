@@ -44,12 +44,15 @@ const AppointmentSummary = ({
 
     try {
       const loadingToast = toast.loading("กำลังจอง...");
+
+      // pond ทำตรงนี้
       await createAppointment(
         currentUser.user_id,
         doctorId,
         app_datetime_json,
         patientInfo.symptom
       );
+
       await fetchAndSetData();
       toast.dismiss(loadingToast);
       setShowModal(true);

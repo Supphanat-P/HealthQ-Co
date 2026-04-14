@@ -9,6 +9,7 @@ import {
   fetchAppointmentsByUser,
   fetchUsersInfo,
   fetchUsersInfoByUserId,
+  fetchAppointments,
 } from "./FetchData";
 
 const DataContext = createContext(null);
@@ -18,6 +19,7 @@ export const DataProvider = ({ children }) => {
   const [doctors, setDoctors] = useState([]);
   const [hospitals, setHospitals] = useState([]);
   const [appointments, setAppointments] = useState([]);
+  const [appointmentsByUser, setAppointmentsByUser] = useState([]);
   const [usersInfo, setUsersInfo] = useState([]);
   const [usersInfoByUserId, setUsersInfoByUserId] = useState(null);
 
@@ -43,8 +45,9 @@ export const DataProvider = ({ children }) => {
       const specialtiesData = await fetchSpecialties();
       const doctorsData = await fetchDoctors();
       const hospitalsData = await fetchHospitals();
+      const appointmentsData = await fetchAppointments();
 
-      const appointmentsData = userId
+      const appointmentsByUserData = userId
         ? await fetchAppointmentsByUser(userId)
         : [];
 
@@ -57,6 +60,7 @@ export const DataProvider = ({ children }) => {
       setSpecialties(specialtiesData);
       setDoctors(doctorsData);
       setHospitals(hospitalsData);
+      setAppointmentsByUser(appointmentsData);
       setAppointments(appointmentsData);
       setUsersInfo(usersInfoData);
       setUsersInfoByUserId(usersInfoByUserIdData);
@@ -84,6 +88,7 @@ export const DataProvider = ({ children }) => {
         specialties,
         doctors,
         hospitals,
+        appointmentsByUser,
         appointments,
         usersInfo,
         usersInfoByUserId,

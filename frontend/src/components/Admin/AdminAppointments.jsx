@@ -102,7 +102,7 @@ const AdminAppointments = () => {
           subject: "การนัดหมายถูกอนุมัติแล้ว (Appointment Approved)",
           patientName: appointment.user.full_name,
           doctorName: appointment.doctor.doctor_name,
-          hospitalName: appointment.doctor.hospital.hospital_name,
+          hospitalName: appointment.doctor.hospital_name,
           date: date,
           time: `${time} น.`,
         });
@@ -375,7 +375,7 @@ const AdminAppointments = () => {
                         {item.doctor.doctor_name}
                       </div>
                       <div className="text-sm text-gray-600">
-                        {item.doctor.hospital.hospital_name}
+                        {item.doctor.hospital_name}
                       </div>
                     </td>
 

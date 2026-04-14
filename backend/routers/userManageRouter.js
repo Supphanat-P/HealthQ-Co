@@ -35,52 +35,12 @@ userManageRouter.get("/getAppointmentsByUser", async (req, res) => {
 
     const [rows] = await db.query(
       "SELECT * FROM appointments WHERE user_id = ?",
-      [user_id]
+      [user_id],
     );
 
     res.status(200).json({
       message: "Success",
       appointments: rows,
-    });
-  } catch (err) {
-    res.status(500).json({ message: "Error", error: err.message });
-  }
-});
-
-// =================================================
-// 3️⃣ GET USER INFO
-// =================================================
-/**
- * @swagger
- * /userManage/getUserInfo:
- *   get:
- *     summary: ดึงข้อมูลผู้ใช้
- *     tags: [userManage]
- *     parameters:
- *       - in: query
- *         name: user_id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Success
- */
-userManageRouter.get("/getUserInfo", async (req, res) => {
-  try {
-    const { user_id } = req.query;
-
-    const [rows] = await db.query(
-      `SELECT u.user_id, ui.first_name, ui.last_name, u.email, ui.phone
-       FROM users u
-       JOIN users_info ui ON u.user_id = ui.user_id
-       WHERE u.user_id = ?`,
-      [user_id]
-    );
-
-    res.status(200).json({
-      message: "Success",
-      userInfo: rows[0],
     });
   } catch (err) {
     res.status(500).json({ message: "Error", error: err.message });
@@ -125,7 +85,7 @@ userManageRouter.put("/updateUserInfo", async (req, res) => {
       `UPDATE users_info
        SET phone=?, emergency_contact=?, weight=?, height=?
        WHERE user_id=?`,
-      [phone, emergency_contact, weight, height, user_id]
+      [phone, emergency_contact, weight, height, user_id],
     );
 
     if (result.affectedRows === 0)
@@ -165,10 +125,9 @@ userManageRouter.delete("/deleteUser", async (req, res) => {
 
     await db.query("DELETE FROM users_info WHERE user_id = ?", [user_id]);
 
-    const [result] = await db.query(
-      "DELETE FROM users WHERE user_id = ?",
-      [user_id]
-    );
+    const [result] = await db.query("DELETE FROM users WHERE user_id = ?", [
+      user_id,
+    ]);
 
     if (result.affectedRows === 0)
       return res.status(404).json({ message: "User not found" });
@@ -179,6 +138,46 @@ userManageRouter.delete("/deleteUser", async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ message: "Delete Failed", error: err.message });
+  }
+});
+
+// =================================================
+// 3️⃣ GET USER INFO
+// =================================================
+/**
+ * @swagger
+ * /userManage/getUserInfoByUserId:
+ *   get:
+ *     summary: ดึงข้อมูลผู้ใช้
+ *     tags: [userManage]
+ *     parameters:
+ *       - in: query
+ *         name: user_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Success
+ */
+userManageRouter.get("/getUserInfoByUserId", async (req, res) => {
+  try {
+    const { user_id } = req.query;
+
+    const [rows] = await db.query(
+      `SELECT *
+       FROM users u
+       JOIN users_info ui ON u.user_id = ui.user_id
+       WHERE u.user_id = ?`,
+      [user_id],
+    );
+
+    res.status(200).json({
+      message: "Success",
+      userInfo: rows[0],
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Error", error: err.message });
   }
 });
 

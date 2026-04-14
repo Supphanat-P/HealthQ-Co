@@ -104,7 +104,7 @@ const PopupModal = ({
                           setSelectedHospital(
                             closestHospital.hospital.hospital_id,
                           );
-                          onSelect(closestHospital.hospital.hospital_name);
+                          onSelect(closestHospital.hospital_name);
                           onClose();
                         }}
                       >
@@ -119,7 +119,7 @@ const PopupModal = ({
                         </div>
                         <div style={{ flex: 1 }}>
                           <div className="w-fit fw-bold fs-6">
-                            {closestHospital.hospital.hospital_name}
+                            {closestHospital.hospital_name}
                           </div>
                           {closestHospital.distance && (
                             <div

@@ -13,7 +13,7 @@ import { Navigate } from "react-router-dom";
 const AdminDashboard = () => {
   const { currentUser, appointments } = useData();
   if (!currentUser) return <Navigate to="/login" replace />;
-  if (currentUser.role !== "admin") return <Navigate to="/login" replace />;
+  // if (currentUser.role !== "admin") return <Navigate to="/login" replace />;
 
   console.log(appointments);
   const today = new Date();
@@ -31,11 +31,11 @@ const AdminDashboard = () => {
     });
 
   const pendingCount = appointments.filter(
-    (a) => a.status === "pending"
+    (a) => a.status === "pending",
   ).length;
   const bookedCount = appointments.filter((a) => a.status === "booked").length;
   const cancelledCount = appointments.filter(
-    (a) => a.status === "cancelled"
+    (a) => a.status === "cancelled",
   ).length;
 
   const uniquePatients = new Set(appointments.map((a) => a.user_id)).size;

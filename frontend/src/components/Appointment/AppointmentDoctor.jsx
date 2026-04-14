@@ -20,12 +20,12 @@ const AppointmentDoctor = ({ selectedDoctor }) => {
         <p className="text-secondary ps-4 d-flex">
           <Star />
           &nbsp;
-          {selectedDoctor?.specialty.specialty_name || "กรุณาเลือกแพทย์"}
+          {selectedDoctor?.specialty_name || "กรุณาเลือกแพทย์"}
         </p>
         <p className="text-secondary ps-4 d-flex">
           <MapPin />
           &nbsp;
-          {selectedDoctor?.hospital?.hospital_name || "กรุณาเลือกแพทย์"}
+          {selectedDoctor?.hospital_name || "กรุณาเลือกแพทย์"}
         </p>
       </div>
     </div>
