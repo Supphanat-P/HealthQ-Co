@@ -369,7 +369,7 @@ dataRouter.put("/updateHospital/:id", async (req, res) => {
  *     tags: [Hospital]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: hospital_id
  *         required: true
  *         schema:
  *           type: integer

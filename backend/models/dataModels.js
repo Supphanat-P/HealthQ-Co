@@ -102,7 +102,7 @@ export const updateHospitalById = async (
 };
 
 export const deleteHospitalById = async (id) => {
-  const sql = `DELETE FROM Hospitals WHERE hospital_id = ?`;
+  const sql = `DELETE FROM hospitals WHERE hospital_id = ?`;
   const params = [id];
   const result = await query(sql, params);
   return result;
