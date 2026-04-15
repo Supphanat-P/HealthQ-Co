@@ -63,7 +63,7 @@ export const DataProvider = ({ children }) => {
       setSpecialties(specialtiesData);
       setDoctors(doctorsData);
       setHospitals(hospitalsData);
-      setAppointmentsByUser(appointmentsData);
+      setAppointmentsByUser(appointmentsByUserData);
       setAppointments(appointmentsData);
       setUsersInfo(usersInfoData);
       setUsersInfoByUserId(usersInfoByUserIdData);
@@ -93,6 +93,7 @@ export const DataProvider = ({ children }) => {
         hospitals,
         appointmentsByUser,
         appointments,
+        setAppointments,
         usersInfo,
         usersInfoByUserId,
         currentUser,

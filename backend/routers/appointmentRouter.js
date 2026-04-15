@@ -1,6 +1,7 @@
 import { Router } from "express";
 import db from "../config/db.js";
 import { v4 as uuidv4 } from "uuid";
+import dayjs from "dayjs";
 
 const appointmentRouter = Router();
 
@@ -235,9 +236,28 @@ appointmentRouter.delete("/delete", async (req, res) => {
 
 appointmentRouter.put("/updateAppointment/:id", async (req, res) => {
   const { id } = req.params;
-  const { status, confirmed_at } = req.body;
+  let { status, confirmed_at } = req.body;
 
   try {
+    const allowedStatus = ["pending", "booked", "completed", "cancel"];
+    if (!allowedStatus.includes(status)) {
+      return res.status(400).json({ message: "Invalid status" });
+    }
+
+    if (status === "booked") {
+      if (!confirmed_at) {
+        return res.status(400).json({
+          message: "confirmed_at is required",
+        });
+      }
+
+      confirmed_at = dayjs(confirmed_at)
+        .add(7, "hour")
+        .format("YYYY-MM-DD HH:mm:ss");
+    } else {
+      confirmed_at = null;
+    }
+
     const [result] = await db.query(
       `
       UPDATE appointments 
@@ -253,6 +273,7 @@ appointmentRouter.put("/updateAppointment/:id", async (req, res) => {
 
     res.json({ message: "Updated successfully" });
   } catch (err) {
+    console.error("DB ERROR:", err); // 🔥 เพิ่ม log
     res.status(500).json({ message: err.message });
   }
 });

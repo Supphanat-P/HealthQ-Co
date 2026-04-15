@@ -18,6 +18,7 @@ import "dayjs/locale/th";
 import { useData } from "../../Context/DataContext";
 import AdminSidebar from "./AdminSidebar";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 const CustomToggle = forwardRef(({ children, onClick }, ref) => (
   <button
@@ -37,6 +38,7 @@ const AdminAppointments = () => {
   const {
     currentUser,
     appointments,
+    setAppointments,
     fetchAndSetData,
     sendEmailForApprove,
     sendEmailForCancel,
@@ -58,34 +60,32 @@ const AdminAppointments = () => {
 
   const handleStatusChange = async (app_id, newStatus, selectedDate = null) => {
     try {
-      const res = await fetch(
-        `http://localhost:3000/appointments/updateAppointment/${app_id}`,
+      const res = await axios.put(
+        `http://localhost:3000/appointment/updateAppointment/${app_id}`,
         {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            status: newStatus,
-            confirmed_at: selectedDate,
-          }),
+          status: newStatus,
+          confirmed_at: selectedDate,
         },
       );
 
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.message);
+      const data = res.data;
 
       toast.success("สถานะอัปเดตเรียบร้อย");
 
-      await fetchAndSetData();
+      setAppointments((prev) =>
+        prev.map((item) =>
+          item.app_id === app_id
+            ? { ...item, status: newStatus, confirmed_at: selectedDate }
+            : item,
+        ),
+      );
 
-      const appointment = appointments.find((item) => item.app_id === app_id);
+      const appointment =
+        data.appointment || appointments.find((item) => item.app_id === app_id);
 
       if (!appointment) return;
 
       if (newStatus === "booked") {
-        // อนุมัติ Booked
         const date = new Date(selectedDate).toLocaleDateString("th-TH", {
           day: "numeric",
           month: "long",
@@ -97,36 +97,37 @@ const AdminAppointments = () => {
           minute: "2-digit",
         });
 
+        // ส่งอีเมลยืนยันการนัดหมาย
+        // z9 ครงนี้
         const emailResult = await sendEmailForApprove({
           to: appointment.user.email,
           subject: "การนัดหมายถูกอนุมัติแล้ว (Appointment Approved)",
           patientName: appointment.user.full_name,
           doctorName: appointment.doctor.doctor_name,
           hospitalName: appointment.doctor.hospital_name,
-          date: date,
+          date,
           time: `${time} น.`,
         });
 
-        if (emailResult.success) {
-          toast.success("ส่งอีเมลยืนยันเรียบร้อยแล้ว");
-        } else {
-          toast.error("ไม่สามารถส่งอีเมลยืนยันได้");
-        }
+        toast[emailResult.success ? "success" : "error"](
+          emailResult.success
+            ? "ส่งอีเมลยืนยันเรียบร้อยแล้ว"
+            : "ไม่สามารถส่งอีเมลยืนยันได้",
+        );
       } else if (newStatus === "cancel") {
-        // ปฏิเสธ/ยกเลิก Cancel
         const emailResult = await sendEmailForCancel({
           to: appointment.user.email,
           subject: "การนัดหมายของคุณถูกปฎิเสธ",
         });
 
-        if (emailResult.success) {
-          toast.success("ส่งอีเมลแจ้งยกเลิกสำเร็จ");
-        } else {
-          toast.error("ส่งอีเมลแจ้งยกเลิกไม่สำเร็จ");
-        }
+        toast[emailResult.success ? "success" : "error"](
+          emailResult.success
+            ? "ส่งอีเมลแจ้งยกเลิกสำเร็จ"
+            : "ส่งอีเมลแจ้งยกเลิกไม่สำเร็จ",
+        );
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message || error.message);
     }
   };
 
