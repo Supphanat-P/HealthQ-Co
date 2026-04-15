@@ -728,15 +728,39 @@ dataRouter.post("/specialties", async (req, res) => {
  *         description: List of symptoms
  */
 dataRouter.get("/appointments", async (req, res) => {
-  const sql = `
-    SELECT * FROM appointments 
-    JOIN doctors ON appointments.doctor_id = doctors.doctor_id
-    JOIN hospitals ON doctors.hospital_id = hospitals.hospital_id
-    JOIN specialties ON doctors.specialty_id = specialties.specialty_id
-  `;
   try {
-    const [results] = await db.query(sql);
-    res.json(results);
+    const [appointments] = await db.query(`
+      SELECT 
+        a.*, 
+        d.doctor_name,
+        h.hospital_name,
+        u.full_name AS patient_name
+      FROM appointments a
+      JOIN doctors d ON a.doctor_id = d.doctor_id
+      JOIN hospitals h ON d.hospital_id = h.hospital_id
+      JOIN users u ON a.user_id = u.user_id
+    `);
+
+    const [slots] = await db.query(`
+      SELECT * FROM appointment_slots
+    `);
+
+    const result = appointments.map((app) => ({
+      ...app,
+
+      user: {
+        full_name: app.patient_name,
+      },
+
+      doctor: {
+        doctor_name: app.doctor_name,
+        hospital_name: app.hospital_name,
+      },
+
+      appointment_slots: slots.filter((s) => s.app_id === app.app_id),
+    }));
+
+    res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

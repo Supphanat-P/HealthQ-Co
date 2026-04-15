@@ -16,7 +16,6 @@ import {
 import Dropdown from "react-bootstrap/Dropdown";
 import "dayjs/locale/th";
 import { useData } from "../../Context/DataContext";
-import { supabase } from "../../config/supabaseClient";
 import AdminSidebar from "./AdminSidebar";
 import toast from "react-hot-toast";
 
@@ -57,33 +56,34 @@ const AdminAppointments = () => {
   if (!currentUser) return <Navigate to="/login" replace />;
   if (currentUser.role !== "admin") return <Navigate to="/login" replace />;
 
-  // ฟังก์ชันเปลี่ยนสถานะ
   const handleStatusChange = async (app_id, newStatus, selectedDate = null) => {
     try {
-      // อัปเดตสถานะลง Supabase
-      const { error } = await supabase
-        .from("appointments")
-        .update({
-          status: newStatus,
-          confirmed_at: selectedDate,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("app_id", app_id);
+      const res = await fetch(
+        `http://localhost:3000/appointments/updateAppointment/${app_id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            status: newStatus,
+            confirmed_at: selectedDate,
+          }),
+        },
+      );
 
-      if (error) throw error;
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.message);
+
       toast.success("สถานะอัปเดตเรียบร้อย");
 
-      // รีเฟรชข้อมูลให้เป็นปัจจุบันทันที
       await fetchAndSetData();
 
-      // ดึงข้อมูลนัดเพื่อเตรียมส่งเมล
       const appointment = appointments.find((item) => item.app_id === app_id);
-      if (!appointment || !appointment.user || !appointment.doctor) {
-        console.error("Could not find appointment details to send email.");
-        return;
-      }
 
-      // ส่งอีเมลแจ้งเตือนตามสถานะ
+      if (!appointment) return;
+
       if (newStatus === "booked") {
         // อนุมัติ Booked
         const date = new Date(selectedDate).toLocaleDateString("th-TH", {
@@ -126,8 +126,7 @@ const AdminAppointments = () => {
         }
       }
     } catch (error) {
-      console.error("Supabase Error:", error.message);
-      toast.error("เกิดข้อผิดพลาด: " + error.message);
+      toast.error(error.message);
     }
   };
 
@@ -145,14 +144,13 @@ const AdminAppointments = () => {
       return;
     }
     //จัดวันเวลา
-    const dateTimeString = `${customDate}T${customTime}:00`;
-    const dateObject = new Date(dateTimeString);
+    const dateObject = new Date(`${customDate}T${customTime}:00+07:00`);
 
     // เปลี่ยนสถานะเป็น Booked ตามวันเวลาที่เลือกใหม่
     await handleStatusChange(
       selectedApp.app_id,
       "booked",
-      dateObject.toISOString()
+      dateObject.toISOString(),
     );
     setShowModal(false);
   };
@@ -318,13 +316,13 @@ const AdminAppointments = () => {
                           <Calendar size={16} />
                           {new Date(item.confirmed_at).toLocaleDateString(
                             "th-TH",
-                            { day: "numeric", month: "short", year: "numeric" }
+                            { day: "numeric", month: "short", year: "numeric" },
                           )}
                           <span className="text-sm font-normal text-green-600">
                             (
                             {new Date(item.confirmed_at).toLocaleTimeString(
                               "th-TH",
-                              { hour: "2-digit", minute: "2-digit" }
+                              { hour: "2-digit", minute: "2-digit" },
                             )}
                             )
                           </span>
@@ -332,7 +330,7 @@ const AdminAppointments = () => {
                       ) : (
                         // กรณีรออนุมัติ โชว์ เวลาที่userเลือกมา
                         <div className="space-y-2">
-                          {item.appointment_slots.map((slot, idx) => {
+                          {(item.appointment_slots || []).map((slot, idx) => {
                             const dt = new Date(slot.slot_datetime);
                             return (
                               <div
@@ -403,44 +401,46 @@ const AdminAppointments = () => {
                               &nbsp; อนุมัติโดยเลือกวันที่
                             </Dropdown.Header>
                             {/* Loop สร้างเมนูเลือกเวลาจาก Slot ที่ลูกค้าส่งมา */}
-                            {item.appointment_slots.map((slots, idx) => {
-                              const dt = new Date(slots.slot_datetime);
-                              return (
-                                <Dropdown.Item
-                                  key={idx}
-                                  onClick={() =>
-                                    handleStatusChange(
-                                      item.app_id,
-                                      "booked",
-                                      slots.slot_datetime
-                                    )
-                                  }
-                                  className="d-flex align-items-center gap-3 py-2 rounded hover:bg-gray-50 cursor-pointer"
-                                >
-                                  {/* ส่วนแสดงเวลาใน Dropdown */}
-                                  <div className="bg-blue-100 text-blue-600 w-6 h-6 rounded-full flex items-center justify-center font-bold fs-5! shrink-0">
-                                    {idx + 1}
-                                  </div>
-                                  <div className="d-flex flex-column  lh-1">
-                                    <span className="fs-5! font-medium text-navy">
-                                      {dt.toLocaleDateString("th-TH", {
-                                        day: "numeric",
-                                        month: "short",
-                                        year: "numeric",
-                                      })}
-                                    </span>
-                                    <span className="text-ss text-gray-500 mt-1">
-                                      เวลา{" "}
-                                      {dt.toLocaleTimeString("th-TH", {
-                                        hour: "2-digit",
-                                        minute: "2-digit",
-                                      })}{" "}
-                                      น.
-                                    </span>
-                                  </div>
-                                </Dropdown.Item>
-                              );
-                            })}
+                            {(item.appointment_slots || []).map(
+                              (slots, idx) => {
+                                const dt = new Date(slots.slot_datetime);
+                                return (
+                                  <Dropdown.Item
+                                    key={idx}
+                                    onClick={() =>
+                                      handleStatusChange(
+                                        item.app_id,
+                                        "booked",
+                                        slots.slot_datetime,
+                                      )
+                                    }
+                                    className="d-flex align-items-center gap-3 py-2 rounded hover:bg-gray-50 cursor-pointer"
+                                  >
+                                    {/* ส่วนแสดงเวลาใน Dropdown */}
+                                    <div className="bg-blue-100 text-blue-600 w-6 h-6 rounded-full flex items-center justify-center font-bold fs-5! shrink-0">
+                                      {idx + 1}
+                                    </div>
+                                    <div className="d-flex flex-column  lh-1">
+                                      <span className="fs-5! font-medium text-navy">
+                                        {dt.toLocaleDateString("th-TH", {
+                                          day: "numeric",
+                                          month: "short",
+                                          year: "numeric",
+                                        })}
+                                      </span>
+                                      <span className="text-ss text-gray-500 mt-1">
+                                        เวลา{" "}
+                                        {dt.toLocaleTimeString("th-TH", {
+                                          hour: "2-digit",
+                                          minute: "2-digit",
+                                        })}{" "}
+                                        น.
+                                      </span>
+                                    </div>
+                                  </Dropdown.Item>
+                                );
+                              },
+                            )}
                             <Dropdown.Divider className="my-2" />
 
                             {/* เมนูจัดการอื่นๆ */}
@@ -472,7 +472,7 @@ const AdminAppointments = () => {
                                 handleStatusChange(
                                   item.app_id,
                                   "completed",
-                                  null
+                                  null,
                                 )
                               }
                               className="d-flex text-green-800!

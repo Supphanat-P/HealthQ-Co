@@ -13,7 +13,7 @@ import { Navigate } from "react-router-dom";
 const AdminDashboard = () => {
   const { currentUser, appointments } = useData();
   if (!currentUser) return <Navigate to="/login" replace />;
-  // if (currentUser.role !== "admin") return <Navigate to="/login" replace />;
+  if (currentUser.role !== "admin") return <Navigate to="/login" replace />;
 
   console.log(appointments);
   const today = new Date();

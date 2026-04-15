@@ -29,13 +29,16 @@ export const DataProvider = ({ children }) => {
     try {
       const token = localStorage.getItem("token");
       if (!token) return null;
-      return jwtDecode(token)?.id || null;
+      return {
+        id: jwtDecode(token)?.userId,
+        role: jwtDecode(token)?.roleId == 1 ? "admin" : "user",
+      };
     } catch {
       return null;
     }
   });
 
-  const fetchAndSetData = async (userId = currentUser) => {
+  const fetchAndSetData = async (userId = currentUser?.id) => {
     try {
       toast.loading("กำลังโหลดข้อมูล...", { id: "fetchData" });
 

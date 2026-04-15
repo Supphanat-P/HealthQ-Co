@@ -58,13 +58,12 @@ const usersRouter = Router();
  *         description: Internal Server Error
  */
 usersRouter.post("/register", async (req, res) => {
-
   const { email, password, role_id, full_name } = req.body;
 
   if (!email || !password || !role_id || !full_name) {
     return res.status(400).json({ message: "Missing required fields" });
   }
-  
+
   try {
     await createUser({ email, password, role_id, full_name });
 
@@ -105,18 +104,28 @@ usersRouter.post("/register", async (req, res) => {
  *         description: Not found (ไม่พบผู้ใช้)
  */
 usersRouter.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-  const user = await getUserByEmail(email);
+  try {
+    const { email, password } = req.body;
+    const user = await getUserByEmail(email);
 
-  if (!user) return res.status(404).json({ message: "Not found" });
+    if (!user)
+      return res.status(401).json({ message: "Invalid email or password" });
 
-  const result = await bcrypt.compare(password, user.password);
+    const result = await bcrypt.compare(password, user.password);
 
-  if (!result) return res.status(403).json({ message: "Unauthorized" });
+    if (!result)
+      return res.status(401).json({ message: "Invalid email or password" });
 
-  const token = jwt.sign({ id: user.user_id }, JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign(
+      { userId: user.user_id, roleId: user.role_id },
+      JWT_SECRET,
+      { expiresIn: "1h" },
+    );
 
-  return res.status(200).json({ message: "Success", token });
+    return res.status(200).json({ message: "Success", token });
+  } catch (err) {
+    return res.status(500).json({ message: "Server error" });
+  }
 });
 
 // middleware
@@ -124,19 +133,17 @@ const jwtMiddleware = (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
 
   if (!token) {
-    req.jwtexpired = true;
-    req.user_id = null;
-    return next();
+    return res.status(401).json({ message: "No token provided" });
   }
 
   jwt.verify(token, JWT_SECRET, (err, payload) => {
     if (err) {
-      req.jwtexpired = true;
-      req.user_id = null;
-    } else {
-      req.jwtexpired = false;
-      req.user_id = payload.id;
+      return res.status(403).json({ message: "Invalid or expired token" });
     }
+
+    req.user_id = payload.id;
+    req.user_role = payload.role;
+
     next();
   });
 };

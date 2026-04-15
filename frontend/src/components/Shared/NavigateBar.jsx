@@ -11,18 +11,14 @@ import {
   LayoutDashboard,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useData } from "../../Context/DataContext";
 
 const NavigateBar = ({ lang, setLang }) => {
+  const { currentUser } = useData();
+
   const [isOpen, setIsOpen] = useState(false);
   const token = localStorage.getItem("token");
-  const user = localStorage.getItem("user");
-
-  let getRole = null;
-  if (user) {
-    getRole = JSON.parse(user).role;
-    console.log(getRole);
-  }
-
+  
   const text = {
     home: lang === "TH" ? "หน้าหลัก" : "Home",
     doctorSearch: lang === "TH" ? "ค้นหาแพทย์" : "Find Doctor",
@@ -106,7 +102,7 @@ const NavigateBar = ({ lang, setLang }) => {
                   &nbsp;
                   <span className="font-medium">{text.logout}</span>
                 </Link>
-                {token && (
+                {token && currentUser?.role === "admin" && (
                   <Link
                     to="/admindashboard"
                     className="flex no-deco items-center me-3 space-x-2! px-4! py-2! text-navy hover:bg-blue-500/20 hover:text-red-200 rounded-xl! transition-all duration-200"
