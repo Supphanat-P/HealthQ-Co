@@ -101,12 +101,12 @@ const AdminAppointments = () => {
         // z9 ครงนี้
         const emailResult = await sendEmailForApprove({
           to: appointment.user.email,
-          subject: "การนัดหมายถูกอนุมัติแล้ว (Appointment Approved)",
-          patientName: appointment.user.full_name,
-          doctorName: appointment.doctor.doctor_name,
-          hospitalName: appointment.doctor.hospital_name,
-          date,
-          time: `${time} น.`,
+          details: {
+            hospitalName: appointment.doctor.hospital_name,
+            doctorName: appointment.doctor.doctor_name,
+            date,
+            time: `${time} น.`,
+          },
         });
 
         toast[emailResult.success ? "success" : "error"](
