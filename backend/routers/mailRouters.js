@@ -220,7 +220,7 @@ mailRouters.post("/send-approve-email", async (req, res) => {
       
       <!-- Header -->
       <div style="background: #2a7fba; color: white; padding: 15px; text-align: center;">
-        <h2 style="margin: 0;">🏥 HealthQ Hospital</h2>
+        <h2 style="margin: 0;"> HealthQ Hospital</h2>
       </div>
 
       <!-- Content -->
@@ -238,10 +238,10 @@ mailRouters.post("/send-approve-email", async (req, res) => {
           border-left: 5px solid #2a7fba;
           border-radius: 8px;
         ">
-          <p><strong>🏥 Hospital:</strong> ${details.hospitalName}</p>
-          <p><strong>👨‍⚕️ Doctor:</strong> ${details.doctorName}</p>
-          <p><strong>📅 Date:</strong> ${details.date}</p>
-          <p><strong>⏰ Time:</strong> ${details.time}</p>
+          <p><strong> Hospital:</strong> ${details.hospitalName}</p>
+          <p><strong> Doctor:</strong> ${details.doctorName}</p>
+          <p><strong> Date:</strong> ${details.date}</p>
+          <p><strong> Time:</strong> ${details.time}</p>
         </div>
 
         <p style="margin-top: 20px; color: #555;">
@@ -305,7 +305,7 @@ mailRouters.post("/send-cancel-email", async (req, res) => {
       
       <!-- Header -->
       <div style="background: #d9534f; color: white; padding: 15px; text-align: center;">
-        <h2 style="margin: 0;">🏥 HealthQ Hospital</h2>
+        <h2 style="margin: 0;"> HealthQ Hospital</h2>
       </div>
 
       <!-- Content -->
