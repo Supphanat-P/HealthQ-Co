@@ -5,7 +5,6 @@ import dayjs from "dayjs";
 
 const appointmentRouter = Router();
 
-// CREATE
 /**
  * @swagger
  * /appointment/create:
@@ -32,13 +31,15 @@ const appointmentRouter = Router();
  *                 example: "2"
  *               date:
  *                 type: string
+ *                 format: date
  *                 example: "2026-03-25"
  *               time:
  *                 type: string
  *                 example: "09:00"
  *               note:
  *                 type: string
- *                 example: "มีอาการปวดหัวและไข้สูง"
+ *                 example: "มีอาการปวดหัว"
+ *                 nullable: true
  *     responses:
  *       200:
  *         description: Appointment created successfully
@@ -54,41 +55,44 @@ const appointmentRouter = Router();
  */
 appointmentRouter.post("/create", async (req, res) => {
   try {
-    const { doctorId, patientId, date, time, note } = req.body;
+    let { doctorId, patientId, date, time, note } = req.body;
 
-    if (!doctorId || !patientId || !date || !time || !note) {
+    if (!doctorId || !patientId || !date || !time) {
       return res.status(400).json({ message: "Missing data" });
     }
 
-    //  1. เช็ค doctor
+    note = note || ""; 
+
+    // 1. เช็ค doctor
     const [doctor] = await db.query(
       "SELECT * FROM doctors WHERE doctor_id = ?",
-      [doctorId],
+      [doctorId]
     );
 
     if (doctor.length === 0) {
       return res.status(400).json({ message: "Doctor not found" });
     }
 
-    const hospitalId = doctor[0].hospital_id;
 
-    //  2. เช็ค user
-    const [user] = await db.query("SELECT * FROM users WHERE user_id = ?", [
-      patientId,
-    ]);
+    // 2. เช็ค user
+    const [user] = await db.query(
+      "SELECT * FROM users WHERE user_id = ?",
+      [patientId]
+    );
 
     if (user.length === 0) {
       return res.status(400).json({ message: "User not found" });
     }
 
-    //  3. สร้าง UUID เอง
+    // 3. สร้าง UUID
     const appId = uuidv4();
 
     // 4. insert appointment
     await db.query(
-      `INSERT INTO appointments (app_id, user_id,doctor_id, hospital_id, status,note)
-       VALUES (?, ?, ?, ?, 'pending', ?)`,
-      [appId, patientId, doctorId, hospitalId, note],
+      `INSERT INTO appointments 
+      (app_id, user_id, doctor_id, status, note)
+      VALUES (?, ?, ?, 'pending', ?)`,
+      [appId, patientId, doctorId, note]
     );
 
     // 5. รวม date + time
@@ -98,7 +102,7 @@ appointmentRouter.post("/create", async (req, res) => {
     await db.query(
       `INSERT INTO appointment_slots (app_id, slot_datetime)
        VALUES (?, ?)`,
-      [appId, slotDatetime],
+      [appId, slotDatetime]
     );
 
     res.json({
@@ -169,7 +173,7 @@ appointmentRouter.put("/cancelAppointment", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-//delete
+// delete
 /**
  * @swagger
  * /appointment/delete:
@@ -186,8 +190,8 @@ appointmentRouter.put("/cancelAppointment", async (req, res) => {
  *               - appointmentId
  *             properties:
  *               appointmentId:
- *                 type: string
- *                 example: "uuid-xxxx"
+ *                 type: integer
+ *                 example: 1
  *     responses:
  *       200:
  *         description: Delete success
@@ -197,12 +201,26 @@ appointmentRouter.put("/cancelAppointment", async (req, res) => {
  *               message: "Deleted successfully"
  *       400:
  *         description: Missing appointmentId
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Missing appointmentId"
  *       404:
  *         description: Appointment not found
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Appointment not found"
  *       500:
  *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Internal Server Error"
  */
 appointmentRouter.delete("/delete", async (req, res) => {
+  const connection = await db.getConnection();
+
   try {
     const { appointmentId } = req.body;
 
@@ -210,30 +228,39 @@ appointmentRouter.delete("/delete", async (req, res) => {
       return res.status(400).json({ message: "Missing appointmentId" });
     }
 
-    //  ลบ slot ก่อน (กัน foreign key error)
-    await db.query("DELETE FROM appointment_slots WHERE app_id = ?", [
-      appointmentId,
-    ]);
+    await connection.beginTransaction();
 
-    //  ลบ appointment
-    const [result] = await db.query(
+    // ลบ slot
+    await connection.query(
+      "DELETE FROM appointment_slots WHERE app_id = ?",
+      [appointmentId]
+    );
+
+    // ลบ appointment
+    const [result] = await connection.query(
       "DELETE FROM appointments WHERE app_id = ?",
-      [appointmentId],
+      [appointmentId]
     );
 
     if (result.affectedRows === 0) {
+      await connection.rollback();
       return res.status(404).json({ message: "Appointment not found" });
     }
 
+    await connection.commit();
+
     res.json({ message: "Deleted successfully" });
   } catch (error) {
+    await connection.rollback();
     console.error("DELETE ERROR:", error);
+
     res.status(500).json({
       message: error.message || "Internal Server Error",
     });
+  } finally {
+    connection.release();
   }
 });
-
 appointmentRouter.put("/updateAppointment/:id", async (req, res) => {
   const { id } = req.params;
   let { status, confirmed_at } = req.body;
@@ -273,7 +300,7 @@ appointmentRouter.put("/updateAppointment/:id", async (req, res) => {
 
     res.json({ message: "Updated successfully" });
   } catch (err) {
-    console.error("DB ERROR:", err); // 🔥 เพิ่ม log
+    console.error("DB ERROR:", err);
     res.status(500).json({ message: err.message });
   }
 });

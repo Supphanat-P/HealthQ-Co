@@ -5,6 +5,7 @@ import Modal from "react-bootstrap/Modal";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useData } from "../../Context/DataContext";
+import axios from "axios";
 
 const AppointmentSummary = ({
   selectedDates,
@@ -16,7 +17,7 @@ const AppointmentSummary = ({
 }) => {
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
-  const { createAppointment, currentUser, fetchAndSetData } = useData();
+  const { currentUser, fetchAndSetData } = useData();
 
   const handleConfirm = async () => {
     if (!selectedDates || selectedDates.length === 0) {
@@ -43,22 +44,30 @@ const AppointmentSummary = ({
     }));
 
     try {
-      const loadingToast = toast.loading("กำลังจอง...");
+  const loadingToast = toast.loading("กำลังจอง...");
+  // pond ทำตรงนี้
 
-      // pond ทำตรงนี้
-      await createAppointment(
-        currentUser.user_id,
-        doctorId,
-        app_datetime_json,
-        patientInfo.symptom
-      );
+  const date = dayjs(selectedDates[0]).format("YYYY-MM-DD");
+  const rawTime = selectedTimes[selectedDates[0]];
+  const time = Array.isArray(rawTime) ? rawTime[0] : rawTime;
 
-      await fetchAndSetData();
-      toast.dismiss(loadingToast);
-      setShowModal(true);
-    } catch (error) {
-      toast.error("เกิดข้อผิดพลาดในการจอง: " + error.message);
-    }
+  await axios.post("http://localhost:3000/appointment/create", {
+    doctorId: doctorId,
+    patientId: currentUser.user_id,
+    date: date,
+    time: time,
+    note: patientInfo.symptom || "",
+  });
+
+  await fetchAndSetData();
+  toast.dismiss(loadingToast);
+  setShowModal(true);
+
+} catch (error) {
+  toast.error(
+    error.response?.data?.message || "เกิดข้อผิดพลาด"
+  );
+}
   };
 
   return (
