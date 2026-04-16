@@ -37,9 +37,10 @@ const Login = () => {
       localStorage.setItem("token", token);
 
       setToken(token);
-      setCurrentUser(decoded.id);
-
-      await fetchAndSetData(decoded.id);
+      setCurrentUser({
+        id: decoded.userId,
+        role: decoded.roleId == 1 ? "admin" : "user",
+      });
 
       toast.success("เข้าสู่ระบบสำเร็จ");
       navigate("/");

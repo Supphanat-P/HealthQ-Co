@@ -55,30 +55,28 @@ const appointmentRouter = Router();
  */
 appointmentRouter.post("/create", async (req, res) => {
   try {
-    let { doctorId, patientId, date, time, note } = req.body;
+    let { doctorId, patientId, app_datetime_json, note } = req.body;
 
-    if (!doctorId || !patientId || !date || !time) {
+    if (!doctorId || !patientId) {
       return res.status(400).json({ message: "Missing data" });
     }
 
-    note = note || ""; 
+    note = note || "";
 
     // 1. เช็ค doctor
     const [doctor] = await db.query(
       "SELECT * FROM doctors WHERE doctor_id = ?",
-      [doctorId]
+      [doctorId],
     );
 
     if (doctor.length === 0) {
       return res.status(400).json({ message: "Doctor not found" });
     }
 
-
     // 2. เช็ค user
-    const [user] = await db.query(
-      "SELECT * FROM users WHERE user_id = ?",
-      [patientId]
-    );
+    const [user] = await db.query("SELECT * FROM users WHERE user_id = ?", [
+      patientId,
+    ]);
 
     if (user.length === 0) {
       return res.status(400).json({ message: "User not found" });
@@ -90,19 +88,30 @@ appointmentRouter.post("/create", async (req, res) => {
     // 4. insert appointment
     await db.query(
       `INSERT INTO appointments 
-      (app_id, user_id, doctor_id, status, note)
-      VALUES (?, ?, ?, 'pending', ?)`,
-      [appId, patientId, doctorId, note]
+      (app_id, user_id, doctor_id,hospital_id, status, note)
+      VALUES (?, ?, ?, ?, 'pending', ?)`,
+      [appId, patientId, doctorId, doctor[0].hospital_id, note],
     );
 
     // 5. รวม date + time
-    const slotDatetime = `${date} ${time}:00`;
-
+    // const slotDatetime = `${date} ${time}:00`;
+    if (!Array.isArray(app_datetime_json) || app_datetime_json.length === 0) {
+      return res.status(400).json({ message: "Invalid appointment time data" });
+    }
+    
+    if (typeof app_datetime_json === "string") {
+      app_datetime_json = JSON.parse(app_datetime_json);
+    }
     // 6. insert slot
+    const values = app_datetime_json.map((slot) => [
+      appId,
+      `${slot.date} ${slot.times}:00`,
+    ]);
+
     await db.query(
       `INSERT INTO appointment_slots (app_id, slot_datetime)
-       VALUES (?, ?)`,
-      [appId, slotDatetime]
+   VALUES ?`,
+      [values],
     );
 
     res.json({
@@ -231,15 +240,14 @@ appointmentRouter.delete("/delete", async (req, res) => {
     await connection.beginTransaction();
 
     // ลบ slot
-    await connection.query(
-      "DELETE FROM appointment_slots WHERE app_id = ?",
-      [appointmentId]
-    );
+    await connection.query("DELETE FROM appointment_slots WHERE app_id = ?", [
+      appointmentId,
+    ]);
 
     // ลบ appointment
     const [result] = await connection.query(
       "DELETE FROM appointments WHERE app_id = ?",
-      [appointmentId]
+      [appointmentId],
     );
 
     if (result.affectedRows === 0) {
@@ -261,6 +269,7 @@ appointmentRouter.delete("/delete", async (req, res) => {
     connection.release();
   }
 });
+
 appointmentRouter.put("/updateAppointment/:id", async (req, res) => {
   const { id } = req.params;
   let { status, confirmed_at } = req.body;

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useData } from "../../Context/DataContext";
 import toast from "react-hot-toast";
 import dayjs from "dayjs";
@@ -16,14 +16,15 @@ const ProfileCard = ({ lang }) => {
 
   //jo
   console.log("usersInfoByUserId in ProfileCard:", usersInfoByUserId);
-  const findUserId = usersInfoByUserId;
 
   useEffect(() => {
-    if (!findUserId) return;
-    const thNation = findUserId.nation || "";
+    if (!usersInfoByUserId) return;
+
+    const thNation = usersInfoByUserId.nation || "";
     const nationObj = nations.find((n) => n.th === thNation);
+
     setNationValue(lang === "TH" ? thNation : nationObj?.en || thNation);
-  }, [findUserId, lang]);
+  }, [usersInfoByUserId, lang]);
 
   const nations = [
     { th: "ไทย", en: "Thai" },
@@ -110,25 +111,26 @@ const ProfileCard = ({ lang }) => {
   };
 
   useEffect(() => {
-    if (!findUserId) return;
+    if (!usersInfoByUserId) return;
     setForm({
-      full_name: findUserId.full_name || "",
-      gender: findUserId.gender || "",
-      dob: findUserId.dob || "",
-      nation: findUserId.nation || "",
-      nid: findUserId.nid || "",
-      blood_type: findUserId.blood_type || "",
-      height: findUserId.height || "",
-      weight: findUserId.weight || "",
-      phone: findUserId.phone || "",
-      email: findUserId.email || "",
-      emergency: findUserId.emergency_contact?.phone || "",
-      chronic_conditions: findUserId.chronic_conditions?.join(", ") || "",
-      allergies_med: findUserId.allergies_med?.join(", ") || "",
-      food_allergies: findUserId.food_allergies?.join(", ") || "",
-      regular_med: findUserId.regular_med?.join(", ") || "",
+      full_name: usersInfoByUserId.full_name || "",
+      gender: usersInfoByUserId.gender || "",
+      dob: usersInfoByUserId.dob || "",
+      nation: usersInfoByUserId.nation || "",
+      nid: usersInfoByUserId.nid || "",
+      blood_type: usersInfoByUserId.blood_type || "",
+      height: usersInfoByUserId.height || "",
+      weight: usersInfoByUserId.weight || "",
+      phone: usersInfoByUserId.phone || "",
+      email: usersInfoByUserId.email || "",
+      emergency: usersInfoByUserId.emergency_contact?.phone || "",
+      chronic_conditions:
+        usersInfoByUserId.chronic_conditions?.join(", ") || "",
+      allergies_med: usersInfoByUserId.allergies_med?.join(", ") || "",
+      food_allergies: usersInfoByUserId.food_allergies?.join(", ") || "",
+      regular_med: usersInfoByUserId.regular_med?.join(", ") || "",
     });
-  }, [usersInfoByUserId, currentUser]);
+  }, [usersInfoByUserId]);
 
   const handleChange = (key, value) => {
     setForm({ ...form, [key]: value });
@@ -163,7 +165,7 @@ const ProfileCard = ({ lang }) => {
           ? form.regular_med.split(",").map((w) => w.trim())
           : [],
       };
-      //jo
+      //jo เปลี่ยนเป็น mysql
       const { error } = await supabase
         .from("users_info")
         .update(updateData)

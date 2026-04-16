@@ -32,42 +32,44 @@ const AppointmentSummary = ({
       toast.error("เกิดข้อผิดพลาด: ไม่พบข้อมูลแพทย์", { duration: 2000 });
       return;
     }
-    if (!currentUser?.user_id) {
+    if (!currentUser?.id) {
       toast.error("กรุณาเข้าสู่ระบบก่อนทำการจอง", { duration: 2000 });
       navigate("/login");
       return;
     }
 
-    const app_datetime_json = selectedDates.map((date) => ({
-      date: dayjs(date).format("YYYY-MM-DD"),
-      times: selectedTimes[date] || [],
-    }));
+    const app_datetime_json = selectedDates.flatMap((date) => {
+      const times = selectedTimes[date] || [];
+
+      return (Array.isArray(times) ? times : [times]).map((time) => ({
+        date: dayjs(date).format("YYYY-MM-DD"),
+        times: time,
+      }));
+    });
+
+    console.log(app_datetime_json);
 
     try {
-  const loadingToast = toast.loading("กำลังจอง...");
-  // pond ทำตรงนี้
+      const loadingToast = toast.loading("กำลังจอง...");
+      // pond ทำตรงนี้
 
-  const date = dayjs(selectedDates[0]).format("YYYY-MM-DD");
-  const rawTime = selectedTimes[selectedDates[0]];
-  const time = Array.isArray(rawTime) ? rawTime[0] : rawTime;
+      const date = dayjs(selectedDates[0]).format("YYYY-MM-DD");
+      const rawTime = selectedTimes[selectedDates[0]];
+      const time = Array.isArray(rawTime) ? rawTime[0] : rawTime;
 
-  await axios.post("http://localhost:3000/appointment/create", {
-    doctorId: doctorId,
-    patientId: currentUser.user_id,
-    date: date,
-    time: time,
-    note: patientInfo.symptom || "",
-  });
+      await axios.post("http://localhost:3000/appointment/create", {
+        doctorId: doctorId,
+        patientId: currentUser.id,
+        app_datetime_json: app_datetime_json,
+        note: patientInfo.symptom || "",
+      });
 
-  await fetchAndSetData();
-  toast.dismiss(loadingToast);
-  setShowModal(true);
-
-} catch (error) {
-  toast.error(
-    error.response?.data?.message || "เกิดข้อผิดพลาด"
-  );
-}
+      await fetchAndSetData();
+      toast.dismiss(loadingToast);
+      setShowModal(true);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "เกิดข้อผิดพลาด");
+    }
   };
 
   return (

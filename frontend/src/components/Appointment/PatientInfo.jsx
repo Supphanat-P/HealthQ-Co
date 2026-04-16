@@ -12,8 +12,8 @@ const PatientInfo = ({ onChange } = {}) => {
   const [email, setEmail] = useState("");
   const [gender, setGender] = useState("");
   const [symptom, setSymptom] = useState("");
-  const { isLogin, usersInfo, currentUser } = useData();
-
+  const { isLogin, currentUser, usersInfoByUserId } = useData();
+  console.log("UserInfo by ID:", usersInfoByUserId);
   // ฟังก์ชันจัดรูปแบบเบอร์โทร (แยกออกมาเพื่อให้เรียกใช้ซ้ำได้)
   const formatPhoneNumber = (val) => {
     if (!val) return "";
@@ -28,23 +28,15 @@ const PatientInfo = ({ onChange } = {}) => {
   };
 
   useEffect(() => {
-    if (!isLogin || !currentUser || !usersInfo || usersInfo.length === 0) {
-      // toast.error("ไม่สามารถโหลดข้อมูลผู้ใช้ได้"); // อาจจะปิดไว้ถ้าไม่อยากให้เด้งตอนโหลดแรกๆ
-      return;
-    }
+    if (!usersInfoByUserId) return;
 
-    const info = usersInfo.find((u) => u.user_id === currentUser.user_id);
-    if (!info) return;
-    
-    if (!firstName) setFirstName(info.first_name || "");
-    if (!lastName) setLastName(info.last_name || "");
-    if (!gender) setGender(info.gender || "");
-    
-    // เรียกใช้ฟังก์ชัน format ตอนดึงข้อมูลมาแสดง
-    if (!phone) setPhone(formatPhoneNumber(info.phone || ""));
-    
-    if (!email) setEmail(info.email || "");
-  }, [isLogin, currentUser, usersInfo]);
+    setFirstName(usersInfoByUserId.first_name || "");
+    setLastName(usersInfoByUserId.last_name || "");
+    setGender(usersInfoByUserId.gender || "");
+    setPhone(formatPhoneNumber(usersInfoByUserId.phone || ""));
+    setEmail(usersInfoByUserId.email || "");
+    setGender(usersInfoByUserId.gender || "");
+  }, [usersInfoByUserId]);
 
   useEffect(() => {
     onChange?.({ lastName, firstName, phone, email, symptom, files });
@@ -115,7 +107,7 @@ const PatientInfo = ({ onChange } = {}) => {
                 maxLength="12"
                 type="tel"
                 className="form-control shadow-sm"
-                placeholder="081-234-5678"
+                placeholder="XXX-XXX-XXXX"
               />
             </div>
           </div>

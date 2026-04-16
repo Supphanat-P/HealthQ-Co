@@ -38,7 +38,7 @@ export const DataProvider = ({ children }) => {
     }
   });
 
-  const fetchAndSetData = async (userId = currentUser?.id) => {
+  const fetchAndSetData = async (userId) => {
     try {
       toast.loading("กำลังโหลดข้อมูล...", { id: "fetchData" });
 
@@ -76,12 +76,12 @@ export const DataProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    fetchAndSetData(currentUser);
+    fetchAndSetData(currentUser?.id);
   }, []);
 
   useEffect(() => {
-    if (currentUser) {
-      fetchAndSetData(currentUser);
+    if (currentUser?.id) {
+      fetchAndSetData(currentUser.id);
     }
   }, [currentUser]);
 
