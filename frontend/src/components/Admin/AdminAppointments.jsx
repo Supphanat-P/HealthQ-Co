@@ -56,21 +56,7 @@ const AdminAppointments = () => {
   if (!currentUser) return <Navigate to="/login" replace />;
   if (currentUser.role !== "admin") return <Navigate to="/login" replace />;
 
-  const sendEmailForApprove = async (data) => {
-  const res = await axios.post(
-    "http://localhost:3000/mail/send-approve-email",
-    data
-  );
-  return res.data;
-};
 
-const sendEmailForCancel = async (data) => {
-  const res = await axios.post(
-    "http://localhost:3000/mail/send-cancel-email",
-    data
-  );
-  return res.data;
-};
 
   const handleStatusChange = async (app_id, newStatus, selectedDate = null) => {
     try {
@@ -113,6 +99,21 @@ const sendEmailForCancel = async (data) => {
 
         // ส่งอีเมลยืนยันการนัดหมาย
         // z9 ครงนี้
+        const sendEmailForApprove = async (data) => {
+          const res = await axios.post(
+            "http://localhost:3000/mail/send-approve-email",
+            data
+          );
+          return res.data;
+        };
+
+        const sendEmailForCancel = async (data) => {
+          const res = await axios.post(
+            "http://localhost:3000/mail/send-cancel-email",
+            data
+          );
+          return res.data;
+        };
         const emailResult = await sendEmailForApprove({
           to: appointment.user.email,
           details: {
