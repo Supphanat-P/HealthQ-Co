@@ -65,37 +65,115 @@ userManageRouter.get("/getAppointmentsByUser", async (req, res) => {
  *             properties:
  *               user_id:
  *                 type: string
+ *               full_name:
+ *                 type: string
+ *               first_name:
+ *                 type: string
+ *               last_name:
+ *                 type: string
+ *               gender:
+ *                 type: string
+ *               dob:
+ *                 type: string
+ *               nation:
+ *                 type: string
+ *               nid:
+ *                 type: string
+ *               blood_type:
+ *                 type: string
  *               phone:
  *                 type: string
- *               emergency_contact:
+ *               email:
  *                 type: string
+ *               emergency_contact:
+ *                 type: object
  *               weight:
  *                 type: number
  *               height:
  *                 type: number
+ *               chronic_conditions:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               allergies_med:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               food_allergies:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               regular_med:
+ *                 type: array
+ *                 items:
+ *                   type: string
  *     responses:
  *       200:
  *         description: User information updated successfully
  */
 userManageRouter.put("/updateUserInfo", async (req, res) => {
   try {
-    const { user_id, phone, emergency_contact, weight, height } = req.body;
+    const {
+      user_id,
+      full_name,
+      first_name,
+      last_name,
+      gender,
+      dob,
+      nation,
+      nid,
+      blood_type,
+      height,
+      weight,
+      phone,
+      email,
+      emergency_contact,
+      chronic_conditions,
+      allergies_med,
+      food_allergies,
+      regular_med,
+    } = req.body;
 
     const [result] = await db.query(
       `UPDATE users_info
-       SET phone=?, emergency_contact=?, weight=?, height=?
+       SET full_name=?, first_name=?, last_name=?, gender=?, dob=?, nation=?, nid=?, blood_type=?, height=?, weight=?, phone=?, email=?, emergency_contact=?, chronic_conditions=?, allergies_med=?, food_allergies=?, regular_med=?
        WHERE user_id=?`,
-      [phone, emergency_contact, weight, height, user_id],
+      [
+        full_name,
+        first_name,
+        last_name,
+        gender,
+        dob,
+        nation,
+        nid,
+        blood_type,
+        height,
+        weight,
+        phone,
+        email,
+        emergency_contact ? JSON.stringify(emergency_contact) : null,
+        chronic_conditions ? JSON.stringify(chronic_conditions) : null,
+        allergies_med ? JSON.stringify(allergies_med) : null,
+        food_allergies ? JSON.stringify(food_allergies) : null,
+        regular_med ? JSON.stringify(regular_med) : null,
+        user_id,
+      ]
     );
 
     if (result.affectedRows === 0)
       return res.status(404).json({ message: "User not found" });
+
+    // Also update users table for some fields if needed, like full_name
+    if (full_name) {
+       await db.query(`UPDATE users SET full_name=? WHERE user_id=?`, [full_name, user_id]);
+    }
 
     res.status(200).json({
       message: "Success",
       detail: "User information updated successfully",
     });
   } catch (err) {
+    console.error("Update Failed:", err);
     res.status(500).json({ message: "Update Failed", error: err.message });
   }
 });

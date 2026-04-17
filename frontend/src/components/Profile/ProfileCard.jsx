@@ -1,5 +1,6 @@
 import { useState, useEffect, use } from "react";
 import { useData } from "../../Context/DataContext";
+import { updateUserInfo } from "../../Context/FetchData";
 import toast from "react-hot-toast";
 import dayjs from "dayjs";
 import { SquarePen, X, Save } from "lucide-react";
@@ -112,10 +113,19 @@ const ProfileCard = ({ lang }) => {
 
   useEffect(() => {
     if (!usersInfoByUserId) return;
+    let emergencyData = usersInfoByUserId.emergency_contact;
+    if (typeof emergencyData === "string") {
+      try {
+        emergencyData = JSON.parse(emergencyData);
+      } catch (e) {
+        emergencyData = {};
+      }
+    }
+
     setForm({
       full_name: usersInfoByUserId.full_name || "",
       gender: usersInfoByUserId.gender || "",
-      dob: usersInfoByUserId.dob || "",
+      dob: usersInfoByUserId.dob ? dayjs(usersInfoByUserId.dob).format("YYYY-MM-DD") : "",
       nation: usersInfoByUserId.nation || "",
       nid: usersInfoByUserId.nid || "",
       blood_type: usersInfoByUserId.blood_type || "",
@@ -123,7 +133,7 @@ const ProfileCard = ({ lang }) => {
       weight: usersInfoByUserId.weight || "",
       phone: usersInfoByUserId.phone || "",
       email: usersInfoByUserId.email || "",
-      emergency: usersInfoByUserId.emergency_contact?.phone || "",
+      emergency: emergencyData?.phone || "",
       chronic_conditions:
         usersInfoByUserId.chronic_conditions?.join(", ") || "",
       allergies_med: usersInfoByUserId.allergies_med?.join(", ") || "",
@@ -166,11 +176,8 @@ const ProfileCard = ({ lang }) => {
           : [],
       };
       //jo เปลี่ยนเป็น mysql
-      const { error } = await supabase
-        .from("users_info")
-        .update(updateData)
-        .eq("user_id", currentUser.user_id);
-      if (error) throw error;
+      await updateUserInfo(currentUser.id || currentUser.user_id, updateData);
+
 
       setIsEdit(false);
       toast.success(text.saveSuccess);
