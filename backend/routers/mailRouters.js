@@ -61,7 +61,51 @@ mailRouters.post("/send-otp-email", async (req, res) => {
       from: `"HealthQ" <${process.env.SMTP_MAIL}>`,
       to: email,
       subject: "Your OTP Code",
-      html: `<h2>Your OTP is: ${otp}</h2>`,
+      html: `
+  <div style="font-family: Arial, sans-serif; background-color: #f4f8fb; padding: 20px;">
+    
+    <div style="max-width: 500px; margin: auto; background: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+      
+      <!-- Header -->
+      <div style="background: #2a7fba; color: white; padding: 15px; text-align: center;">
+        <h2 style="margin: 0;"> HealthQ Hospital</h2>
+      </div>
+
+      <!-- Content -->
+      <div style="padding: 20px; text-align: center;">
+        <h3 style="color: #333;">OTP Verification</h3>
+        <p style="color: #555;">
+          กรุณาใช้รหัส OTP ด้านล่างเพื่อยืนยันตัวตนของคุณ
+        </p>
+
+        <!-- OTP Box -->
+        <div style="
+          margin: 20px auto;
+          padding: 15px;
+          font-size: 28px;
+          font-weight: bold;
+          letter-spacing: 5px;
+          color: #2a7fba;
+          border: 2px dashed #2a7fba;
+          display: inline-block;
+          border-radius: 8px;
+        ">
+          ${otp}
+        </div>
+
+        <p style="color: #888; font-size: 14px;">
+          รหัสนี้จะหมดอายุภายใน 5 นาที
+        </p>
+      </div>
+
+      <!-- Footer -->
+      <div style="background: #f1f1f1; padding: 10px; text-align: center; font-size: 12px; color: #777;">
+        © 2026 HealthQ Hospital. All rights reserved.
+      </div>
+
+    </div>
+  </div>
+`
     });
 
     return res.json({ message: "OTP sent successfully" });
@@ -169,12 +213,50 @@ mailRouters.post("/send-approve-email", async (req, res) => {
       from: `"HealthQ" <${process.env.SMTP_MAIL}>`,
       to,
       subject: "Appointment Approved",
-      html: `
-        <p>Hospital: ${details.hospitalName}</p>
-        <p>Doctor: ${details.doctorName}</p>
-        <p>Date: ${details.date}</p>
-        <p>Time: ${details.time}</p>
-      `,
+     html: `
+  <div style="font-family: Arial, sans-serif; background-color: #f4f8fb; padding: 20px;">
+    
+    <div style="max-width: 500px; margin: auto; background: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+      
+      <!-- Header -->
+      <div style="background: #2a7fba; color: white; padding: 15px; text-align: center;">
+        <h2 style="margin: 0;"> HealthQ Hospital</h2>
+      </div>
+
+      <!-- Content -->
+      <div style="padding: 20px;">
+        <h3 style="color: #333; text-align: center;">Appointment Approved</h3>
+        <p style="color: #555; text-align: center;">
+          การนัดหมายของคุณได้รับการอนุมัติเรียบร้อยแล้ว
+        </p>
+
+        <!-- Info Box -->
+        <div style="
+          margin-top: 20px;
+          padding: 15px;
+          background: #f1f7fc;
+          border-left: 5px solid #2a7fba;
+          border-radius: 8px;
+        ">
+          <p><strong> Hospital:</strong> ${details.hospitalName}</p>
+          <p><strong> Doctor:</strong> ${details.doctorName}</p>
+          <p><strong> Date:</strong> ${details.date}</p>
+          <p><strong> Time:</strong> ${details.time}</p>
+        </div>
+
+        <p style="margin-top: 20px; color: #555;">
+          กรุณามาถึงก่อนเวลานัดหมายอย่างน้อย 10 นาที
+        </p>
+      </div>
+
+      <!-- Footer -->
+      <div style="background: #f1f1f1; padding: 10px; text-align: center; font-size: 12px; color: #777;">
+        © 2026 HealthQ Hospital. All rights reserved.
+      </div>
+
+    </div>
+  </div>
+`,
     });
 
     return res.json({ success: true });
@@ -216,7 +298,49 @@ mailRouters.post("/send-cancel-email", async (req, res) => {
       from: `"HealthQ" <${process.env.SMTP_MAIL}>`,
       to,
       subject: "Appointment Cancelled",
-      html: `<p>Your appointment has been cancelled</p>`,
+      html: `
+  <div style="font-family: Arial, sans-serif; background-color: #fdf4f4; padding: 20px;">
+    
+    <div style="max-width: 500px; margin: auto; background: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+      
+      <!-- Header -->
+      <div style="background: #d9534f; color: white; padding: 15px; text-align: center;">
+        <h2 style="margin: 0;"> HealthQ Hospital</h2>
+      </div>
+
+      <!-- Content -->
+      <div style="padding: 20px;">
+        <h3 style="color: #d9534f; text-align: center;">Appointment Cancelled</h3>
+        
+        <p style="color: #555; text-align: center;">
+          การนัดหมายของคุณถูกยกเลิกแล้ว
+        </p>
+
+        <!-- Warning Box -->
+        <div style="
+          margin-top: 20px;
+          padding: 15px;
+          background: #fff5f5;
+          border-left: 5px solid #d9534f;
+          border-radius: 8px;
+          text-align: center;
+        ">
+          
+        </div>
+
+        <p style="margin-top: 20px; color: #777; font-size: 14px; text-align: center;">
+          หากมีข้อสงสัย กรุณาติดต่อโรงพยาบาล
+        </p>
+      </div>
+
+      <!-- Footer -->
+      <div style="background: #f1f1f1; padding: 10px; text-align: center; font-size: 12px; color: #777;">
+        © 2026 HealthQ Hospital. All rights reserved.
+      </div>
+
+    </div>
+  </div>
+`
     });
 
     return res.json({ success: true });

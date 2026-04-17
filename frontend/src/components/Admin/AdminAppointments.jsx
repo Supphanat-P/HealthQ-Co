@@ -40,8 +40,6 @@ const AdminAppointments = () => {
     appointments,
     setAppointments,
     fetchAndSetData,
-    sendEmailForApprove,
-    sendEmailForCancel,
   } = useData();
   // State สำหรับตัวกรองและการค้นหา
   const [filterStatusDisplay, setFilterStatusDisplay] = useState("ทั้งหมด");
@@ -57,6 +55,22 @@ const AdminAppointments = () => {
   // Security Check เช็คสิทธิ์ Admin
   if (!currentUser) return <Navigate to="/login" replace />;
   if (currentUser.role !== "admin") return <Navigate to="/login" replace />;
+
+  const sendEmailForApprove = async (data) => {
+  const res = await axios.post(
+    "http://localhost:3000/mail/send-approve-email",
+    data
+  );
+  return res.data;
+};
+
+const sendEmailForCancel = async (data) => {
+  const res = await axios.post(
+    "http://localhost:3000/mail/send-cancel-email",
+    data
+  );
+  return res.data;
+};
 
   const handleStatusChange = async (app_id, newStatus, selectedDate = null) => {
     try {
@@ -101,12 +115,12 @@ const AdminAppointments = () => {
         // z9 ครงนี้
         const emailResult = await sendEmailForApprove({
           to: appointment.user.email,
-          subject: "การนัดหมายถูกอนุมัติแล้ว (Appointment Approved)",
-          patientName: appointment.user.full_name,
-          doctorName: appointment.doctor.doctor_name,
-          hospitalName: appointment.doctor.hospital_name,
-          date,
-          time: `${time} น.`,
+          details: {
+            hospitalName: appointment.doctor.hospital_name,
+            doctorName: appointment.doctor.doctor_name,
+            date,
+            time: `${time} น.`,
+          },
         });
 
         toast[emailResult.success ? "success" : "error"](
