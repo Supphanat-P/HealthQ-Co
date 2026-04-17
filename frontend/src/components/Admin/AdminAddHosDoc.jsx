@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import AdminSidebar from "./AdminSidebar";
 import { useData } from "../../Context/DataContext";
-import { Building2, Stethoscope, Trash2, Plus, AlertCircle } from "lucide-react";
+import { Building2, Stethoscope, Trash2, Plus, AlertCircle, Search } from "lucide-react";
 import toast from "react-hot-toast";
 import { insertDoctor, deleteDoctor, insertHospital, deleteHospital } from "../../Context/FetchData";
 
@@ -23,6 +23,21 @@ const AdminAddHosDoc = () => {
         hospital_id: "",
         specialty_id: "",
     });
+
+    // Search State
+    const [hospitalSearch, setHospitalSearch] = useState("");
+    const [doctorSearch, setDoctorSearch] = useState("");
+
+    // Filter logic
+    const filteredHospitals = hospitals.filter(h =>
+        (h.hospital_name || "").toLowerCase().includes(hospitalSearch.toLowerCase()) ||
+        String(h.hospital_id).toLowerCase().includes(hospitalSearch.toLowerCase())
+    );
+
+    const filteredDoctors = doctors.filter(d =>
+        (d.doctor_name || "").toLowerCase().includes(doctorSearch.toLowerCase()) ||
+        String(d.doctor_id).toLowerCase().includes(doctorSearch.toLowerCase())
+    );
 
     if (!currentUser) return (window.location.href = "/login");
     if (currentUser.role !== "admin") return (window.location.href = "/login");
@@ -165,7 +180,7 @@ const AdminAddHosDoc = () => {
                                             type="number"
                                             step="any"
                                             className="!w-full !border !border-gray-300 !rounded-lg !p-2.5 focus:!ring-2 focus:!ring-[#1f2054] focus:!outline-none"
-                                            placeholder="13.7..."
+                                            placeholder="0.000"
                                             value={newHospital.lat}
                                             onChange={(e) => setNewHospital({ ...newHospital, lat: e.target.value })}
                                         />
@@ -176,7 +191,7 @@ const AdminAddHosDoc = () => {
                                             type="number"
                                             step="any"
                                             className="!w-full !border !border-gray-300 !rounded-lg !p-2.5 focus:!ring-2 focus:!ring-[#1f2054] focus:!outline-none"
-                                            placeholder="100.5..."
+                                            placeholder="0.000"
                                             value={newHospital.lang}
                                             onChange={(e) => setNewHospital({ ...newHospital, lang: e.target.value })}
                                         />
@@ -193,7 +208,21 @@ const AdminAddHosDoc = () => {
 
                         {/* Table */}
                         <div className="xl:!col-span-2 !bg-white !rounded-xl !border !border-indigo-100 !p-5 !shadow-sm">
-                            <h3 className="!text-lg !font-semibold text-navy !mb-4">รายชื่อโรงพยาบาล</h3>
+                            <div className="!flex !flex-col md:!flex-row !justify-between !items-center !mb-4 !gap-4">
+                                <h3 className="!text-lg !font-semibold text-navy !m-0">รายชื่อโรงพยาบาล</h3>
+                                <div className="!relative !w-full md:!w-64">
+                                    <div className="!absolute !inset-y-0 !left-0 !flex !items-center !pl-3 !pointer-events-none">
+                                        <Search size={16} className="!text-gray-400" />
+                                    </div>
+                                    <input
+                                        type="text"
+                                        className="!w-full !pl-10 !pr-4 !py-2 !border !border-gray-300 !rounded-lg focus:!ring-2 focus:!ring-[#1f2054] focus:!outline-none !text-sm"
+                                        placeholder="ค้นหาชื่อโรงพยาบาล, รหัส..."
+                                        value={hospitalSearch}
+                                        onChange={(e) => setHospitalSearch(e.target.value)}
+                                    />
+                                </div>
+                            </div>
                             <div className="!overflow-x-auto">
                                 <table className="!w-full !text-left !border !border-collapse !border-none">
                                     <thead className="!bg-gray-50">
@@ -205,8 +234,8 @@ const AdminAddHosDoc = () => {
                                         </tr>
                                     </thead>
                                     <tbody className="!divide-y !divide-gray-100">
-                                        {hospitals.length > 0 ? (
-                                            hospitals.map((hospital) => (
+                                        {filteredHospitals.length > 0 ? (
+                                            filteredHospitals.map((hospital) => (
                                                 <tr key={hospital.hospital_id} className="hover:!bg-blue-50/50 !transition-colors">
                                                     <td className="!p-3 !text-gray-500 !font-light">{hospital.hospital_id}</td>
                                                     <td className="!p-3 !font-medium !text-gray-900 !flex !items-center !gap-3">
@@ -304,7 +333,21 @@ const AdminAddHosDoc = () => {
 
                         {/* Table */}
                         <div className="xl:!col-span-2 !bg-white !rounded-xl !border !border-indigo-100 !p-5 !shadow-sm">
-                            <h3 className="!text-lg !font-semibold !text-gray-800 !mb-4">รายชื่อแพทย์</h3>
+                            <div className="!flex !flex-col md:!flex-row !justify-between !items-center !mb-4 !gap-4">
+                                <h3 className="!text-lg !font-semibold !text-gray-800 !m-0">รายชื่อแพทย์</h3>
+                                <div className="!relative !w-full md:!w-64">
+                                    <div className="!absolute !inset-y-0 !left-0 !flex !items-center !pl-3 !pointer-events-none">
+                                        <Search size={16} className="!text-gray-400" />
+                                    </div>
+                                    <input
+                                        type="text"
+                                        className="!w-full !pl-10 !pr-4 !py-2 !border !border-gray-300 !rounded-lg focus:!ring-2 focus:!ring-[#1f2054] focus:!outline-none !text-sm"
+                                        placeholder="ค้นหาชื่อแพทย์, รหัส..."
+                                        value={doctorSearch}
+                                        onChange={(e) => setDoctorSearch(e.target.value)}
+                                    />
+                                </div>
+                            </div>
                             <div className="!overflow-x-auto">
                                 <table className="!w-full !text-left !border !border-collapse border-none">
                                     <thead className="!bg-gray-50">
@@ -317,8 +360,8 @@ const AdminAddHosDoc = () => {
                                         </tr>
                                     </thead>
                                     <tbody className="!divide-y !divide-gray-100">
-                                        {doctors.length > 0 ? (
-                                            doctors.map((doc) => {
+                                        {filteredDoctors.length > 0 ? (
+                                            filteredDoctors.map((doc) => {
                                                 // Find related hospital and specialty names if not nested in the object already
                                                 const hospital = hospitals.find(h => h.hospital_id === doc.hospital_id);
                                                 const specialty = specialties.find(s => s.specialty_id === doc.specialty_id);
