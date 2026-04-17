@@ -243,7 +243,7 @@ userManageRouter.get("/getUserInfoByUserId", async (req, res) => {
     const { user_id } = req.query;
 
     const [rows] = await db.query(
-      `SELECT *
+      `SELECT ui.*, u.role_id, COALESCE(NULLIF(ui.email, ''), u.email) as email
        FROM users u
        JOIN users_info ui ON u.user_id = ui.user_id
        WHERE u.user_id = ?`,

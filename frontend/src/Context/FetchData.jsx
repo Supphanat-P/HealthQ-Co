@@ -370,3 +370,14 @@ export const deleteHospital = async (id) => {
     throw new Error(error.response?.data?.message || error.message);
   }
 };
+
+export const deleteUser = async (user_id) => {
+  try {
+    const response = await axios.delete(`${URL}/userManage/deleteUser`, {
+      params: { user_id }
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || error.message);
+  }
+};

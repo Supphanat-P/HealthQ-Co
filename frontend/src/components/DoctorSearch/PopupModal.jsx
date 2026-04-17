@@ -110,7 +110,7 @@ const PopupModal = ({
                       >
                         <div className="Hospital-Icon shadow">
                           <img
-                            src={`${import.meta.env.BASE_URL}Hospitals/${closestHospital.hospital.imgPath}`}
+                            src={`https://api.healthq.in.th/${closestHospital.hospital.imgPath}`}
                             width={"30px"}
                             height={"30px"}
                             style={{ objectFit: "contain" }}

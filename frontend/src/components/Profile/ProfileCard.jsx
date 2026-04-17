@@ -209,7 +209,9 @@ const ProfileCard = ({ lang }) => {
     <div className="w-full! max-w-5xl! mx-auto! p-6! sm:p-10! mt-10! bg-white! rounded-4xl! shadow-xl! border">
       {/* Header Section */}
       <div className="flex! flex-col! md:flex-row! items-center! gap-6! mb-10!">
-        <div className="w-32! h-32! bg-linear-to-br! from-gray-200! to-gray-300! rounded-full! shadow-inner! shrink-0!"></div>
+        <div className="w-32! h-32! bg-linear-to-br! from-gray-200! to-gray-300! rounded-full! shadow-inner! shrink-0!">
+          <img src="https://tse3.mm.bing.net/th/id/OIP.5W29j2QKlzvOUkHqA8udRQHaHa?rs=1&pid=ImgDetMain&o=7&rm=3" alt="https://tse3.mm.bing.net/th/id/OIP.5W29j2QKlzvOUkHqA8udRQHaHa?rs=1&pid=ImgDetMain&o=7&rm=3" className="w-full! h-full! rounded-full! object-cover!" />
+        </div>
 
         <div className="flex-1! text-center! md:text-left!">
           <h1 className="text-3xl! font-bold! text-gray-900!">
@@ -366,10 +368,16 @@ const ProfileCard = ({ lang }) => {
                 <DisplayValue>{form.nid || text.notSpecified}</DisplayValue>
               ) : (
                 <input
-                  type="number"
+                  type="text"
+                  maxLength={13}
                   className={InputStyle}
                   value={form.nid}
-                  onChange={(e) => handleChange("nid", e.target.value)}
+                  onChange={(e) => {
+                    const onlyNumbers = e.target.value.replace(/\D/g, "");
+                    if (onlyNumbers.length <= 13) {
+                      handleChange("nid", onlyNumbers);
+                    }
+                  }}
                 />
               )}
             </div>
