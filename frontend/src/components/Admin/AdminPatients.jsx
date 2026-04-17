@@ -45,7 +45,7 @@ const AdminPatients = () => {
     if (typeof parsedEmergency === "string") {
       try {
         parsedEmergency = JSON.parse(parsedEmergency);
-      } catch (e) {}
+      } catch (e) { }
     }
     setSelectedPatient({ ...patient, parsedEmergency });
     setOpen(true);

@@ -334,3 +334,39 @@ export const updateUserInfo = async (user_id, data) => {
     throw new Error(error.response?.data?.message || error.message);
   }
 };
+
+export const insertDoctor = async (data) => {
+  try {
+    const response = await axios.post(`${URL}/data/insertDoctor`, data);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || error.message);
+  }
+};
+
+export const deleteDoctor = async (id) => {
+  try {
+    const response = await axios.delete(`${URL}/data/deleteDoctor/${id}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || error.message);
+  }
+};
+
+export const insertHospital = async (data) => {
+  try {
+    const response = await axios.post(`${URL}/data/insertHospital`, data);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || error.message);
+  }
+};
+
+export const deleteHospital = async (id) => {
+  try {
+    const response = await axios.delete(`${URL}/data/hospitals/${id}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || error.message);
+  }
+};

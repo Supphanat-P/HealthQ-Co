@@ -1,4 +1,4 @@
-import { LayoutDashboard, Calendar, Users, Heart } from "lucide-react";
+import { LayoutDashboard, Calendar, Users, Heart, Building2 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useData } from "../../Context/DataContext";
 import { Navigate } from "react-router-dom";
@@ -27,10 +27,16 @@ const AdminSidebar = () => {
       label: "จัดการผู้ป่วย",
       path: "/adminpatients",
     },
+    {
+      id: "hosdoc",
+      icon: Building2,
+      label: "โรงพยาบาล/แพทย์",
+      path: "/adminaddhosdoc",
+    },
   ];
 
   return (
-    <div className="bg-white w-72 p-4 flex flex-col shadow-xl border border-gray-100 min-h-screen! h-100">
+    <div className="bg-white w-72 p-4 flex flex-col shadow-xl border border-gray-100 min-h-screen! h-100 !flex !h-screen !bg-gray-50 !overflow-hidden">
       <div className="mb-8 pb-6">
         <div className="flex items-center justify-center mb-3">
           <div className="bg-linear-to-br from-blue-900 to-blue-950 p-3 rounded-2xl shadow-lg">
