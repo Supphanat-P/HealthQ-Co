@@ -7,7 +7,8 @@ import {
 } from "@headlessui/react";
 import AdminSidebar from "./AdminSidebar";
 import { useData } from "../../Context/DataContext";
-import { Mail, Phone, Search, User } from "lucide-react";
+import { Mail, Phone, Search, User, AlertCircle } from "lucide-react";
+import dayjs from "dayjs";
 
 const AdminPatients = () => {
   const [open, setOpen] = useState(false);
@@ -40,7 +41,13 @@ const AdminPatients = () => {
   });
 
   const handleOpenModal = (patient) => {
-    setSelectedPatient(patient);
+    let parsedEmergency = patient.emergency_contact;
+    if (typeof parsedEmergency === "string") {
+      try {
+        parsedEmergency = JSON.parse(parsedEmergency);
+      } catch (e) { }
+    }
+    setSelectedPatient({ ...patient, parsedEmergency });
     setOpen(true);
   };
 
@@ -219,7 +226,7 @@ const AdminPatients = () => {
                               วันเกิด
                             </p>
                             <p className="font-bold! text-lg! text-gray-900!">
-                              {selectedPatient.dob}
+                              {selectedPatient.dob ? dayjs(selectedPatient.dob).format("DD/MM/YYYY") : "-"}
                             </p>
                           </div>
                           {/* Nationality */}
@@ -281,6 +288,12 @@ const AdminPatients = () => {
                                   <Mail size={16} />
                                 </span>
                                 {selectedPatient.email}
+                              </p>
+                              <p className="text-gray-900! flex! items-center! gap-3! font-medium!">
+                                <span className="w-9! h-9! rounded-full! bg-red-500! text-white! flex! items-center! justify-center! shrink-0! shadow-md!">
+                                  <AlertCircle size={16} />
+                                </span>
+                                ติดต่อฉุกเฉิน: {selectedPatient.parsedEmergency?.phone || "-"}
                               </p>
                             </div>
                           </div>

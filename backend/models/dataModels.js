@@ -19,18 +19,37 @@ const query = async (sql, params) => {
 };
 
 export const getAllDoctors = async () => {
-  const sql = `SELECT * FROM doctors 
-    JOIN specialties ON doctors.specialty_id = specialties.specialty_id 
-    JOIN hospitals ON doctors.hospital_id = hospitals.hospital_id`;
+  const sql = `
+    SELECT 
+      doctors.*, 
+      specialties.specialty_name, 
+      hospitals.hospital_name, 
+      hospitals.imgPath, 
+      hospitals.lat, 
+      hospitals.lang 
+    FROM doctors 
+    LEFT JOIN specialties ON doctors.specialty_id = specialties.specialty_id 
+    LEFT JOIN hospitals ON doctors.hospital_id = hospitals.hospital_id
+    ORDER BY doctors.doctor_id ASC
+  `;
   const result = await query(sql);
   return result;
 };
 
 export const getDoctorById = async (id) => {
-  const sql = `SELECT * FROM doctors 
-    JOIN specialties ON doctors.specialty_id = specialties.specialty_id 
-    JOIN hospitals ON doctors.hospital_id = hospitals.hospital_id
-    WHERE doctor_id = ?`;
+  const sql = `
+    SELECT 
+      doctors.*, 
+      specialties.specialty_name, 
+      hospitals.hospital_name, 
+      hospitals.imgPath, 
+      hospitals.lat, 
+      hospitals.lang 
+    FROM doctors 
+    LEFT JOIN specialties ON doctors.specialty_id = specialties.specialty_id 
+    LEFT JOIN hospitals ON doctors.hospital_id = hospitals.hospital_id
+    WHERE doctors.doctor_id = ?
+  `;
   const params = [id];
   const result = await query(sql, params);
   return result[0];

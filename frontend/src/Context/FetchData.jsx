@@ -54,7 +54,7 @@ export const fetchAppointmentsByUser = async (userId) => {
 export const fetchUsersInfo = async () => {
   try {
     const response = await axios.get(`${URL}/data/users_info`);
-    return response.data.users;
+    return response.data;
   } catch (error) {
     throw new Error("Failed to fetch users info: " + error.message);
   }
@@ -324,15 +324,49 @@ export const login = async (email, password) => {
 
 //jo
 export const updateUserInfo = async (user_id, data) => {
-  const { data: userData, error: userError } = await supabase
-    .from("users")
-    .update(data)
-    .eq("user_id", user_id)
-    .select()
-    .single();
-
-  if (userError) {
-    throw new Error(userError.message);
+  try {
+    const response = await axios.put(`${URL}/userManage/updateUserInfo`, {
+      user_id,
+      ...data,
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || error.message);
   }
-  return userData;
+};
+
+export const insertDoctor = async (data) => {
+  try {
+    const response = await axios.post(`${URL}/data/insertDoctor`, data);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || error.message);
+  }
+};
+
+export const deleteDoctor = async (id) => {
+  try {
+    const response = await axios.delete(`${URL}/data/deleteDoctor/${id}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || error.message);
+  }
+};
+
+export const insertHospital = async (data) => {
+  try {
+    const response = await axios.post(`${URL}/data/insertHospital`, data);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || error.message);
+  }
+};
+
+export const deleteHospital = async (id) => {
+  try {
+    const response = await axios.delete(`${URL}/data/hospitals/${id}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || error.message);
+  }
 };

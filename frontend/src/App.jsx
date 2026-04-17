@@ -31,6 +31,7 @@ import AdminSidebar from "./components/Admin/AdminSidebar";
 import AdminDashboard from "./components/Admin/AdminDashboard";
 import AdminAppointments from "./components/Admin/AdminAppointments";
 import AdminPatients from "./components/Admin/AdminPatients";
+import AdminAddHosDoc from "./components/Admin/AdminAddHosDoc";
 
 function AppContent() {
   const { error } = useData();
@@ -50,6 +51,7 @@ function AppContent() {
     "/admindashboard",
     "/adminappointments",
     "/adminpatients",
+    "/adminaddhosdoc",
   ];
 
   const showChatbot = !hiddenPaths.includes(location.pathname.toLowerCase());
@@ -88,6 +90,7 @@ function AppContent() {
         <Route path="/admindashboard" element={<AdminDashboard lang={lang} setLang={setLang} />} />
         <Route path="/adminappointments" element={<AdminAppointments lang={lang} setLang={setLang} />} />
         <Route path="/adminpatients" element={<AdminPatients lang={lang} setLang={setLang} />} />
+        <Route path="/adminaddhosdoc" element={<AdminAddHosDoc lang={lang} setLang={setLang} />} />
         <Route path="*" element={<NotFound lang={lang} setLang={setLang} />} />
       </Routes>
     </>

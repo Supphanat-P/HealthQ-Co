@@ -64,7 +64,7 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <div className="flex flex-row">
+    <div className="!flex !h-screen !bg-gray-50 !overflow-hidden">
       <div>
         <AdminSidebar />
       </div>
@@ -72,7 +72,7 @@ const AdminDashboard = () => {
       <div className="flex-1 p-8 bg-linear-to-br m-3 min-h-screen">
         <div className="max-w-7xl mx-auto">
           <div className="mb-8">
-            <h3 className="text-3xl font-bold text-gray-900 mb-2">แดชบอร์ด</h3>
+            <h3 className="text-3xl font-bold text-navy mb-2">แดชบอร์ด</h3>
             <p className="text-gray-600">ภาพรวมการจัดการนัดหมายและผู้ป่วย</p>
           </div>
 
