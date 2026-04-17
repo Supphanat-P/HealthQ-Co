@@ -83,7 +83,29 @@ const AdminAppointments = () => {
       const appointment =
         data.appointment || appointments.find((item) => item.app_id === app_id);
 
-      if (!appointment) return;
+      console.log("APPOINTMENT:", appointment);
+
+      if (!appointment) {
+        toast.error("Error: ไม่พบข้อมูลอัปเดตสำหรับการส่งอีเมล!");
+        return;
+      }
+
+      // ส่งอีเมลยืนยันการนัดหมาย
+      const sendEmailForApprove = async (data) => {
+        const res = await axios.post(
+          "http://localhost:3000/mail/send-approve-email",
+          data
+        );
+        return res.data;
+      };
+
+      const sendEmailForCancel = async (data) => {
+        const res = await axios.post(
+          "http://localhost:3000/mail/send-cancel-email",
+          data
+        );
+        return res.data;
+      };
 
       if (newStatus === "booked") {
         const date = new Date(selectedDate).toLocaleDateString("th-TH", {
@@ -97,23 +119,6 @@ const AdminAppointments = () => {
           minute: "2-digit",
         });
 
-        // ส่งอีเมลยืนยันการนัดหมาย
-        // z9 ครงนี้
-        const sendEmailForApprove = async (data) => {
-          const res = await axios.post(
-            "http://localhost:3000/mail/send-approve-email",
-            data
-          );
-          return res.data;
-        };
-
-        const sendEmailForCancel = async (data) => {
-          const res = await axios.post(
-            "http://localhost:3000/mail/send-cancel-email",
-            data
-          );
-          return res.data;
-        };
         const emailResult = await sendEmailForApprove({
           to: appointment.user.email,
           details: {
@@ -127,8 +132,26 @@ const AdminAppointments = () => {
         toast[emailResult.success ? "success" : "error"](
           emailResult.success
             ? "ส่งอีเมลยืนยันเรียบร้อยแล้ว"
-            : "ไม่สามารถส่งอีเมลยืนยันได้",
+            : "ไม่สามารถส่งอีเมลยืนยันได้"
         );
+
+      } else if (newStatus === "completed") {
+        const emailResult = await sendEmailForApprove({
+          to: appointment.user.email,
+          details: {
+            hospitalName: appointment.doctor.hospital_name,
+            doctorName: appointment.doctor.doctor_name,
+            date: "นัดหมายเสร็จสิ้นแล้ว",
+            time: "-",
+          },
+        });
+
+        toast[emailResult.success ? "success" : "error"](
+          emailResult.success
+            ? "ส่งอีเมลแจ้งเสร็จสิ้นแล้ว"
+            : "ส่งอีเมลไม่สำเร็จ"
+        );
+
       } else if (newStatus === "cancel") {
         const emailResult = await sendEmailForCancel({
           to: appointment.user.email,
@@ -138,7 +161,7 @@ const AdminAppointments = () => {
         toast[emailResult.success ? "success" : "error"](
           emailResult.success
             ? "ส่งอีเมลแจ้งยกเลิกสำเร็จ"
-            : "ส่งอีเมลแจ้งยกเลิกไม่สำเร็จ",
+            : "ส่งอีเมลแจ้งยกเลิกไม่สำเร็จ"
         );
       }
     } catch (error) {
