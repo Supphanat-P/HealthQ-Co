@@ -64,7 +64,7 @@ const AppointmentSummary = ({
         note: patientInfo.symptom || "",
       });
 
-      await fetchAndSetData();
+      await fetchAndSetData(currentUser.id);
       toast.dismiss(loadingToast);
       setShowModal(true);
     } catch (error) {

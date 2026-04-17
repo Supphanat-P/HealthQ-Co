@@ -104,13 +104,13 @@ const PopupModal = ({
                           setSelectedHospital(
                             closestHospital.hospital.hospital_id,
                           );
-                          onSelect(closestHospital.hospital_name);
+                          onSelect(closestHospital.hospital.hospital_name);
                           onClose();
                         }}
                       >
                         <div className="Hospital-Icon shadow">
                           <img
-                            src={`https://api.healthq.in.th/${closestHospital.hospital.imgPath}`}
+                            src={`${closestHospital.hospital.imgPath}`}
                             width={"30px"}
                             height={"30px"}
                             style={{ objectFit: "contain" }}
@@ -119,7 +119,7 @@ const PopupModal = ({
                         </div>
                         <div style={{ flex: 1 }}>
                           <div className="w-fit fw-bold fs-6">
-                            {closestHospital.hospital_name}
+                            {closestHospital.hospital.hospital_name}
                           </div>
                           {closestHospital.distance && (
                             <div
@@ -172,7 +172,7 @@ const PopupModal = ({
                       >
                         <div className="Hospital-Icon shadow">
                           <img
-                            src={`${import.meta.env.BASE_URL}Hospitals/${hospital.imgPath}`}
+                            src={`${hospital.imgPath}`}
                             width={"30px"}
                             height={"30px"}
                             style={{ objectFit: "contain" }}
