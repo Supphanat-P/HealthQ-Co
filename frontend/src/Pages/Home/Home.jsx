@@ -65,11 +65,29 @@ const Home = ({ lang }) => {
     helpSup: lang === "TH" ? "ช่วยเหลือ & สนับสนุน" : "Help & Support",
     socialM: lang === "TH" ? "โซเชียลมีเดีย" : "Social Media",
   };
-  const { specialties, hospitals, doctors, searchData } = useData();
+  const { specialties, hospitals, doctors } = useData();
 
   const [view, setView] = useState(false);
   const navigate = useNavigate();
-  const options = (searchData || []).map((option) => ({
+  const searchData = [
+    ...(doctors || []).map((d) => ({
+      id: d.doctor_id,
+      name: d.doctor_name,
+      category: "แพทย์",
+    })),
+    ...(hospitals || []).map((h) => ({
+      id: h.hospital_id,
+      name: h.hospital_name,
+      category: "โรงพยาบาล",
+    })),
+    ...(specialties || []).map((s) => ({
+      id: s.specialty_id,
+      name: s.specialty_name,
+      category: "ความชำนาญ",
+    })),
+  ];
+
+  const options = searchData.map((option) => ({
     id: option.id,
     title: option.name,
     category: option.category,

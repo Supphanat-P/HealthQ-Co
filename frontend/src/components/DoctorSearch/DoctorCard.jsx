@@ -11,14 +11,14 @@ import { useEffect } from "react";
 import { Calendar } from "lucide-react";
 
 
-const DoctorCard = ({ doctor, selectedDate, lang}) => {
+const DoctorCard = ({ doctor, selectedDate, lang }) => {
   const { isLogin } = useData();
   const navigate = useNavigate();
   const { hospitals } = useData();
 
   const text = {
-    appoint : lang === "TH" ? "นัดหมาย" : "appointment",
-    info : lang === "TH" ? "รายละเอียด" : "details",
+    appoint: lang === "TH" ? "นัดหมาย" : "appointment",
+    info: lang === "TH" ? "รายละเอียด" : "details",
   };
 
   const handleBook = () => {
@@ -40,12 +40,11 @@ const DoctorCard = ({ doctor, selectedDate, lang}) => {
 
         <div className="hospital-badge w-100 bg-none">
           <img
-            src={`${import.meta.env.BASE_URL}Hospitals/${
-              doctor.imgPath
-            }`}
+            src={`${doctor.imgPath
+              }`}
             alt={doctor.hospital_name || "hospital"}
-            className="hospital-logo p-2"
-            style={{ width: "50px", height: "50px" }}
+            className="hospital-logo p-0.5"
+            style={{ width: "67px", height: "67px" }}
           />
         </div>
         <div className="doctor-avatar">

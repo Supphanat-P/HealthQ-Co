@@ -7,13 +7,15 @@ import {
 } from "@headlessui/react";
 import AdminSidebar from "./AdminSidebar";
 import { useData } from "../../Context/DataContext";
-import { Mail, Phone, Search, User, AlertCircle } from "lucide-react";
+import { Mail, Phone, Search, User, AlertCircle, Trash2 } from "lucide-react";
 import dayjs from "dayjs";
+import toast from "react-hot-toast";
+import { deleteUser } from "../../Context/FetchData";
 
 const AdminPatients = () => {
   const [open, setOpen] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState(null);
-  const { currentUser, usersInfo } = useData();
+  const { currentUser, usersInfo, appointments, fetchAndSetData } = useData();
 
   // 1. STATE สำหรับเก็บข้อมูลที่ใช้ในตาราง/ค้นหา
   const [patients, setPatients] = useState([]);
@@ -22,9 +24,36 @@ const AdminPatients = () => {
   // 2. useEffect สำหรับโหลดข้อมูลจาก Context
   useEffect(() => {
     if (usersInfo && usersInfo.length > 0) {
-      setPatients(usersInfo); // โหลดข้อมูลเมื่อ usersInfo มา
+      const patientsWithVisits = usersInfo.map((patient) => {
+        const userApps = (appointments || []).filter(
+          (app) => app.user_id === patient.user_id && app.status === "completed"
+        );
+
+        let lastVisitDate = "-";
+        if (userApps.length > 0) {
+          const sortedApps = userApps.sort(
+            (a, b) =>
+              new Date(b.confirmed_at || b.updated_at) -
+              new Date(a.confirmed_at || a.updated_at)
+          );
+          const recentApp = sortedApps[0];
+          const dt = new Date(recentApp.confirmed_at || recentApp.updated_at);
+          lastVisitDate = dt.toLocaleDateString("th-TH", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          });
+        }
+
+        return {
+          ...patient,
+          visitCount: userApps.length,
+          lastVisit: lastVisitDate,
+        };
+      });
+      setPatients(patientsWithVisits);
     }
-  }, [usersInfo]);
+  }, [usersInfo, appointments]);
 
   if (!currentUser) return (window.location.href = "/login");
   if (currentUser.role !== "admin") return (window.location.href = "/login");
@@ -35,7 +64,7 @@ const AdminPatients = () => {
     // ใช้ user_id และ full_name ตามโครงสร้างข้อมูลจริง
     return (
       patient.full_name?.toLowerCase().includes(lowerQuery) ||
-      patient.user_id?.toLowerCase().includes(lowerQuery) ||
+      String(patient.user_id).toLowerCase().includes(lowerQuery) ||
       patient.phone?.toLowerCase().includes(lowerQuery)
     );
   });
@@ -51,109 +80,130 @@ const AdminPatients = () => {
     setOpen(true);
   };
 
+  const handleDeletePatient = async (id, name) => {
+    if (window.confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบผู้ป่วย "${name}" ? ข้อมูลทั้งหมดจะถูกลบและไม่สามารถกู้คืนได้`)) {
+      try {
+        toast.loading("กำลังลบข้อมูล...", { id: "deletePatient" });
+        await deleteUser(id);
+        toast.success("ลบข้อมูลสำเร็จ", { id: "deletePatient" });
+        fetchAndSetData(currentUser.id);
+      } catch (error) {
+        console.error(error);
+        toast.error("เกิดข้อผิดพลาดในการลบข้อมูล", { id: "deletePatient" });
+      }
+    }
+  };
+
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="!flex !h-screen !bg-gray-50">
       <AdminSidebar />
-      <div className="m-5 flex-1 p-6 overflow-auto">
-        <div className="flex-1 overflow-auto p-6">
-          {/* Header และ Search Box */}
-          <div className="bg-white rounded-xl border border-indigo-100 p-4 mb-6 flex flex-col md:flex-row justify-between items-center shadow-sm gap-4 sticky top-0 z-10">
-            <h2 className="text-xl font-bold text-navy">รายการผู้ใช้บริการ</h2>
+      <div className="!flex-1 !p-6 !overflow-auto !m-5">
+        {/* Header และ Search Box */}
+        <div className="!bg-white !rounded-xl !border !border-indigo-100 !p-6 !mb-6 !shadow-sm !flex !flex-col md:!flex-row !justify-between !items-center !sticky !top-0 !z-10">
+          <h2 className="text-xl font-bold text-navy">รายการผู้ใช้บริการ</h2>
 
-            <div className="position-relative" style={{ width: "325px" }}>
-              <div className="position-absolute top-50 start-0 translate-middle-y ms-3 pe-none">
-                <Search size={20} color="#001f3f" />
-              </div>
-              <input
-                type="text"
-                className="fs-5 form-control rounded-pill ps-5 form-control-navy"
-                placeholder="ค้นหาด้วยชื่อ, รหัส, เบอร์โทร"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+          <div className="position-relative" style={{ width: "325px" }}>
+            <div className="position-absolute top-50 start-0 translate-middle-y ms-3 pe-none">
+              <Search size={20} color="#001f3f" />
             </div>
+            <input
+              type="text"
+              className="fs-5 form-control rounded-pill ps-5 form-control-navy"
+              placeholder="ค้นหาด้วยชื่อ, รหัส, เบอร์โทร"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
+        </div>
 
-          {/* Table Container */}
-          <div className="bg-white rounded-xl border mt-4 border-indigo-100 shadow-sm overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead className="bg-gray-50 border-b">
-                  <tr className="text-navy font-semibold fs-5">
-                    <th className="p-4">รหัส</th>
-                    <th className="p-4">ผู้ใช้บริการ</th>
-                    <th className="p-4">ติดต่อ</th>
-                    <th className="p-4 text-center">หมู่เลือด</th>
-                    <th className="p-4 text-center">จำนวนครั้ง</th>
-                    <th className="p-4 text-center">ครั้งล่าสุด</th>
-                    <th className="p-4 text-center">รายละเอียด</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {/* ใช้ filteredPatients ในการแสดงผล */}
-                  {filteredPatients.length > 0 ? (
-                    filteredPatients.map((patient, index) => (
-                      <tr
-                        key={index}
-                        className="hover:bg-blue-50/50 transition-colors text-gray-700"
-                      >
-                        <td className="p-4 font-light">
-                          {patient.user_id.slice(0, 22)}...
-                        </td>
-                        <td className="p-4">
-                          <div className="font-simibold  text-gray-900">
-                            {patient.full_name}
-                          </div>
-                        </td>
-                        <td className="p-4">
-                          <div className="text-gray-900">
-                            {(patient.phone || "").replace(
-                              /(\d{3})(\d{3})(\d{4})/,
-                              "$1-$2-$3"
-                            )}
-                          </div>
-                          <div className="text-gray-500">{patient.email}</div>
-                        </td>
-                        <td className="p-4 text-center">
-                          <span className="inline-block px-2 py-1 rounded-md bg-red-50 text-red-700 text-xs font-bold border border-red-100">
-                            {patient.blood_type || "-"}
-                            {/* ใช้ - หากข้อมูลนี้ยังไม่มี */}
-                          </span>
-                        </td>
-                        <td className="p-4 font-simibold text-center">
-                          {patient.visitCount || 0}
-                          {/* ใช้ 0 หากข้อมูลนี้ยังไม่มี */}
-                        </td>
-                        <td className="p-4 font-simibold text-center">
-                          {patient.lastVisit || "-"}
+        {/* Table Container */}
+        <div className="!bg-white !rounded-xl !border !mt-4 !border-indigo-100 !shadow-sm !overflow-hidden">
+          <div className="!overflow-x-auto">
+            <table className="!w-full !text-left !border-collapse">
+              <thead className="!bg-gray-50">
+                <tr className="text-navy !font-semibold fs-5">
+                  <th className="p-4">รหัส</th>
+                  <th className="p-4">ผู้ใช้บริการ</th>
+                  <th className="p-4">ติดต่อ</th>
+                  <th className="p-4 text-center">หมู่เลือด</th>
+                  <th className="p-4 text-center">จำนวนครั้ง</th>
+                  <th className="p-4 text-center">ครั้งล่าสุด</th>
+                  <th className="p-4 text-center">จัดการ</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {/* ใช้ filteredPatients ในการแสดงผล */}
+                {filteredPatients.length > 0 ? (
+                  filteredPatients.map((patient, index) => (
+                    <tr
+                      key={index}
+                      className="hover:bg-blue-50/50 transition-colors text-gray-700"
+                    >
+                      <td className="p-4 font-light">
+                        {String(patient.user_id).slice(0, 22)}
+                      </td>
+                      <td className="p-4">
+                        <div className="font-simibold  text-gray-900">
+                          {patient.full_name}
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <div className="text-gray-900">
+                          {(patient.phone || "").replace(
+                            /(\d{3})(\d{3})(\d{4})/,
+                            "$1-$2-$3"
+                          )}
+                        </div>
+                        <div className="text-gray-500">{patient.email}</div>
+                      </td>
+                      <td className="p-4 text-center">
+                        <span className="inline-block px-2 py-1 rounded-md bg-red-50 text-red-700 text-xs font-bold border border-red-100">
+                          {patient.blood_type || "-"}
                           {/* ใช้ - หากข้อมูลนี้ยังไม่มี */}
-                        </td>
-                        <td className="p-4 text-center">
+                        </span>
+                      </td>
+                      <td className="p-4 font-simibold text-center">
+                        {patient.visitCount || 0}
+                        {/* ใช้ 0 หากข้อมูลนี้ยังไม่มี */}
+                      </td>
+                      <td className="p-4 font-simibold text-center">
+                        {patient.lastVisit || "-"}
+                        {/* ใช้ - หากข้อมูลนี้ยังไม่มี */}
+                      </td>
+                      <td className="p-4 text-center">
+                        <div className="flex justify-center items-center gap-2">
                           <button
                             onClick={() => handleOpenModal(patient)}
                             className="rounded-pill px-4 py-1.5 border border-[#1f2054] text-[#1f2054] hover:bg-[#1f2054] hover:text-white transition-all text-sm font-medium shadow-sm active:scale-95"
                           >
                             ดูรายละเอียด
                           </button>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td
-                        colSpan="7"
-                        className="p-10 text-center text-gray-500"
-                      >
-                        <div className="flex flex-col items-center justify-center">
-                          <Search size={48} className="text-gray-300 mb-2" />
-                          <p>ไม่พบรายชื่อที่ค้นหา</p>
+                          <button
+                            onClick={() => handleDeletePatient(patient.user_id, patient.full_name)}
+                            className="text-red-500 hover:text-white hover:bg-red-500 !p-2 !rounded-full !transition-colors !shadow-sm !active:scale-95"
+                            title="ลบผู้ป่วย"
+                          >
+                            <Trash2 size={18} />
+                          </button>
                         </div>
                       </td>
                     </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan="7"
+                      className="p-10 text-center text-gray-500"
+                    >
+                      <div className="flex flex-col items-center justify-center">
+                        <Search size={48} className="text-gray-300 mb-2" />
+                        <p>ไม่พบรายชื่อที่ค้นหา</p>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -164,7 +214,7 @@ const AdminPatients = () => {
           transition
           className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"
         />
-        <div className="fixed inset-0 w-screen overflow-y-auto z-50">
+        <div className="fixed inset-0 w-screen overflow-y-auto z-50 !pt-20">
           <div className="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
             <DialogPanel
               transition
@@ -172,7 +222,7 @@ const AdminPatients = () => {
             >
               {selectedPatient && (
                 <>
-                  <div className="bg-[#1f2054] px-4 py-4 sm:px-6 flex justify-between items-center">
+                  {/* <div className="bg-[#1f2054] px-4 py-4 sm:px-6 flex justify-between items-center">
                     <DialogTitle
                       as="h3"
                       className="text-lg font-bold text-white flex items-center gap-2"
@@ -199,8 +249,8 @@ const AdminPatients = () => {
                         />
                       </svg>
                     </button>
-                  </div>
-                  <div className="bg-white px-4 pt-5 pb-4 sm:p-6">
+                  </div> */}
+                  <div className="bg-white px-4 !pt-4 pb-4 sm:p-6">
                     <div className="flex flex-col items-center sm:flex-row sm:items-start gap-6">
                       <div className="flex-1! w-full!">
                         <h4 className="text-3xl! font-bold! bg-linear-to-r! from-blue-600! to-blue-800! bg-clip-text! text-transparent! mb-2!">
