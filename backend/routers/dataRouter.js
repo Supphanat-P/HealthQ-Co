@@ -731,14 +731,15 @@ dataRouter.get("/appointments", async (req, res) => {
   try {
     const [appointments] = await db.query(`
       SELECT 
-        a.*, 
-        d.doctor_name,
-        h.hospital_name,
-        u.full_name AS patient_name
-      FROM appointments a
-      JOIN doctors d ON a.doctor_id = d.doctor_id
-      JOIN hospitals h ON d.hospital_id = h.hospital_id
-      JOIN users u ON a.user_id = u.user_id
+  a.*, 
+  d.doctor_name,
+  h.hospital_name,
+  u.full_name AS patient_name,
+  u.email AS patient_email
+FROM appointments a
+JOIN doctors d ON a.doctor_id = d.doctor_id
+JOIN hospitals h ON d.hospital_id = h.hospital_id
+JOIN users u ON a.user_id = u.user_id
     `);
 
     const [slots] = await db.query(`
@@ -750,6 +751,7 @@ dataRouter.get("/appointments", async (req, res) => {
 
       user: {
         full_name: app.patient_name,
+        email: app.patient_email,
       },
 
       doctor: {
