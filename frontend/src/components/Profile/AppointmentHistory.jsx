@@ -83,7 +83,7 @@ const AppointmentHistory = ({ lang }) => {
   //jo
   const userAppointments = useMemo(() => {
     return (appointments || []).filter(
-      (a) => String(a.user_id) === String(user?.user_id)
+      (a) => String(a.user_id) === String(user?.id)
     );
   }, [appointments, user]);
 
