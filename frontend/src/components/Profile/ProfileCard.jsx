@@ -257,10 +257,9 @@ const ProfileCard = ({ lang }) => {
             onClick={() => setSelectedTab(tab)}
             className={`
               px-5! py-3! text-base! font-semibold! transition-all! relative! rounded-xl!
-              ${
-                selectedTab === tab
-                  ? "text-indigo-900! after:w-full!"
-                  : "text-gray-400! hover:text-indigo-600! hover:bg-gray-50! after:w-0!"
+              ${selectedTab === tab
+                ? "text-indigo-900! after:w-full!"
+                : "text-gray-400! hover:text-indigo-600! hover:bg-gray-50! after:w-0!"
               }
               after:content-['']! after:absolute! after:bottom-0! after:left-0! after:h-1! after:bg-indigo-900! after:rounded-full! after:transition-all! after:duration-300!
             `}

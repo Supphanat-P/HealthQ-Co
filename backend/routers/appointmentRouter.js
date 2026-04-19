@@ -98,7 +98,7 @@ appointmentRouter.post("/create", async (req, res) => {
     if (!Array.isArray(app_datetime_json) || app_datetime_json.length === 0) {
       return res.status(400).json({ message: "Invalid appointment time data" });
     }
-    
+
     if (typeof app_datetime_json === "string") {
       app_datetime_json = JSON.parse(app_datetime_json);
     }
@@ -270,6 +270,69 @@ appointmentRouter.delete("/delete", async (req, res) => {
   }
 });
 
+// update appointment
+/**
+ * @swagger
+ * /appointment/updateAppointment/{id}:
+ *   put:
+ *     summary: อัปเดตสถานะใบนัดหมาย
+ *     tags: [Appointment]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID ของ appointment
+ *         schema:
+ *           type: string
+ *           example: 1
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - status
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 enum: [pending, booked, completed, cancel]
+ *                 example: booked
+ *               confirmed_at:
+ *                 type: string
+ *                 format: date-time
+ *                 example: "2026-04-19 10:00:00"
+ *     responses:
+ *       200:
+ *         description: Updated successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Updated successfully"
+ *       400:
+ *         description: Invalid request
+ *         content:
+ *           application/json:
+ *             examples:
+ *               invalidStatus:
+ *                 value:
+ *                   message: "Invalid status"
+ *               missingConfirmedAt:
+ *                 value:
+ *                   message: "confirmed_at is required"
+ *       404:
+ *         description: Appointment not found
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Appointment not found"
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Internal Server Error"
+ */
 appointmentRouter.put("/updateAppointment/:id", async (req, res) => {
   const { id } = req.params;
   let { status, confirmed_at } = req.body;
