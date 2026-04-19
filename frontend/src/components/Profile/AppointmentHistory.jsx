@@ -42,7 +42,7 @@ const AppointmentHistory = ({ lang }) => {
     coming: lang === "TH" ? "นัดหมายที่กำลังจะมาถึง" : "Upcoming Appointments",
     done: lang === "TH" ? "เสร็จสิ้น" : "Completed",
     cancle: lang === "TH" ? "นัดหมายที่ยกเลิกแล้ว" : "Cancelled Appointments",
-    
+
     noComing:
       lang === "TH"
         ? "คุณไม่มีนัดหมายที่กำลังจะมาถึง"
@@ -67,7 +67,9 @@ const AppointmentHistory = ({ lang }) => {
   const [showModal, setShowModal] = useState(false);
   const [modalAppointment, setModalAppointment] = useState(null);
   const [modalAction, setModalAction] = useState("");
-  const [rescheduleSlots, setRescheduleSlots] = useState([{ date: "", time: "" }]);
+  const [rescheduleSlots, setRescheduleSlots] = useState([
+    { date: "", time: "" },
+  ]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const user = currentUser;
@@ -76,13 +78,13 @@ const AppointmentHistory = ({ lang }) => {
   const week = new Date(
     today.getFullYear(),
     today.getMonth(),
-    today.getDate() + 7
+    today.getDate() + 7,
   );
 
   //jo
   const userAppointments = useMemo(() => {
     return (appointments || []).filter(
-      (a) => String(a.user_id) === String(user?.id)
+      (a) => String(a.user_id) === String(user?.id),
     );
   }, [appointments, user]);
 
@@ -131,16 +133,16 @@ const AppointmentHistory = ({ lang }) => {
   }, [userAppointments, doctors, hospitals, specialties]);
 
   const pendingAppointments = formatAppointments.filter(
-    (a) => a.status === STATUS.PENDING
+    (a) => a.status === STATUS.PENDING,
   );
   const comingAppointments = formatAppointments.filter(
-    (a) => a.status === STATUS.BOOKED
+    (a) => a.status === STATUS.BOOKED,
   );
   const completedAppointments = formatAppointments.filter(
-    (a) => a.status === STATUS.COMPLETED
+    (a) => a.status === STATUS.COMPLETED,
   );
   const cancelAppointments = formatAppointments.filter(
-    (a) => a.status === STATUS.CANCEL
+    (a) => a.status === STATUS.CANCEL,
   );
 
   const getStatus = (status) => {
@@ -148,7 +150,8 @@ const AppointmentHistory = ({ lang }) => {
       case STATUS.BOOKED:
         return {
           color: "bg-blue-600 text-white",
-          label: lang === "TH" ? "นัดหมายที่กำลังจะมาถึง" : "Upcoming Appointments",
+          label:
+            lang === "TH" ? "นัดหมายที่กำลังจะมาถึง" : "Upcoming Appointments",
           icon: <AlertCircle size={16} />,
         };
       case STATUS.PENDING:
@@ -166,7 +169,8 @@ const AppointmentHistory = ({ lang }) => {
       case STATUS.CANCEL:
         return {
           color: "bg-red-500 text-white",
-          label: lang === "TH" ? "นัดหมายที่ยกเลิกแล้ว" : "Cancelled Appointments",
+          label:
+            lang === "TH" ? "นัดหมายที่ยกเลิกแล้ว" : "Cancelled Appointments",
           icon: <AlertCircle size={16} />,
         };
       default:
@@ -187,9 +191,12 @@ const AppointmentHistory = ({ lang }) => {
   const cancelApp = async (id) => {
     setIsSubmitting(true);
     try {
-      await axios.put(`http://localhost:3000/appointment/updateAppointment/${id}`, {
-        status: STATUS.CANCEL
-      });
+      await axios.put(
+        `http://localhost:3000/appointment/updateAppointment/${id}`,
+        {
+          status: STATUS.CANCEL,
+        },
+      );
 
       toast.success("ยกเลิกการนัดหมายสำเร็จ");
       fetchAndSetData(user?.id);
@@ -205,10 +212,13 @@ const AppointmentHistory = ({ lang }) => {
   const rescheduleApp = async (id, slots) => {
     setIsSubmitting(true);
     try {
-      const app_datetime_json = slots.map(s => ({ date: s.date, times: s.time }));
+      const app_datetime_json = slots.map((s) => ({
+        date: s.date,
+        times: s.time,
+      }));
 
       await axios.put(`http://localhost:3000/appointment/reschedule/${id}`, {
-        app_datetime_json
+        app_datetime_json,
       });
 
       toast.success("เลื่อนนัดเรียบร้อยแล้ว");
@@ -227,7 +237,9 @@ const AppointmentHistory = ({ lang }) => {
 
     if (action === "reschedule") {
       const first = app.formattedSlots?.[0];
-      setRescheduleSlots([{ date: first?.date || "", time: first?.times?.[0] || "" }]);
+      setRescheduleSlots([
+        { date: first?.date || "", time: first?.times?.[0] || "" },
+      ]);
     }
 
     setShowModal(true);
@@ -244,12 +256,14 @@ const AppointmentHistory = ({ lang }) => {
     if (!modalAppointment) return;
     if (modalAction === "cancel") return cancelApp(modalAppointment.app_id);
 
-    const isMissing = rescheduleSlots.some(s => !s.date || !s.time);
+    const isMissing = rescheduleSlots.some((s) => !s.date || !s.time);
     if (isMissing) {
       return toast.error("กรุณากรอกวันและเวลาให้ครบถ้วน");
     }
 
-    const isPast = rescheduleSlots.some(s => dayjs(`${s.date}T${s.time}`).isBefore(dayjs()));
+    const isPast = rescheduleSlots.some((s) =>
+      dayjs(`${s.date}T${s.time}`).isBefore(dayjs()),
+    );
     if (isPast) {
       return toast.error("ไม่สามารถเลือกเวลาย้อนหลังได้");
     }
@@ -278,6 +292,7 @@ const AppointmentHistory = ({ lang }) => {
                 <Search size={14} className="mr-2!" /> {text.seeInfo}
               </button>
               <p className="text-sm text-gray-500 mt-3">{item.specialtyName}</p>
+              <p className="text-sm text-gray-500 mt-3">{item.app_id}</p>
             </div>
 
             <span
@@ -304,7 +319,14 @@ const AppointmentHistory = ({ lang }) => {
               {item.formattedSlots?.map((slot, i) => (
                 <div key={i} className="mb-1">
                   <p className="font-medium inline-flex items-center gap-1 flex-wrap">
-                    <span className={item.status === STATUS.BOOKED && item.confirmedDate !== slot.date ? "text-gray-400 line-through" : "text-[#1f2054]"}>
+                    <span
+                      className={
+                        item.status === STATUS.BOOKED &&
+                        item.confirmedDate !== slot.date
+                          ? "text-gray-400 line-through"
+                          : "text-[#1f2054]"
+                      }
+                    >
                       {dayjs(slot.date).format("D MMMM YYYY")} —
                     </span>{" "}
                     {slot.times.map((t, idx) => {
@@ -312,7 +334,8 @@ const AppointmentHistory = ({ lang }) => {
                         item.status === STATUS.BOOKED &&
                         item.confirmedDate === slot.date &&
                         item.confirmedTime === t;
-                      const isRejected = item.status === STATUS.BOOKED && !isConfirmed;
+                      const isRejected =
+                        item.status === STATUS.BOOKED && !isConfirmed;
 
                       return (
                         <span
@@ -321,13 +344,20 @@ const AppointmentHistory = ({ lang }) => {
                             isConfirmed
                               ? "text-green-700 font-bold bg-green-50 px-2 py-0.5 rounded-full border border-green-200 shadow-sm"
                               : isRejected
-                              ? "text-gray-400 line-through"
-                              : "text-[#1f2054]"
+                                ? "text-gray-400 line-through"
+                                : "text-[#1f2054]"
                           }`}
                         >
                           {t} น.
-                          {isConfirmed && <CheckCircle size={14} className="ml-1 text-green-600" />}
-                          {idx < slot.times.length - 1 && !isConfirmed && <span className="mr-1">,</span>}
+                          {isConfirmed && (
+                            <CheckCircle
+                              size={14}
+                              className="ml-1 text-green-600"
+                            />
+                          )}
+                          {idx < slot.times.length - 1 && !isConfirmed && (
+                            <span className="mr-1">,</span>
+                          )}
                         </span>
                       );
                     })}
@@ -411,7 +441,10 @@ const AppointmentHistory = ({ lang }) => {
             ) : (
               <div className="bg-gray-50 p-4! rounded-xl! border mb-4! max-h-80 overflow-y-auto">
                 {rescheduleSlots.map((slot, idx) => (
-                  <div key={idx} className="relative bg-white p-3 border rounded-lg mb-3">
+                  <div
+                    key={idx}
+                    className="relative bg-white p-3 border rounded-lg mb-3"
+                  >
                     {rescheduleSlots.length > 1 && (
                       <button
                         className="absolute top-2 right-2 text-red-500 text-xs font-bold hover:text-red-700"
@@ -459,7 +492,10 @@ const AppointmentHistory = ({ lang }) => {
                   <button
                     className="w-full py-2 bg-blue-50 text-blue-600 border border-blue-200 rounded-full! text-sm font-semibold hover:bg-blue-100 transition"
                     onClick={() => {
-                      setRescheduleSlots([...rescheduleSlots, { date: "", time: "" }]);
+                      setRescheduleSlots([
+                        ...rescheduleSlots,
+                        { date: "", time: "" },
+                      ]);
                     }}
                   >
                     + เพิ่มวันนัดหมาย
@@ -489,8 +525,8 @@ const AppointmentHistory = ({ lang }) => {
               {isSubmitting
                 ? "กำลังดำเนินการ..."
                 : isCancel
-                ? "ยืนยันยกเลิก"
-                : "ยืนยันเลื่อนนัด"}
+                  ? "ยืนยันยกเลิก"
+                  : "ยืนยันเลื่อนนัด"}
             </button>
           </div>
         </div>
@@ -529,12 +565,12 @@ const AppointmentHistory = ({ lang }) => {
                   ? tab.id === "1"
                     ? "bg-blue-600! text-white! border-blue-300! hover:bg-blue-800! shadow-blue-300! ring-2! ring-blue-100! hover:-translate-y-0.5!"
                     : tab.id === "2"
-                    ? "bg-yellow-500! text-white! border-yellow-400! hover:bg-yellow-600! shadow-yellow-300! ring-2! ring-yellow-100! hover:-translate-y-0.5!"
-                    : tab.id === "3"
-                    ? "bg-emerald-600! text-white! border-emerald-200! hover:bg-emerald-700! shadow-emerald-200! ring-2! ring-emerald-100! hover:-translate-y-0.5!"
-                    : tab.id === "4"
-                    ? "bg-rose-600! text-white! border-rose-200! hover:bg-rose-700! shadow-rose-200! ring-2! ring-rose-200! hover:-translate-y-0.5!"
-                    : "bg-gray-500! text-white! border-gray-500!"
+                      ? "bg-yellow-500! text-white! border-yellow-400! hover:bg-yellow-600! shadow-yellow-300! ring-2! ring-yellow-100! hover:-translate-y-0.5!"
+                      : tab.id === "3"
+                        ? "bg-emerald-600! text-white! border-emerald-200! hover:bg-emerald-700! shadow-emerald-200! ring-2! ring-emerald-100! hover:-translate-y-0.5!"
+                        : tab.id === "4"
+                          ? "bg-rose-600! text-white! border-rose-200! hover:bg-rose-700! shadow-rose-200! ring-2! ring-rose-200! hover:-translate-y-0.5!"
+                          : "bg-gray-500! text-white! border-gray-500!"
                   : "bg-white! text-gray-500! border-gray-200! hover:bg-gray-50! hover:text-gray-700! hover:border-gray-300!"
               }`}
             >

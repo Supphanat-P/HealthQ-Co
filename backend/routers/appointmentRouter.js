@@ -354,7 +354,6 @@ appointmentRouter.put("/updateAppointment/:id", async (req, res) => {
       }
 
       confirmed_at = dayjs(confirmed_at)
-        .add(7, "hour")
         .format("YYYY-MM-DD HH:mm:ss");
     } else {
       confirmed_at = null;
@@ -423,9 +422,10 @@ appointmentRouter.put("/reschedule/:id", async (req, res) => {
 
     await connection.beginTransaction();
 
-    await connection.query("DELETE FROM appointment_slots WHERE app_id = ?", [
-      id,
-    ]);
+    await connection.query(
+      "DELETE FROM appointment_slots WHERE app_id = ?",
+      [id]
+    );
 
     const values = app_datetime_json.map((slot) => [
       id,
@@ -434,12 +434,12 @@ appointmentRouter.put("/reschedule/:id", async (req, res) => {
 
     await connection.query(
       "INSERT INTO appointment_slots (app_id, slot_datetime) VALUES ?",
-      [values],
+      [values]
     );
 
     await connection.query(
       "UPDATE appointments SET status = 'pending', updated_at = NOW() WHERE app_id = ?",
-      [id],
+      [id]
     );
 
     await connection.commit();

@@ -71,7 +71,7 @@ function AppContent() {
 
       <LocationCompare />
       <NavigateBar lang={lang} setLang={updateLang} />
-      {showChatbot && <Chatbot />}
+      {/* {showChatbot && <Chatbot />} */}
 
       <Routes>
         <Route path="/" element={<Home lang={lang} setLang={setLang} />} />
