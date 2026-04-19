@@ -17,7 +17,7 @@ const userManageRouter = Router();
  * @swagger
  * /userManage/getAppointmentsByUser:
  *   get:
- *     summary: ดึงข้อมูลการนัดหมายของผู้ใช้
+ *     summary: ดึงข้อมูลการนัดหมายของผู้ใช้ By Jo
  *     tags: [userManage]
  *     parameters:
  *       - in: query
@@ -54,7 +54,7 @@ userManageRouter.get("/getAppointmentsByUser", async (req, res) => {
  * @swagger
  * /userManage/updateUserInfo:
  *   put:
- *     summary: แก้ไขข้อมูลผู้ใช้
+ *     summary: แก้ไขข้อมูลผู้ใช้ By Jo
  *     tags: [userManage]
  *     requestBody:
  *       required: true
@@ -185,7 +185,7 @@ userManageRouter.put("/updateUserInfo", async (req, res) => {
  * @swagger
  * /userManage/deleteUser:
  *   delete:
- *     summary: ลบบัญชีผู้ใช้งาน
+ *     summary: ลบบัญชีผู้ใช้งาน By Jo
  *     tags: [userManage]
  *     parameters:
  *       - in: query
@@ -226,7 +226,7 @@ userManageRouter.delete("/deleteUser", async (req, res) => {
  * @swagger
  * /userManage/getUserInfoByUserId:
  *   get:
- *     summary: ดึงข้อมูลผู้ใช้
+ *     summary: ดึงข้อมูลผู้ใช้ By Jo
  *     tags: [userManage]
  *     parameters:
  *       - in: query

@@ -9,7 +9,7 @@ const appointmentRouter = Router();
  * @swagger
  * /appointment/create:
  *   post:
- *     summary: สร้างใบนัดหมาย
+ *     summary: สร้างใบนัดหมาย By Pond
  *     tags: [Appointment]
  *     requestBody:
  *       required: true
@@ -131,7 +131,7 @@ appointmentRouter.post("/create", async (req, res) => {
  * @swagger
  * /appointment/cancelAppointment:
  *   put:
- *     summary: ยกเลิกใบนัดหมาย
+ *     summary: ยกเลิกใบนัดหมาย By Pond
  *     tags: [Appointment]
  *     requestBody:
  *       required: true
@@ -187,7 +187,7 @@ appointmentRouter.put("/cancelAppointment", async (req, res) => {
  * @swagger
  * /appointment/delete:
  *   delete:
- *     summary: ลบใบนัดหมาย
+ *     summary: ลบใบนัดหมาย By Pond
  *     tags: [Appointment]
  *     requestBody:
  *       required: true
@@ -381,7 +381,7 @@ appointmentRouter.put("/updateAppointment/:id", async (req, res) => {
  * @swagger
  * /appointment/reschedule/{id}:
  *   put:
- *     summary: เลื่อนนัดหมาย
+ *     summary: เลื่อนนัดหมาย By Pond
  *     tags: [Appointment]
  *     parameters:
  *       - in: path

@@ -26,7 +26,7 @@ function generateOtp() {
  * @swagger
  * /mail/send-otp-email:
  *   post:
- *     summary: Send OTP to email
+ *     summary: Send OTP to email By Z9
  *     tags: [Mail]
  *     requestBody:
  *       required: true
@@ -122,7 +122,7 @@ mailRouters.post("/send-otp-email", async (req, res) => {
  * @swagger
  * /mail/verify-otp:
  *   post:
- *     summary: Verify OTP
+ *     summary: Verify OTP By Z9
  *     tags: [Mail]
  *     requestBody:
  *       required: true
@@ -174,7 +174,7 @@ mailRouters.post("/verify-otp", (req, res) => {
  * @swagger
  * /mail/send-approve-email:
  *   post:
- *     summary: Send approve email
+ *     summary: Send approve email By Z9
  *     tags: [Mail]
  *     requestBody:
  *       required: true
@@ -270,7 +270,7 @@ mailRouters.post("/send-approve-email", async (req, res) => {
  * @swagger
  * /mail/send-cancel-email:
  *   post:
- *     summary: Send cancel email
+ *     summary: Send cancel email By Z9
  *     tags: [Mail]
  *     requestBody:
  *       required: true

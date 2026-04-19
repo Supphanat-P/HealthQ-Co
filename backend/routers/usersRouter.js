@@ -28,7 +28,7 @@ const usersRouter = Router();
  * @swagger
  * /users/register:
  *   post:
- *     summary: สร้างบัญชีผู้ใช้ใหม่
+ *     summary: สร้างบัญชีผู้ใช้ใหม่ By Map
  *     tags: [Users]
  *     requestBody:
  *       required: true
@@ -80,7 +80,7 @@ usersRouter.post("/register", async (req, res) => {
  * @swagger
  * /users/login:
  *   post:
- *     summary: เข้าสู่ระบบ
+ *     summary: เข้าสู่ระบบ By Map
  *     tags: [Users]
  *     requestBody:
  *       required: true
@@ -152,7 +152,7 @@ const jwtMiddleware = (req, res, next) => {
  * @swagger
  * /users/verify:
  *   get:
- *     summary: ตรวจสอบ Token และดึงข้อมูล Role
+ *     summary: ตรวจสอบ Token และดึงข้อมูล Role By Map
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []

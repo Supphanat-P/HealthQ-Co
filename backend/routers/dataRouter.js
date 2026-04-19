@@ -269,7 +269,7 @@ dataRouter.post("/insertDoctor", async (req, res) => {
  * @swagger
  * /data/hospitals:
  *   get:
- *     summary: Get all hospitals
+ *     summary: Get all hospitals By Z9
  *     tags: [Hospital]
  *     responses:
  *       200:
@@ -290,7 +290,7 @@ dataRouter.get("/hospitals", async (req, res) => {
  * @swagger
  * /data/updateHospital/{id}:
  *   put:
- *     summary: Update hospital by ID
+ *     summary: Update hospital by ID By Z9
  *     description: อัปเดตข้อมูลโรงพยาบาลตาม ID
  *     tags: [Hospital]
  *     parameters:
@@ -365,7 +365,7 @@ dataRouter.put("/updateHospital/:id", async (req, res) => {
  * @swagger
  * /data/hospitals/{hospital_id}:
  *   delete:
- *     summary: Delete hospital
+ *     summary: Delete hospital By Z9
  *     tags: [Hospital]
  *     parameters:
  *       - in: path
@@ -416,7 +416,7 @@ dataRouter.delete("/hospitals/:id", async (req, res) => {
  * @swagger
  * /data/insertHospital:
  *   post:
- *     summary: Create new hospital
+ *     summary: Create new hospital By Z9
  *     description: เพิ่มข้อมูลโรงพยาบาลใหม่
  *     tags: [Hospital]
  *     requestBody:
@@ -487,7 +487,7 @@ dataRouter.post("/insertHospital", async (req, res) => {
  * @swagger
  * /data/specialties:
  *   get:
- *     summary: ดึงรายการ specialty ทั้งหมด
+ *     summary: ดึงรายการ specialty ทั้งหมด By Map
  *     tags: [Specialty]
  *     responses:
  *       200:
@@ -508,7 +508,7 @@ dataRouter.get("/specialties", async (req, res) => {
  * @swagger
  * /data/specialties/{specialty_id}:
  *   get:
- *     summary: ดึงข้อมูล specialty ตาม ID
+ *     summary: ดึงข้อมูล specialty ตาม ID By Map
  *     tags: [Specialty]
  *     parameters:
  *       - name: specialty_id
@@ -545,7 +545,7 @@ dataRouter.get("/specialties/:id", async (req, res) => {
  * @swagger
  * /data/specialties/{specialty_id}:
  *   delete:
- *     summary: ลบ specialty ตาม ID
+ *     summary: ลบ specialty ตาม ID By Map
  *     tags: [Specialty]
  *     parameters:
  *       - name: specialty_id
@@ -598,7 +598,7 @@ dataRouter.delete("/specialties/:id", async (req, res) => {
  * @swagger
  * /data/updateSpecialty/{specialty_id}:
  *   put:
- *     summary: อัปเดตชื่อ specialty ตาม ID
+ *     summary: อัปเดตชื่อ specialty ตาม ID By Map
  *     tags: [Specialty]
  *     parameters:
  *       - name: specialty_id
@@ -651,7 +651,7 @@ dataRouter.put("/updateSpecialty/:id", async (req, res) => {
  * @swagger
  * /data/specialties:
  *   post:
- *     summary: สร้าง specialty ใหม่
+ *     summary: สร้าง specialty ใหม่ By Map
  *     tags: [Specialty]
  *     requestBody:
  *       required: true
