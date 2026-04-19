@@ -3,6 +3,7 @@ import AdminSidebar from "./AdminSidebar";
 import { useData } from "../../Context/DataContext";
 import { Building2, Stethoscope, Trash2, Plus, AlertCircle, Search } from "lucide-react";
 import toast from "react-hot-toast";
+import Swal from "sweetalert2";
 import { insertDoctor, deleteDoctor, insertHospital, deleteHospital } from "../../Context/FetchData";
 
 const AdminAddHosDoc = () => {
@@ -46,34 +47,87 @@ const AdminAddHosDoc = () => {
     const handleAddHospital = async (e) => {
         e.preventDefault();
         if (!newHospital.hospital_name || !newHospital.imgPath || !newHospital.lat || !newHospital.lang) {
-            toast.error("กรุณากรอกข้อมูลให้ครบถ้วน");
+            Swal.fire({
+                icon: 'warning',
+                title: 'ข้อมูลไม่ครบถ้วน',
+                text: 'กรุณากรอกข้อมูลให้ครบถ้วน',
+                confirmButtonColor: '#1f2054'
+            });
             return;
         }
         try {
-            toast.loading("กำลังเพิ่มโรงพยาบาล...", { id: "addHospital" });
+            Swal.fire({
+                title: 'กำลังบันทึกข้อมูล...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
             await insertHospital({
                 hospital_name: newHospital.hospital_name,
                 imgPath: newHospital.imgPath,
                 lat: parseFloat(newHospital.lat),
                 lang: parseFloat(newHospital.lang),
             });
-            toast.success("เพิ่มโรงพยาบาลสำเร็จ", { id: "addHospital" });
+            Swal.fire({
+                icon: 'success',
+                title: 'บันทึกสำเร็จ!',
+                text: 'เพิ่มโรงพยาบาลในระบบเรียบร้อยแล้ว',
+                confirmButtonColor: '#1f2054',
+                timer: 2000,
+                showConfirmButton: false
+            });
             setNewHospital({ hospital_name: "", imgPath: "", lat: "", lang: "" });
             fetchAndSetData(currentUser.id);
         } catch (error) {
-            toast.error(error.message || "เกิดข้อผิดพลาดในการเพิ่มโรงพยาบาล", { id: "addHospital" });
+            Swal.fire({
+                icon: 'error',
+                title: 'เกิดข้อผิดพลาด',
+                text: error.message || "เกิดข้อผิดพลาดในการเพิ่มโรงพยาบาล",
+                confirmButtonColor: '#1f2054'
+            });
         }
     };
 
     const handleDeleteHospital = async (id) => {
-        if (!window.confirm("คุณแน่ใจหรือไม่ว่าต้องการลบโรงพยาบาลนี้? (อาจมีผลกระทบกับข้อมูลแพทย์)")) return;
+        const result = await Swal.fire({
+            title: 'ยืนยันการลบ?',
+            text: "คุณแน่ใจหรือไม่ว่าต้องการลบโรงพยาบาลนี้? (อาจมีผลกระทบกับข้อมูลแพทย์)",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'ใช่, ลบเลย!',
+            cancelButtonText: 'ยกเลิก'
+        });
+
+        if (!result.isConfirmed) return;
+
         try {
-            toast.loading("กำลังลบโรงพยาบาล...", { id: "delHospital" });
+            Swal.fire({
+                title: 'กำลังลบข้อมูล...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
             await deleteHospital(id);
-            toast.success("ลบโรงพยาบาลสำเร็จ", { id: "delHospital" });
+            Swal.fire({
+                icon: 'success',
+                title: 'ลบสำเร็จ!',
+                text: 'ลบโรงพยาบาลออกจากระบบเรียบร้อยแล้ว',
+                confirmButtonColor: '#1f2054',
+                timer: 2000,
+                showConfirmButton: false
+            });
             fetchAndSetData(currentUser.id);
         } catch (error) {
-            toast.error(error.message || "เกิดข้อผิดพลาดในการลบโรงพยาบาล", { id: "delHospital" });
+            Swal.fire({
+                icon: 'error',
+                title: 'เกิดข้อผิดพลาด',
+                text: error.message || "เกิดข้อผิดพลาดในการลบโรงพยาบาล",
+                confirmButtonColor: '#1f2054'
+            });
         }
     };
 
@@ -81,33 +135,86 @@ const AdminAddHosDoc = () => {
     const handleAddDoctor = async (e) => {
         e.preventDefault();
         if (!newDoctor.doctor_name || !newDoctor.hospital_id || !newDoctor.specialty_id) {
-            toast.error("กรุณากรอกข้อมูลให้ครบถ้วน");
+            Swal.fire({
+                icon: 'warning',
+                title: 'ข้อมูลไม่ครบถ้วน',
+                text: 'กรุณากรอกข้อมูลให้ครบถ้วน',
+                confirmButtonColor: '#1f2054'
+            });
             return;
         }
         try {
-            toast.loading("กำลังเพิ่มข้อมูลแพทย์...", { id: "addDoctor" });
+            Swal.fire({
+                title: 'กำลังบันทึกข้อมูล...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
             await insertDoctor({
                 doctor_name: newDoctor.doctor_name,
                 hospital_id: parseInt(newDoctor.hospital_id),
                 specialty_id: parseInt(newDoctor.specialty_id),
             });
-            toast.success("เพิ่มข้อมูลแพทย์สำเร็จ", { id: "addDoctor" });
+            Swal.fire({
+                icon: 'success',
+                title: 'บันทึกสำเร็จ!',
+                text: 'เพิ่มข้อมูลแพทย์ในระบบเรียบร้อยแล้ว',
+                confirmButtonColor: '#1f2054',
+                timer: 2000,
+                showConfirmButton: false
+            });
             setNewDoctor({ doctor_name: "", hospital_id: "", specialty_id: "" });
             fetchAndSetData(currentUser.id);
         } catch (error) {
-            toast.error(error.message || "เกิดข้อผิดพลาดในการเพิ่มข้อมูลแพทย์", { id: "addDoctor" });
+            Swal.fire({
+                icon: 'error',
+                title: 'เกิดข้อผิดพลาด',
+                text: error.message || "เกิดข้อผิดพลาดในการเพิ่มข้อมูลแพทย์",
+                confirmButtonColor: '#1f2054'
+            });
         }
     };
 
     const handleDeleteDoctor = async (id) => {
-        if (!window.confirm("คุณแน่ใจหรือไม่ว่าต้องการลบข้อมูลแพทย์นี้?")) return;
+        const result = await Swal.fire({
+            title: 'ยืนยันการลบ?',
+            text: "คุณแน่ใจหรือไม่ว่าต้องการลบข้อมูลแพทย์นี้?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'ใช่, ลบเลย!',
+            cancelButtonText: 'ยกเลิก'
+        });
+
+        if (!result.isConfirmed) return;
+
         try {
-            toast.loading("กำลังลบข้อมูลแพทย์...", { id: "delDoctor" });
+            Swal.fire({
+                title: 'กำลังลบข้อมูล...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
             await deleteDoctor(id);
-            toast.success("ลบข้อมูลแพทย์สำเร็จ", { id: "delDoctor" });
+            Swal.fire({
+                icon: 'success',
+                title: 'ลบสำเร็จ!',
+                text: 'ลบข้อมูลแพทย์ออกจากระบบเรียบร้อยแล้ว',
+                confirmButtonColor: '#1f2054',
+                timer: 2000,
+                showConfirmButton: false
+            });
             fetchAndSetData(currentUser.id);
         } catch (error) {
-            toast.error(error.message || "เกิดข้อผิดพลาดในการลบข้อมูลแพทย์", { id: "delDoctor" });
+            Swal.fire({
+                icon: 'error',
+                title: 'เกิดข้อผิดพลาด',
+                text: error.message || "เกิดข้อผิดพลาดในการลบข้อมูลแพทย์",
+                confirmButtonColor: '#1f2054'
+            });
         }
     };
 
