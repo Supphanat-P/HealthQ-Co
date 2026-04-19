@@ -20,8 +20,7 @@ const appointmentRouter = Router();
  *             required:
  *               - doctorId
  *               - patientId
- *               - date
- *               - time
+ *               - app_datetime_json
  *             properties:
  *               doctorId:
  *                 type: integer
@@ -29,13 +28,21 @@ const appointmentRouter = Router();
  *               patientId:
  *                 type: string
  *                 example: "2"
- *               date:
- *                 type: string
- *                 format: date
- *                 example: "2026-03-25"
- *               time:
- *                 type: string
- *                 example: "09:00"
+ *               app_datetime_json:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   required:
+ *                     - date
+ *                     - times
+ *                   properties:
+ *                     date:
+ *                       type: string
+ *                       format: date
+ *                       example: "2026-03-25"
+ *                     times:
+ *                       type: string
+ *                       example: "09:00"
  *               note:
  *                 type: string
  *                 example: "มีอาการปวดหัว"
@@ -82,10 +89,8 @@ appointmentRouter.post("/create", async (req, res) => {
       return res.status(400).json({ message: "User not found" });
     }
 
-    // 3. สร้าง UUID
     const appId = uuidv4();
 
-    // 4. insert appointment
     await db.query(
       `INSERT INTO appointments 
       (app_id, user_id, doctor_id,hospital_id, status, note)
@@ -93,8 +98,6 @@ appointmentRouter.post("/create", async (req, res) => {
       [appId, patientId, doctorId, doctor[0].hospital_id, note],
     );
 
-    // 5. รวม date + time
-    // const slotDatetime = `${date} ${time}:00`;
     if (!Array.isArray(app_datetime_json) || app_datetime_json.length === 0) {
       return res.status(400).json({ message: "Invalid appointment time data" });
     }
@@ -102,7 +105,7 @@ appointmentRouter.post("/create", async (req, res) => {
     if (typeof app_datetime_json === "string") {
       app_datetime_json = JSON.parse(app_datetime_json);
     }
-    // 6. insert slot
+
     const values = app_datetime_json.map((slot) => [
       appId,
       `${slot.date} ${slot.times}:00`,
@@ -420,10 +423,9 @@ appointmentRouter.put("/reschedule/:id", async (req, res) => {
 
     await connection.beginTransaction();
 
-    await connection.query(
-      "DELETE FROM appointment_slots WHERE app_id = ?",
-      [id]
-    );
+    await connection.query("DELETE FROM appointment_slots WHERE app_id = ?", [
+      id,
+    ]);
 
     const values = app_datetime_json.map((slot) => [
       id,
@@ -432,12 +434,12 @@ appointmentRouter.put("/reschedule/:id", async (req, res) => {
 
     await connection.query(
       "INSERT INTO appointment_slots (app_id, slot_datetime) VALUES ?",
-      [values]
+      [values],
     );
 
     await connection.query(
       "UPDATE appointments SET status = 'pending', updated_at = NOW() WHERE app_id = ?",
-      [id]
+      [id],
     );
 
     await connection.commit();
