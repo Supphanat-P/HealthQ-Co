@@ -32,7 +32,7 @@ const dataRouter = Router();
  * @swagger
  * /data/getAllDoctors:
  *   get:
- *     summary: ดึงข้อมูลแพทย์ทั้งหมด
+ *     summary: ดึงข้อมูลแพทย์ทั้งหมด By P
  *     description: ใช้สำหรับดึงรายการแพทย์ทั้งหมดในระบบ
  *     tags: [Doctors]
  *     responses:
@@ -54,7 +54,7 @@ dataRouter.get("/getAllDoctors", async (req, res) => {
  * @swagger
  * /data/getDoctor/{id}:
  *   get:
- *     summary: ดึงข้อมูลแพทย์ตามรหัส
+ *     summary: ดึงข้อมูลแพทย์ตามรหัส By P
  *     description: ดึงข้อมูลแพทย์ตาม ID พร้อมข้อมูลสาขาและโรงพยาบาล
  *     tags: [Doctors]
  *     parameters:
@@ -91,7 +91,7 @@ dataRouter.get("/getDoctor/:id", async (req, res) => {
  * @swagger
  * /data/deleteDoctor/{id}:
  *   delete:
- *     summary: ลบข้อมูลแพทย์
+ *     summary: ลบข้อมูลแพทย์ By P
  *     description: ลบข้อมูลแพทย์ตาม ID
  *     tags: [Doctors]
  *     parameters:
@@ -144,7 +144,7 @@ dataRouter.delete("/deleteDoctor/:id", async (req, res) => {
  * @swagger
  * /data/updateDoctor/{id}:
  *   patch:
- *     summary: แก้ไขข้อมูลแพทย์บางส่วน
+ *     summary: แก้ไขข้อมูลแพทย์บางส่วน By P
  *     description: อัปเดตเฉพาะ field ที่ส่งมา
  *     tags: [Doctors]
  *     parameters:
@@ -211,7 +211,7 @@ dataRouter.patch("/updateDoctor/:id", async (req, res) => {
  * @swagger
  * /data/insertDoctor:
  *   post:
- *     summary: เพิ่มข้อมูลแพทย์
+ *     summary: เพิ่มข้อมูลแพทย์ By P
  *     description: ใช้สำหรับเพิ่มข้อมูลแพทย์ใหม่
  *     tags: [Doctors]
  *     requestBody:
@@ -719,7 +719,7 @@ dataRouter.post("/specialties", async (req, res) => {
  * @swagger
  * /data/appointments:
  *   get:
- *     summary: Get all appointments with doctor, hospital, and specialty
+ *     summary: Get all appointments with doctor, hospital, and specialty By P
  *     tags: [Data]
  *     responses:
  *       200:
@@ -772,7 +772,7 @@ JOIN users u ON a.user_id = u.user_id
  * @swagger
  * /data/users:
  *   get:
- *     summary: Get all users
+ *     summary: Get all users By P
  *     tags: [Data]
  *     responses:
  *       200:
@@ -795,7 +795,7 @@ dataRouter.get("/users", async (req, res) => {
  * @swagger
  * /data/users_info:
  *   get:
- *     summary: Get all users info
+ *     summary: Get all users info By P
  *     tags: [Data]
  *     responses:
  *       200:
@@ -834,4 +834,5 @@ dataRouter.get("/symptoms_list", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
 export default dataRouter;

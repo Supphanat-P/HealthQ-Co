@@ -275,7 +275,7 @@ appointmentRouter.delete("/delete", async (req, res) => {
  * @swagger
  * /appointment/updateAppointment/{id}:
  *   put:
- *     summary: อัปเดตสถานะใบนัดหมาย
+ *     summary: อัปเดตสถานะใบนัดหมาย By P
  *     tags: [Appointment]
  *     parameters:
  *       - in: path
