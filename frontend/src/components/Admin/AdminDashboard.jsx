@@ -125,13 +125,18 @@ const AdminDashboard = () => {
                       </p>
                       <p className="text-gray-600 text-sm mt-1">
                         วันและเวลาที่ยื่นนัด:&nbsp;
-                        {new Date(app.created_at).toLocaleString("th-TH", {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
+                        {(() => {
+                          const dt = new Date(app.created_at);
+                          // Fix UTC offset (DB is in UTC, mysql2 parses it as local)
+                          dt.setHours(dt.getHours() + 7);
+                          return dt.toLocaleString("th-TH", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          });
+                        })()}
                         &nbsp;น.
                       </p>
                     </div>

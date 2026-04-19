@@ -314,4 +314,78 @@ appointmentRouter.put("/updateAppointment/:id", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /appointment/reschedule/{id}:
+ *   put:
+ *     summary: เลื่อนนัดหมาย
+ *     tags: [Appointment]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - slot_datetime
+ *             properties:
+ *               slot_datetime:
+ *                 type: string
+ *                 format: date-time
+ *                 example: "2026-03-25T09:00:00.000Z"
+ *     responses:
+ *       200:
+ *         description: Rescheduled successfully
+ *       500:
+ *         description: Internal server error
+ */
+appointmentRouter.put("/reschedule/:id", async (req, res) => {
+  const { id } = req.params;
+  const { app_datetime_json } = req.body;
+  const connection = await db.getConnection();
+
+  try {
+    if (!Array.isArray(app_datetime_json) || app_datetime_json.length === 0) {
+      return res.status(400).json({ message: "Invalid appointment time data" });
+    }
+
+    await connection.beginTransaction();
+
+    await connection.query(
+      "DELETE FROM appointment_slots WHERE app_id = ?",
+      [id]
+    );
+
+    const values = app_datetime_json.map((slot) => [
+      id,
+      `${slot.date} ${slot.times}:00`,
+    ]);
+
+    await connection.query(
+      "INSERT INTO appointment_slots (app_id, slot_datetime) VALUES ?",
+      [values]
+    );
+
+    await connection.query(
+      "UPDATE appointments SET status = 'pending', updated_at = NOW() WHERE app_id = ?",
+      [id]
+    );
+
+    await connection.commit();
+    res.json({ message: "Rescheduled successfully" });
+  } catch (err) {
+    await connection.rollback();
+    console.error("RESCHEDULE ERROR:", err);
+    res.status(500).json({ message: err.message || "Internal Server Error" });
+  } finally {
+    connection.release();
+  }
+});
+
 export default appointmentRouter;

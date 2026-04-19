@@ -24,6 +24,15 @@ const AppointmentSummary = ({
       toast.error("กรุณาเลือกวันและเวลา", { duration: 2000 });
       return;
     }
+
+    const missingTimes = selectedDates.some(
+      (date) => !selectedTimes[date] || selectedTimes[date].length === 0
+    );
+    if (missingTimes) {
+      toast.error("กรุณาเลือกเวลาให้ครบทุกวันที่เลือก", { duration: 2000 });
+      return;
+    }
+
     if (!patientInfo?.firstName || !patientInfo?.symptom) {
       toast.error("กรุณากรอกข้อมูลผู้ป่วยให้ครบถ้วน", { duration: 2000 });
       return;

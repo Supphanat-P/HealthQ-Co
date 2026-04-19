@@ -11,11 +11,11 @@ import dayjs from "dayjs";
 import "dayjs/locale/th";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
-import { supabase } from "../../config/supabaseClient";
+
 import { useData } from "../../Context/DataContext";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-
+import axios from "axios";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.locale("th");
@@ -67,8 +67,7 @@ const AppointmentHistory = ({ lang }) => {
   const [showModal, setShowModal] = useState(false);
   const [modalAppointment, setModalAppointment] = useState(null);
   const [modalAction, setModalAction] = useState("");
-  const [rescheduleDate, setRescheduleDate] = useState("");
-  const [rescheduleTime, setRescheduleTime] = useState("");
+  const [rescheduleSlots, setRescheduleSlots] = useState([{ date: "", time: "" }]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const user = currentUser;
@@ -110,12 +109,22 @@ const AppointmentHistory = ({ lang }) => {
         times: slots[date].sort(),
       }));
 
+      let confirmedDate = null;
+      let confirmedTime = null;
+      if (a.confirmed_at) {
+        const confDate = dayjs(a.confirmed_at).tz("Asia/Bangkok");
+        confirmedDate = confDate.format("YYYY-MM-DD");
+        confirmedTime = confDate.format("HH:mm");
+      }
+
       return {
         ...a,
         doctorName: doctor.doctor_name || "ไม่ระบุ",
         hospitalName: hospital.hospital_name || "-",
         specialtyName: specialty.specialty_name || "-",
         formattedSlots,
+        confirmedDate,
+        confirmedTime,
         symptoms: a.note || "",
       };
     });
@@ -178,14 +187,12 @@ const AppointmentHistory = ({ lang }) => {
   const cancelApp = async (id) => {
     setIsSubmitting(true);
     try {
-      const { error } = await supabase
-        .from("appointments")
-        .update({ status: STATUS.CANCEL })
-        .eq("app_id", id);
-      if (error) throw error;
+      await axios.put(`http://localhost:3000/appointment/updateAppointment/${id}`, {
+        status: STATUS.CANCEL
+      });
 
       toast.success("ยกเลิกการนัดหมายสำเร็จ");
-      fetchAndSetData();
+      fetchAndSetData(user?.id);
       closeModal();
     } catch {
       toast.error("เกิดข้อผิดพลาดในการยกเลิก");
@@ -194,23 +201,18 @@ const AppointmentHistory = ({ lang }) => {
     }
   };
 
-  // เลือนนัดหมาย
-  const rescheduleApp = async (id, newDate, newTime) => {
+  // เลื่อนนัดหมาย
+  const rescheduleApp = async (id, slots) => {
     setIsSubmitting(true);
     try {
-      const newISO = dayjs(`${newDate}T${newTime}:00`).toISOString();
+      const app_datetime_json = slots.map(s => ({ date: s.date, times: s.time }));
 
-      await supabase
-        .from("appointment_slots")
-        .update({ slot_datetime: newISO })
-        .eq("app_id", id);
-      await supabase
-        .from("appointments")
-        .update({ status: "pending", updated_at: new Date().toISOString() })
-        .eq("app_id", id);
+      await axios.put(`http://localhost:3000/appointment/reschedule/${id}`, {
+        app_datetime_json
+      });
 
       toast.success("เลื่อนนัดเรียบร้อยแล้ว");
-      fetchAndSetData();
+      fetchAndSetData(user?.id);
       closeModal();
     } catch {
       toast.error("เกิดข้อผิดพลาดในการเลื่อนนัด");
@@ -225,8 +227,7 @@ const AppointmentHistory = ({ lang }) => {
 
     if (action === "reschedule") {
       const first = app.formattedSlots?.[0];
-      setRescheduleDate(first?.date || "");
-      setRescheduleTime(first?.times?.[0] || "");
+      setRescheduleSlots([{ date: first?.date || "", time: first?.times?.[0] || "" }]);
     }
 
     setShowModal(true);
@@ -236,22 +237,24 @@ const AppointmentHistory = ({ lang }) => {
     setShowModal(false);
     setModalAppointment(null);
     setModalAction("");
-    setRescheduleDate("");
-    setRescheduleTime("");
+    setRescheduleSlots([{ date: "", time: "" }]);
   };
 
   const handleConfirm = () => {
     if (!modalAppointment) return;
     if (modalAction === "cancel") return cancelApp(modalAppointment.app_id);
 
-    if (!rescheduleDate || !rescheduleTime)
-      return toast.error("กรุณากรอกวันและเวลา");
+    const isMissing = rescheduleSlots.some(s => !s.date || !s.time);
+    if (isMissing) {
+      return toast.error("กรุณากรอกวันและเวลาให้ครบถ้วน");
+    }
 
-    const check = dayjs(`${rescheduleDate}T${rescheduleTime}`);
-    if (check.isBefore(dayjs()))
+    const isPast = rescheduleSlots.some(s => dayjs(`${s.date}T${s.time}`).isBefore(dayjs()));
+    if (isPast) {
       return toast.error("ไม่สามารถเลือกเวลาย้อนหลังได้");
+    }
 
-    rescheduleApp(modalAppointment.app_id, rescheduleDate, rescheduleTime);
+    rescheduleApp(modalAppointment.app_id, rescheduleSlots);
   };
 
   const AppointmentCard = ({ item }) => {
@@ -299,10 +302,37 @@ const AppointmentHistory = ({ lang }) => {
             <div>
               <small className="text-gray-500 block">วันที่ & เวลา</small>
               {item.formattedSlots?.map((slot, i) => (
-                <p key={i} className="font-medium text-[#1f2054]">
-                  {dayjs(slot.date).format("D MMMM YYYY")} —{" "}
-                  {slot.times.join(", ")} น.
-                </p>
+                <div key={i} className="mb-1">
+                  <p className="font-medium inline-flex items-center gap-1 flex-wrap">
+                    <span className={item.status === STATUS.BOOKED && item.confirmedDate !== slot.date ? "text-gray-400 line-through" : "text-[#1f2054]"}>
+                      {dayjs(slot.date).format("D MMMM YYYY")} —
+                    </span>{" "}
+                    {slot.times.map((t, idx) => {
+                      const isConfirmed =
+                        item.status === STATUS.BOOKED &&
+                        item.confirmedDate === slot.date &&
+                        item.confirmedTime === t;
+                      const isRejected = item.status === STATUS.BOOKED && !isConfirmed;
+
+                      return (
+                        <span
+                          key={idx}
+                          className={`inline-flex items-center ${
+                            isConfirmed
+                              ? "text-green-700 font-bold bg-green-50 px-2 py-0.5 rounded-full border border-green-200 shadow-sm"
+                              : isRejected
+                              ? "text-gray-400 line-through"
+                              : "text-[#1f2054]"
+                          }`}
+                        >
+                          {t} น.
+                          {isConfirmed && <CheckCircle size={14} className="ml-1 text-green-600" />}
+                          {idx < slot.times.length - 1 && !isConfirmed && <span className="mr-1">,</span>}
+                        </span>
+                      );
+                    })}
+                  </p>
+                </div>
               ))}
             </div>
           </div>
@@ -379,27 +409,62 @@ const AppointmentHistory = ({ lang }) => {
                 ใช่หรือไม่?
               </p>
             ) : (
-              <div className="bg-gray-50 p-4! rounded-xl! border mb-4!">
-                <label className="block text-xs font-semibold mb-1">
-                  วันที่ใหม่
-                </label>
-                <input
-                  type="date"
-                  className="w-full p-2 rounded-full! border mb-3"
-                  min={dayjs(week).format("YYYY-MM-DD")}
-                  value={rescheduleDate}
-                  onChange={(e) => setRescheduleDate(e.target.value)}
-                />
+              <div className="bg-gray-50 p-4! rounded-xl! border mb-4! max-h-80 overflow-y-auto">
+                {rescheduleSlots.map((slot, idx) => (
+                  <div key={idx} className="relative bg-white p-3 border rounded-lg mb-3">
+                    {rescheduleSlots.length > 1 && (
+                      <button
+                        className="absolute top-2 right-2 text-red-500 text-xs font-bold hover:text-red-700"
+                        onClick={() => {
+                          const newSlots = [...rescheduleSlots];
+                          newSlots.splice(idx, 1);
+                          setRescheduleSlots(newSlots);
+                        }}
+                      >
+                        ลบ
+                      </button>
+                    )}
+                    <label className="block text-xs font-semibold mb-1">
+                      วันที่ใหม่ {idx + 1}
+                    </label>
+                    <input
+                      type="date"
+                      className="w-full p-2 rounded-full! border mb-3"
+                      min={dayjs(week).format("YYYY-MM-DD")}
+                      value={slot.date}
+                      onChange={(e) => {
+                        const newSlots = [...rescheduleSlots];
+                        newSlots[idx].date = e.target.value;
+                        setRescheduleSlots(newSlots);
+                      }}
+                    />
 
-                <label className="block text-xs font-semibold mb-1">
-                  เวลาใหม่
-                </label>
-                <input
-                  type="time"
-                  className="w-full p-2 rounded-full! border"
-                  value={rescheduleTime}
-                  onChange={(e) => setRescheduleTime(e.target.value)}
-                />
+                    <label className="block text-xs font-semibold mb-1">
+                      เวลาใหม่ {idx + 1}
+                    </label>
+                    <input
+                      type="time"
+                      className="w-full p-2 rounded-full! border"
+                      value={slot.time}
+                      onChange={(e) => {
+                        const newSlots = [...rescheduleSlots];
+                        newSlots[idx].time = e.target.value;
+                        setRescheduleSlots(newSlots);
+                      }}
+                    />
+                  </div>
+                ))}
+
+                {rescheduleSlots.length < 3 && (
+                  <button
+                    className="w-full py-2 bg-blue-50 text-blue-600 border border-blue-200 rounded-full! text-sm font-semibold hover:bg-blue-100 transition"
+                    onClick={() => {
+                      setRescheduleSlots([...rescheduleSlots, { date: "", time: "" }]);
+                    }}
+                  >
+                    + เพิ่มวันนัดหมาย
+                  </button>
+                )}
               </div>
             )}
           </div>
